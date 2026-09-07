@@ -1,0 +1,42 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# CRAG-MM datasets / retrieval resources
+data/
+search_indices/
+
+# Model weights
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Cache
+.cache/
+huggingface/
+hf_cache/
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
