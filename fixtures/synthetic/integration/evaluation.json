@@ -1,0 +1,5 @@
+{
+  "judge_model": "synthetic-judge",
+  "response_tokenizer": "meta-llama/Llama-3.2-1B-Instruct",
+  "response_max_tokens": 75
+}

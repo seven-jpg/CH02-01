@@ -1,0 +1,7 @@
+# Versions used for A's Windows Python 3.12.9 validation on 2026-10-07.
+attrs==26.1.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.9.1
+typing_extensions==4.16.0

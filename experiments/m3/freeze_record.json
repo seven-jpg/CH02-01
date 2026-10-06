@@ -1,0 +1,169 @@
+{
+  "record_type": "configuration_freeze_tracking",
+  "record_version": 1,
+  "schema_version": "m3.v1",
+  "updated_date": "2026-10-07",
+  "timezone": "Asia/Shanghai",
+  "status": "pending_confirmation",
+  "is_frozen": false,
+  "frozen_at": null,
+  "frozen_by": null,
+  "notice": "Tracking record only; not a runnable experiment config. No real dataset manifest, API smoke, formal results or freeze approval has been supplied.",
+  "verified_items": {
+    "interface_source": "docs/M2_M3_execution/01统一接口与验收.txt",
+    "schema_source": "docs/M2_M3_execution/接口字段.schema.json",
+    "interface_version": "m3.v1",
+    "project_import_commit": "78acf3abbb656e989b8732f62d0dce50104ca6f3",
+    "project_import_commit_subject": "chore: initialize CH02-01 project",
+    "reference_checkout": {
+      "path": "external/CRAG-MM",
+      "git_top_level_is_project_root": true,
+      "independent_git_checkout": false,
+      "upstream_repository": "https://github.com/facebookresearch/CRAG-MM",
+      "upstream_commit": null,
+      "upstream_commit_status": "not_verified",
+      "evidence": "git -C external/CRAG-MM rev-parse --show-toplevel resolves to the project root; git show identifies 78acf3ab as the project initialization commit."
+    },
+    "large_files_ignore_policy": {
+      "source": ".gitignore",
+      "ignored_directories": [
+        "data/",
+        "search_indices/",
+        "checkpoints/",
+        ".venv/",
+        ".venv-*/",
+        "results/",
+        "docs/M2_M3_review/"
+      ],
+      "secrets_ignored": [
+        ".env",
+        ".env.*"
+      ]
+    },
+    "integration_tooling": {
+      "status": "implemented_and_synthetic_qa_verified",
+      "validator": "scripts/check_artifacts.py",
+      "shared_helpers": "src/contracts/m3.py",
+      "validation_record": "docs/M3/A_validation_record.md",
+      "tests_passed": 98,
+      "real_experiment_verified": false
+    }
+  },
+  "planned_scope": {
+    "m2": "Single-turn and Multi-turn loading, preprocessing, feature representation and EDA",
+    "m3": "Single-turn text-only B1 RAG with optional B0 comparison",
+    "research_questions": [
+      "RQ1_multimodal_retrieval",
+      "RQ2_multiturn_context",
+      "RQ3_image_quality_robustness"
+    ],
+    "seed_proposal": 42,
+    "subset_size_targets": {
+      "smoke": 20,
+      "dev": 50,
+      "eval": 200
+    },
+    "target_sizes_are_course_requirements": false,
+    "grouping_proposal": [
+      "session",
+      "identifiable_shared_image",
+      "duplicate_question"
+    ]
+  },
+  "pending_confirmation": {
+    "course_allows_online_inference": {
+      "status": "pending",
+      "evidence": null
+    },
+    "reference_upstream_version": {
+      "status": "pending",
+      "commit": null,
+      "evidence": null
+    },
+    "dataset": {
+      "status": "pending",
+      "single_turn_id_proposal": "crag-mm-2025/crag-mm-single-turn-public",
+      "multi_turn_id_proposal": "crag-mm-2025/crag-mm-multi-turn-public",
+      "single_turn_revision": null,
+      "multi_turn_revision": null,
+      "selected_split": null,
+      "manifest_path": null,
+      "manifest_sha256": null,
+      "actual_subset_sizes": {
+        "smoke": null,
+        "dev": null,
+        "eval": null
+      },
+      "id_rule": null,
+      "grouping_check_report": null
+    },
+    "retrieval": {
+      "status": "pending",
+      "package_version": null,
+      "web_index_id": null,
+      "web_index_revision": null,
+      "encoder_id": null,
+      "encoder_revision": null,
+      "top_k_proposal": 5,
+      "top_k_frozen": null,
+      "config_path": null,
+      "config_sha256": null,
+      "text_only_input_verified": false,
+      "sixteen_gb_ram_smoke_report": null
+    },
+    "generation": {
+      "status": "pending",
+      "model_family_proposal": "Llama-3.2-11B-Vision-Instruct",
+      "provider": null,
+      "model_id": null,
+      "model_revision": null,
+      "api_access_verified": false,
+      "account_budget_confirmed": false,
+      "temperature_proposal": 0,
+      "max_tokens_proposal": 100,
+      "concurrency_proposal": 1,
+      "seed_supported": null,
+      "evidence_token_budget_proposal": 1500,
+      "parameters_frozen": null,
+      "config_path": null,
+      "config_sha256": null,
+      "public_prompt_sha256": null,
+      "b0_b1_same_model_and_parameters_verified": false,
+      "input_leakage_review": null
+    },
+    "evaluation": {
+      "status": "pending",
+      "judge_provider": null,
+      "judge_model": null,
+      "judge_revision": null,
+      "config_path": null,
+      "config_sha256": null,
+      "response_tokenizer_proposal": "meta-llama/Llama-3.2-1B-Instruct",
+      "response_max_tokens_proposal": 75,
+      "tokenizer_revision": null,
+      "tokenizer_access_verified": false,
+      "rule_differences_from_official": null,
+      "manual_calibration_report": null
+    }
+  },
+  "evidence_status": {
+    "real_smoke_validation_report": null,
+    "formal_prediction_files": [],
+    "formal_score_files": [],
+    "formal_result_summary": null,
+    "independent_reproduction_record": null
+  },
+  "freeze_acceptance": {
+    "owner": "A",
+    "required_evidence": [
+      "Actual data revisions/split, immutable manifest and ID/group checks",
+      "Real smoke retrieval, generation and scoring with failure records",
+      "Same provider/model/public parameters for B0 and B1",
+      "Retrieval/generation/evaluation configs and hashes",
+      "Official response tokenizer access and 75-token scoring behavior",
+      "API budget and course online-inference permission confirmed",
+      "Source provenance and evaluator differences documented"
+    ],
+    "change_policy": "Changed manifest/settings require a consistent new package or run and revalidation; never rewrite old artifact hashes to conceal version changes."
+  }
+}

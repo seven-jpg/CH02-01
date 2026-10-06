@@ -1,0 +1,39 @@
+C：官方Web文本检索与证据
+
+给本人看的任务清单
+你负责唯一的一份M3检索索引和真实证据，不负责部署Llama11B。
+立即做：核查官方检索包、下载目标和本机空间；准备一套Web索引与BGE编码器；用普通文本先验证搜索。
+需要实现：src/retrieval/text_retrieval.py、scripts/retrieve.py，提供retrieval.json和requirements-retrieval.txt。
+资源：一套固定revision的web-search-index-public-test约17.63GB，BAAI/bge-large-en-v1.5约1.34GB权重。M3不准备图像索引/CLIP。
+收到B的smoke问题后：真实搜索，按协议每题输出状态、hits和来源，发D/E/A。
+dev确定top-k等设置；D2冻结；eval按批次查询与导出，支持恢复。
+必须交：检索代码、索引/编码器实际版本、证据、耗时/峰值内存记录、来源抽查及检索方法说明。
+验收：真实索引可查；只有原query输入；ok/empty/error区分；断点恢复不复用不同版本/配置；每题有状态。
+设备：16GB RAM是否可用尚未证明；32GB可试，64GB更有余量，空闲SSD建议60–80GB。这些不是官方最低或运行保证。需要补设备时及时报A，其他人继续工作。
+时间：第一天解决可行性并交smoke；第二天dev与冻结；第三天逐批eval；第四天复现与案例说明。
+等待：安装/下载/普通查询不等B；正式题等B问题。D/E不用复制你的索引。
+
+下面整段可直接复制给自己的AI；同时附01统一接口与验收.txt、接口字段.schema.json和仓库代码。
+
+【AI提示词开始】
+共同背景与约束：
+我们是五人小组，四天完成课程CH02-01的M2和M3。每人有独立电脑，约16GB RAM/RTX4060 Laptop 8GB，没有共享服务器。已有external/CRAG-MM官方参考代码，自有实现尚未完成。请先识别真实仓库根目录、读取适用的仓库说明与“01统一接口与验收.txt”“接口字段.schema.json”，再动手；不要假设文件/函数已存在。本地external/CRAG-MM是导入的参考镜像，没有独立.git；78acf3abbb656e989b8732f62d0dce50104ca6f3是课程仓库初始化提交，不能称官方上游commit。官方原始提交未核实，需记录参考源码文件SHA256。
+你要完成实现与可复现交付，不只给建议。仅修改本人负责的模块、配置和依赖；公共接口由A维护，发现问题先提出具体兼容修改，不能单方改名。根路径用参数或配置，不能写死组长的D盘。
+M2分析两类QA；M3真实实验只用Single-turn，B0原始问题直接回答、B1原始问题加官方Web文本证据回答。生成采用A冻结的同款Llama-3.2-11B-Vision-Instruct API和公共参数；B0/B1不能混模型、提供商或样本集合。API路线以课程允许在线推理为前提，不能称原比赛离线提交复现。
+正式检索/生成不输入图片、图片URL、OCR、caption、视觉实体、full_query、对话历史或参考答案。B可读图做EDA。开发样例放fixtures/synthetic，不能成为正式结果；没有真实运行就明确“未运行”，不编造分数、检索片段或输出。
+按m3.v1接口：UTF-8 JSONL、唯一string interaction_id、公共schema_version/subset/dataset_manifest_sha256、按ID配对、SHA256匹配。C状态ok/empty/error；D状态ok/error/blocked；E状态ok/error/unscored。技术故障与正常拒答严格分开，每个预期ID必须保留状态行，不默默删题。需要分批时支持--batch-ids且仍使用原manifest。
+密钥只读本机环境变量，不输出值、不写日志/配置/Git；账号未配置时先实现干运行和格式检查，列出需要本人配置的变量。不要自行购买套餐或租机器。
+每次交付附：修改文件、实际依赖版本、命令、输入/输出、真实验证证据、已知限制。--help应不下载索引、不加载大模型、不调用API。先接20条真实smoke，再在dev调整，冻结后运行eval。
+
+你负责C的真实Web文本检索。
+具体实现：
+1. 阅读external/CRAG-MM/docs/search_api.md和实际cragmm-search-pipeline==0.5.1源码，核实可调用签名、索引配置、编码/池化/归一化和距离定义。官方默认UnifiedSearchPipeline会初始化图像部分，不能假设把参数None就能跳过；实现只加载Web+BGE的适配层。
+2. 固定crag-mm-2025/web-search-index-public-test与BAAI/bge-large-en-v1.5，记录不可变revision。官方示例validation也用public-test索引，不因名字相似偷偷换较小validation索引。不得用参考答案建库、实时百度/Google替代官方索引或自造证据。
+3. 官方CragMockWeb存在全量metadata读取与Python字典开销。检查低内存适配是否能按命中获取metadata，保持检索语义；Chroma/HNSW自身仍可能占大量RAM。只查20题不会缩小完整索引。先真实加载和测20题，记录峰值内存/换页/延迟。16GB失败时明确报告A，不靠模拟搜索“完成”。
+4. 使用本地BGE查询编码，不必安装生成大模型或vLLM；现有8GB GPU小批量先验证，CPU可作为候选并记录速度。不要重复下载多种权重格式/所有历史tag。
+5. 搜索返回按m3.v1的hits结构整理rank/doc_id/url/title/text/score/score_kind。缺少正文就保存片段并说明；分数若是distance不能直接冒充similarity。保留来源和版本。D负责提示证据去重/清理/限长。
+6. scripts/retrieve.py读取questions与manifest，核对ID/哈希，支持--batch-ids、逐题保存、有界重试、断点续跑。ok非空、empty成功零命中、error技术故障；全ID都要状态行。缓存键必须含query与配置/索引版本，不仅ID。
+7. 初始top_k=5、无重排、无网页实时抓取，仅在dev决定最终参数。冻结后一次正式配置输出eval，批次沿用同run_id，完整输出合并去重验收。
+8. 如果适配检索实现改变了官方流程，说明差异；核查特征计算和命中字段，有条件时用少量相同query对照官方文本结果。保留真实运行记录和来源抽查，不宣称未经实测的等价性。
+交付独立CLI与依赖，不开共享HTTP服务，不要求D/E安装索引。优先给D第一批真实证据。
+【AI提示词结束】

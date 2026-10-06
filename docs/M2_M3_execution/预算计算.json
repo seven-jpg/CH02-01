@@ -1,0 +1,57 @@
+{
+  "checked_date": "2026-10-07",
+  "currency": "USD",
+  "budget_exchange_rate_CNY_per_USD": 7.5,
+  "exchange_rate_note": "Planning assumption, not a live foreign exchange quote.",
+  "samples": {
+    "smoke": 20,
+    "dev": 50,
+    "eval": 200
+  },
+  "baselines": 2,
+  "generation_calls": 540,
+  "max_judge_calls": 540,
+  "assumed_tokens": {
+    "generation_input_per_call": 2000,
+    "generation_output_per_call": 100,
+    "judge_input_per_call": 2000,
+    "judge_output_per_call": 50
+  },
+  "rates_USD_per_million_tokens": {
+    "generator": {
+      "input": 0.0485,
+      "output": 0.676
+    },
+    "judge": {
+      "input": 0.293,
+      "output": 2.253
+    }
+  },
+  "generator": "@cf/meta/llama-3.2-11b-vision-instruct",
+  "judge_candidate": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "generator_gross_USD": 0.08888400000000002,
+  "judge_gross_USD": 0.377271,
+  "workers_paid_monthly_base_USD": 5,
+  "exclusions": [
+    "free allocation",
+    "tax",
+    "payment exchange rate",
+    "retries",
+    "additional experiments",
+    "C server",
+    "personal coding-assistant subscriptions",
+    "M4 images/multi-turn"
+  ],
+  "sources": [
+    "https://developers.cloudflare.com/workers-ai/models/llama-3.2-11b-vision-instruct/",
+    "https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/",
+    "https://developers.cloudflare.com/workers-ai/platform/pricing/",
+    "https://developers.cloudflare.com/workers/platform/pricing/",
+    "https://build.nvidia.com/meta/llama-3.2-11b-vision-instruct"
+  ],
+  "gross_total_USD": 0.46615500000000004,
+  "gross_total_CNY": 3.4961625000000005,
+  "gross_per_person_CNY": 0.6992325000000001,
+  "with_new_paid_base_CNY": 40.9961625,
+  "with_new_paid_base_per_person_CNY": 8.199232499999999
+}

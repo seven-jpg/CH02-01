@@ -1,0 +1,6 @@
+{
+  "top_k": 5,
+  "source": "synthetic-contract-test",
+  "index_revision": "synthetic-index-v1",
+  "encoder_revision": "synthetic-encoder-v1"
+}

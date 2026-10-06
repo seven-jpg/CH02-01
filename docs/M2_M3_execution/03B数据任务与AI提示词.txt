@@ -1,0 +1,40 @@
+B：数据加载、抽样与EDA
+
+给本人看的任务清单
+你负责给全组同一批题，以及完成M2的数据分析。
+立即做：安装数据环境，核实真实dataset版本/split/字段；首先交20条真实单轮smoke给A/C/D/E，不等完整EDA。
+需要实现：preprocessing/prepare_data.py、preprocessing/eda.py，提供experiments/m3/data.json和requirements-data.txt。
+数据：加载官方Single-turn和Multi-turn用于EDA；M3题目只从Single-turn选择。目标smoke20/dev50/eval200，seed42，session/相同图像分组隔离。
+文件：manifest、questions、answers、metadata，按公共接口保存。答案给E/A，问题给全组。
+EDA：会话/问答/图片数量，领域/问题类型，轮数，query长度，图片尺寸、来源、质量标签，缺失/重复/读取失败；保留统计分母与分析范围。
+方法说明：介绍字段到输入的设计，M3只传query和Web文本，视觉/历史留M4。
+必须交：处理代码、依赖、固定集合、EDA图表和方法说明、版本和排除/失败日志。
+验收：问题/答案按原ID配对；分组无跨集合泄漏；相同seed清单稳定；实际数量可核查；统计图不把子集说成全量。
+时间：第一天优先smoke；第二天dev/eval和主要EDA；第三天复核统计/分母；第四天交方法与结果材料。
+等待：不等C/D/E；ID和正式清单由A审查。
+
+下面整段可直接复制给自己的AI；同时附01统一接口与验收.txt、接口字段.schema.json和仓库代码。
+
+【AI提示词开始】
+共同背景与约束：
+我们是五人小组，四天完成课程CH02-01的M2和M3。每人有独立电脑，约16GB RAM/RTX4060 Laptop 8GB，没有共享服务器。已有external/CRAG-MM官方参考代码，自有实现尚未完成。请先识别真实仓库根目录、读取适用的仓库说明与“01统一接口与验收.txt”“接口字段.schema.json”，再动手；不要假设文件/函数已存在。本地external/CRAG-MM是导入的参考镜像，没有独立.git；78acf3abbb656e989b8732f62d0dce50104ca6f3是课程仓库初始化提交，不能称官方上游commit。官方原始提交未核实，需记录参考源码文件SHA256。
+你要完成实现与可复现交付，不只给建议。仅修改本人负责的模块、配置和依赖；公共接口由A维护，发现问题先提出具体兼容修改，不能单方改名。根路径用参数或配置，不能写死组长的D盘。
+M2分析两类QA；M3真实实验只用Single-turn，B0原始问题直接回答、B1原始问题加官方Web文本证据回答。生成采用A冻结的同款Llama-3.2-11B-Vision-Instruct API和公共参数；B0/B1不能混模型、提供商或样本集合。API路线以课程允许在线推理为前提，不能称原比赛离线提交复现。
+正式检索/生成不输入图片、图片URL、OCR、caption、视觉实体、full_query、对话历史或参考答案。B可读图做EDA。开发样例放fixtures/synthetic，不能成为正式结果；没有真实运行就明确“未运行”，不编造分数、检索片段或输出。
+按m3.v1接口：UTF-8 JSONL、唯一string interaction_id、公共schema_version/subset/dataset_manifest_sha256、按ID配对、SHA256匹配。C状态ok/empty/error；D状态ok/error/blocked；E状态ok/error/unscored。技术故障与正常拒答严格分开，每个预期ID必须保留状态行，不默默删题。需要分批时支持--batch-ids且仍使用原manifest。
+密钥只读本机环境变量，不输出值、不写日志/配置/Git；账号未配置时先实现干运行和格式检查，列出需要本人配置的变量。不要自行购买套餐或租机器。
+每次交付附：修改文件、实际依赖版本、命令、输入/输出、真实验证证据、已知限制。--help应不下载索引、不加载大模型、不调用API。先接20条真实smoke，再在dev调整，冻结后运行eval。
+
+你负责B的数据与EDA。
+具体实现：
+1. 阅读external/CRAG-MM/docs/dataset.md和utils/crag_batch_iterator.py，再检查实际datasets.features及样本。官方文档提v0.1.2，不能据旧文档断言当前所有split。固定所选tag并解析不可变revision，记录真实split。
+2. 单轮仓库crag-mm-2025/crag-mm-single-turn-public；多轮仓库crag-mm-2025/crag-mm-multi-turn-public。兼容turns/answers字典中列列表与必要旧list-of-dicts格式；必须按interaction_id连接turn和answer，不能zip后假设顺序一致。ground_truth来自实际ans_full，不能由模型生成。
+3. 保留官方ID，若不唯一建立稳定命名空间并保留映射，先让A确认。session_id是string；M3仅single-turn。按session和可识别共享图像/重复问题成组分配到smoke/dev/eval，seed42，记录无法识别图片重复的限制。不能看D的结果挑题。
+4. 先导出20条真实smoke和完整字段，问题文件只含允许字段；随后冻结dev/eval。规模不足或分组导致变化时报告A，不能随便拆组或伪造填充。
+5. manifest先最终写出再计算原字节SHA256，所有逐题文件填相同dataset_manifest_sha256；任何修改需重新出一致整包。分批交接用原manifest的batch ID清单，不能悄悄改全组题号。
+尽早先确定三个集合完整ID清单，写出manifest，再优先导出smoke20；dev/eval文件可随后导出而不改manifest。临时smoke版本必须说明，后续正式manifest变更时整包重新导出/验收，不能让下游改哈希后混用旧结果。
+6. EDA分批读图，统计真实session/turn/image数及领域/类型/轮数/query长度/图片尺寸/来源/质量。image_quality在turns中，别照搬顶层读取导致全None；domain/category/dynamism/quality通过实际features或官方映射解码，不强行把领域数写成13。额外亮度/清晰度代理可选并注明计算方法。
+7. 显式报告分析dataset revision、split、统计范围、成功读取数、失败/缺失/重复与排除规则。缺少官方来源标签则null并说明，不根据图像感觉填“egocentric”。
+8. prepare_data与eda按公共CLI独立运行，数据处理不导入vLLM或检索库；16GB RAM采用Arrow/迭代/分批，不同时解码全部图片。写好依赖与运行命令、数据特征设计说明。
+不要把图像EDA得到的实体、OCR或描述放进M3 questions。先提交真实smoke，让其他四人开始联调，再继续EDA。
+【AI提示词结束】

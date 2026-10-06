@@ -1,0 +1,81 @@
+API接入与五人费用预算
+预算日期：2026-10-07；官方价格核查于2026-10-06/07。未实际开通账号、未调用模型、未购买套餐或租服务器。
+
+一 推荐接入顺序
+生成模型保持Llama-3.2-11B-Vision-Instruct：
+先由D试NVIDIA同款免费端点；账号额度、区域/网络、速度合适则用它，A在smoke后冻结提供商。
+若免费端点无法满足批量运行，Cloudflare同款作为候选。切换必须在正式配置冻结前，B0/B1同时切，不混两家结果。
+评价由E使用独立统一裁判，候选Cloudflare Llama3.3 70B；不要默认用生成11B自评后称官方一致。
+Cloudflare同一账户的免费额度对两种模型共享，不能分别各算一份。生成与评分各自记录实际tokens和账单。
+
+二 NVIDIA怎么接
+打开：https://build.nvidia.com/meta/llama-3.2-11b-vision-instruct
+按平台账号流程进入并Generate API Key，D在本机配置NVIDIA_API_KEY。
+模型ID：meta/llama-3.2-11b-vision-instruct
+官方页面的调用示例端点：https://integrate.api.nvidia.com/v1/chat/completions
+M3发送纯文本messages，先验证，M4再考虑视觉输入。
+页面列Free Endpoint Available；免费端点用于原型、研究和测试。当前额度、过期日、限流由账号/模型/负载决定，需本人登录核实。旧“1000 credits/30天”资料不能当作2026新账号保证。
+参考：https://forums.developer.nvidia.com/t/nvidia-nim-faq/300317
+NVIDIA成功且额度够时，生成API可为0元；不能据此保证全部M3或M4永久免费。
+
+三 Cloudflare怎么接
+打开官方入门：https://developers.cloudflare.com/workers-ai/get-started/rest-api/
+注册/登录Cloudflare后台，进入Workers AI，按Use REST API取得Account ID和API Token；手动建token按官方说明配置Workers AI所需权限。
+本机环境变量按本组统一名称：
+CLOUDFLARE_ACCOUNT_ID
+CLOUDFLARE_API_TOKEN
+变量名是本组约定，程序用requests读取，不必沿用文档每个示例的变量名。
+REST地址：https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/run/{MODEL_ID}
+生成MODEL_ID：@cf/meta/llama-3.2-11b-vision-instruct
+首次使用11B按官方页面说明先接受Meta模型协议，再运行正式文本请求。
+裁判候选MODEL_ID：@cf/meta/llama-3.3-70b-instruct-fp8-fast
+由A汇总项目账号账单，D/E各用自己的受限token（平台支持时）；不用共用个人登录密码，不把密钥发群。
+仅REST调用不要求创建公开网站或部署Worker应用，也不要求绑定自己的域名。
+两款官方模型页：
+https://developers.cloudflare.com/workers-ai/models/llama-3.2-11b-vision-instruct/
+https://developers.cloudflare.com/workers-ai/models/llama-3.3-70b-instruct-fp8-fast/
+裁判替换官方模型时，报告写清变化并人工抽查校准，不称完全同官方评测。
+
+四 单价
+每100万输入/输出tokens的USD价格：
+11B生成：输入0.0485，输出0.676。总价格页把输入四舍五入为0.049。
+70B候选裁判：输入0.293，输出2.253。
+token不是汉字数，也不是请求数；费用与实际提示长度、输出、重试有关。
+价格来源：
+https://developers.cloudflare.com/workers-ai/platform/pricing/
+
+五 这次M3示例预算
+smoke20+dev50+eval200=270条；每条跑B0/B1，共540次单题生成。
+保守按每次都要语义裁判，另算540次。实际精确匹配/标准拒答可不调用裁判。
+假设每次生成输入2000、输出100 tokens；每次裁判输入2000、输出50 tokens。B0通常输入更短；官方裁判提示/示例可能更长，需E实测。
+生成：1.08百万输入×0.0485＋0.054百万输出×0.676 = 0.088884美元。
+裁判：1.08百万输入×0.293＋0.027百万输出×2.253 = 0.377271美元。
+合计毛用量费：0.466155美元，约0.47美元。
+为预算明确假设1美元=7.5元人民币，非实时汇率：
+全组毛用量约3.50元，每人约0.70元。
+这不是保证账单；不包含免费额度、税费、实际换汇、重试、更多调参/补实验、个人AI编程会员、M4视觉/多轮和C服务器。
+把20条smoke的实际usage测出后，再用这个公式更新：
+费用USD=(生成输入tokens×生成输入价＋生成输出tokens×生成输出价＋裁判输入tokens×裁判输入价＋裁判输出tokens×裁判输出价)/1000000。
+
+六 免费额度和月费不能混为一谈
+Cloudflare每账户每天10000 Neurons免费，北京时间08:00重置；所有相关模型共享。免费方案用尽后请求会失败，不自动升级。
+以上两款Llama不在当前强制付费模型名单，但不代表所有模型都免费。
+上述540生成+540裁判约消耗4.24万个Neurons，略超过四个完整免费额度日的4万，且实际调用可能集中在最后两天。因此不能保证四天内0元；NVIDIA分担生成、精确匹配/拒答跳过judge、或实际输入更短会降低需求。
+若新开Workers Paid，最低5美元/月另算，不是仅四天按天付费。已有Paid账号无需为本项目重复开一份；如果使用其他预付入口，最低充值与可退款条件要以后台为准，不把充值余额当实际消耗。
+忽略免费抵扣、以5美元月费+0.47美元毛用量预估：
+全组约41元，每人约8.20元（预算汇率7.5）。
+建议先在群里预留10元/人、全组50元API预算，不必马上收款或买套餐。免费满足则按0元；需要付费按实际项目账单平摊，保留凭证。
+如果增加大量调参/扩数据、换更贵裁判或使用预付路线，要另算，50元不是所有情形的费用上限。
+Workers套餐来源：https://developers.cloudflare.com/workers/platform/pricing/
+
+七 不同费用分账
+API推理/裁判账单：本预算对象，A汇总五人分摊。
+C临时大内存机器：若确需租用，另确认配置/时长/账单，本预算不包含。
+个人用于写代码的AI会员：不是本实验推理账单，不自动纳入平摊。
+M4图像、多轮与更长输入：另估预算，不套用M3的2000-token假设。
+
+八 开始前的小批验证
+D验证真实纯文本调用、输出字段、实际usage、并发/限流与恢复。
+E验证真实裁判输出解析、tokenizer/75token、人工一致性与实际usage。
+A记录最终账号路线、模型、参数、预算与课程允许条件。没有账号或调用失败时，软件模块可先开发，不编造真实产物。
+模型API不会替C提供官方检索索引。

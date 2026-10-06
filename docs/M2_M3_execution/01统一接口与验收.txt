@@ -1,0 +1,120 @@
+m3.v1：统一文件、CLI、状态与验收协议
+2026-10-06制定。此协议为五人待实现约定，当前没有产生正式实验结果。
+本执行包优先于此前说明中的示意字段。任何修改由A发布m3.v2并通知全组；不能个人加字段后要求别人临时猜测。
+
+一 数据与编号
+M2对Single-turn与Multi-turn做EDA；M3正式实验只用Single-turn公开数据。
+默认从官方validation建立smoke/dev/eval，目标20/50/200条；数量是本组方案，非老师硬性规定。B核实实际样本和分组后，若不能达到目标，先向A报告，由A发布真实数量，不伪造或补随机题。
+seed=42。smoke/dev/eval编号不交叉；同一session、能够识别的同一图像或重复问题分组不得跨集合。按真实domain/category分布采样，不根据模型答对与否挑题。
+ID字段统一interaction_id，值为唯一字符串。B优先保留原编号；若跨session不唯一，采用稳定组合st:<split>:<session_id>:<turn_index>，在metadata保存原编号映射，经A确认。C/D/E不能改号。
+所有数据按ID对齐，不能zip两个数组后默认正确，也不能依赖行顺序。
+B从原始turns.query/turns.interaction_id与answers.ans_full/answers.interaction_id规范化为query/ground_truth，先核实真实格式与字段，不凭文件名猜测。
+
+二 目录约定（相对仓库根目录，各人的根目录可以不同）
+data/processed/m3/manifest.json
+data/processed/m3/smoke/questions.jsonl、answers.jsonl、metadata.jsonl
+data/processed/m3/dev/同上
+data/processed/m3/eval/同上
+results/m3/<subset>/evidence.jsonl
+results/m3/<subset>/predictions_b0.jsonl、predictions_b1.jsonl
+results/m3/<subset>/scores_b0.jsonl、scores_b1.jsonl、summary.csv
+results/m3/<subset>/run_meta_retrieval.json、run_meta_b0.json、run_meta_b1.json、run_meta_eval_b0.json、run_meta_eval_b1.json
+results/m3/<subset>/requests_b0.jsonl、requests_b1.jsonl（真实提示用于核查，不含密钥）
+results/eda/图表、统计、EDA分析范围与失败记录
+docs/M2/各模块说明
+docs/M3/报告、运行说明、演示与复现记录
+fixtures/synthetic/只放开发样例，禁止混入data/processed/m3与results/m3正式结果。
+
+三 编码、版本与哈希
+JSONL：UTF-8无BOM，一行一个JSON对象；不写NaN/Infinity；缺值用null。编号都是string，时间与分数是number或null，不随意混用"null"字符串。
+每个逐题文件每个预期ID必须有一行；每个文件只对应一个subset/一个运行配置。不允许重复ID。重试后以最终状态生成唯一记录，尝试历史另存日志。
+所有逐题行都有：schema_version="m3.v1"、subset=smoke/dev/eval、interaction_id、dataset_manifest_sha256。
+dataset_manifest_sha256是B最终manifest.json原始字节的SHA256。不能在下游编辑manifest；传输后核对SHA256。
+query_sha256为query原始字符串UTF-8的SHA256；C/D输出此值以防错配/缓存污染。
+配置哈希：解析配置为JSON对象，去掉密钥与本机绝对缓存路径，以sort_keys=True、ensure_ascii=False、separators=(",",":")规范序列化后计算UTF-8 SHA256。参与实验的模型、提示、参数、版本与处理策略都须入哈希。
+缓存复用同时匹配manifest、ID、query_sha256、配置哈希、baseline及模型/索引版本；配置改变生成新run，不覆盖历史结果。
+
+四 B交付
+manifest.json：schema_version、data_origin="official"、dataset_id/revision/split、seed、grouping规则、编号规则、subsets各自ID和实际数量。revision填实际不可变commit，不能只写main。manifest不内嵌自己的哈希，不包含API密钥；不包含参考答案全文。
+questions.jsonl：公共字段＋session_id:string＋query:string（非空）。不含答案、图像URL、caption、历史、full_query。给A/C/D/E。
+answers.jsonl：公共字段＋ground_truth:string（真实参考答案）。给E/A，不给C/D输入程序。
+metadata.jsonl：公共字段＋session_id、source_interaction_id、source_dataset、source_split、source_revision、turn_index、domain、query_category、image_group_id、is_egocentric。未知字段null，不能凭猜测填值；额外的图像统计字段可放metadata但不进模型输入。给A/E，B自己用于EDA。
+交接必须是整个subset的完整文件包；逐批进度用独立batch目录，并附batch ID清单，最后合并为完整文件，不能让下游把半文件当完整集合。
+B记录缺失答案、重复、图片读取失败的原始数量及排除规则；正式集合冻结之后发现数据问题交A处理，不能自己删题。
+为避免smoke之后哈希失效，B尽早先确定三个集合的完整ID清单并写manifest，优先导出smoke20；dev/eval数据文件可以随后导出，但沿用同一manifest。若首批只能做临时smoke manifest，明确标为联调版本，D2完整manifest发布后重新导出/验收相关工件，旧哈希结果不能混入新版本。manifest改变由A/B统一发布新包，不由下游随手改哈希掩盖版本变化。
+
+五 C交付evidence.jsonl
+公共字段＋query_sha256＋run_id＋retrieval_status（ok/empty/error）＋retrieval_config_sha256＋index_revision＋encoder_revision＋latency_ms＋error_code＋hits。
+hits为列表，每项：rank:int、doc_id:string、url:string|null、title:string、text:string、score:number|null、score_kind（similarity/distance/unknown）。
+text来自真实官方返回的标题/片段内容；没有网页正文时不声称已取全文。不读取参考答案，不用图像重写query，不访问实时搜索替代官方索引。
+ok：hits非空；empty：检索成功但hits为空；error：技术故障，hits为空，error_code有值。技术故障不能假装empty。
+C保留原始命中和来源。D负责提示用的去重、清理和长度限制，并保存命中文档与提示证据的映射。
+不要求C开启HTTP服务器。C只在自己的设备查询，给其他人发送证据文件。
+
+六 D交付predictions_b0/b1.jsonl
+公共字段＋query_sha256＋baseline（B0/B1）＋run_id＋generation_status（ok/error/blocked）＋agent_response（string|null）＋provider＋model＋generation_config_sha256＋retrieval_config_sha256（B0为null）＋evidence_status（not_used/ok/empty/error/missing）＋prompt_sha256＋usage＋latency_ms＋error_code。
+usage始终是{input_tokens:int|null,output_tokens:int|null}对象；提供商未返回时两个值均为null，不能把整个usage设为null。估计值另列并标注，不能伪装实际usage。
+B0不加载evidence，evidence_status=not_used。
+B1只有真实ok/empty证据可生成。empty可用无证据提示正常回答或正常拒答，记录empty；error/missing默认blocked且agent_response=null，等待C修复。不得无声改成B0。
+ok必须有非空agent_response；模型真正输出"I don't know."属于正常回答。API失败、超时、空响应属于error，不能自动写成拒答。
+每题真实messages及其SHA256存requests_b0/b1.jsonl，便于A查输入泄漏；不存授权头或密钥。
+默认公共生成参数候选：temperature=0、max_tokens=100、并发=1起步、最多3次有界重试；seed=42仅在提供商确实支持时设置并记录。D先smoke验证，A在D2冻结最终参数。B1证据初始预算1500输入tokens；使用实际可用tokenizer计数，若改估计规则须明确记录。
+C初始top_k=5，无重排/实时网页抓取；在dev选择最终设置，D2冻结。B0/B1共用回答约束，只差是否有检索证据；不足时准确拒答，回答简短、先给事实、不输出长推理链。不为增加准确率给eval单独改提示。
+
+七 E交付scores与summary
+scores逐题字段：公共字段＋baseline＋run_id＋source_generation_run_id＋judge_status（ok/error/unscored）＋verdict（CORRECT/WRONG/MISSING/null）＋score（1/-1/0/null）＋agent_response_scored（string|null）＋scoring_method（exact_match/idk/llm/manual/unscored）＋judge_model（string|null）＋evaluation_config_sha256＋response_tokenizer＋response_max_tokens=75＋judge_reason＋error_code。
+原始回答保留在predictions；E保留实际截断后的评分回答。
+先按官方tokenizer meta-llama/Llama-3.2-1B-Instruct截至75 tokens，再做精确匹配/拒答检测/语义评分。tokenizer权限或流程无法沿用时暂停正式评分并报告差异，不能改成75个字后声称相同。
+参考当前官方Python评价代码的二元语义裁判＋拒答规则；不自动加入官网文字中的0.5档。CORRECT=1，WRONG=-1，MISSING=0。裁判按参考答案判语义，不只做字符串匹配。
+官方评价提示可复用；如果用Cloudflare Llama3.3 70B替换官方裁判模型，明确写“评价提示/计分逻辑沿用，裁判模型改变”，用人工抽查校准，不能称完全同官方口径。
+预测error/blocked：judge_status=unscored，verdict/score=null。
+裁判API或解析失败：judge_status=error，verdict/score=null，有限重试后保留；不能算成WRONG。
+无需裁判的精确匹配或拒答：judge_status=ok，scoring_method正确记录，不计一次收费调用。
+summary每行记录scope（batch/full）、batch_ids_sha256（full为null）、subset、baseline、manifest_sha256、N_fixed、N_generated、N_scored、C_correct、W_wrong、M_missing、generation_coverage、scoring_coverage、accuracy=C/N_scored、hallucination_rate=W/N_scored、missing_rate=M/N_scored、truthfulness=(C-W)/N_scored。batch范围的N_fixed为本批预期ID数；full范围为manifest内该subset总数。完整汇总从去重后的逐题scores重新计数，不能简单平均大小不同批次的百分比。N_scored=0时比例null；另保留官方calculate_scores输出供核对，声明适配差异。
+B0/B1优先补齐同一冻结集。若仍有失败，分别公开缺失ID，给两组都成功评分的共同ID子集的成对比较及其数量；不能把不同分母直接称为提升。
+输出盲化人工抽查约30条、8至12个典型案例（目标数量，可调整但记录实际），以“缺视觉、未检到、证据噪声、生成错误、拒答、裁判分歧”等有证据的原因分析。
+
+八 运行元数据（每阶段都交run_meta）
+run_id、stage、subset、schema_version、code_commit（未提交则说明并给源码文件哈希）、input_files_sha256、输出文件哈希、配置及配置哈希、模型/索引实际revision、开始/结束时间、机器RAM/GPU简况、计划/成功/失败数、重试数、峰值内存或明确未测、耗时与tokens。
+不包含密钥、账号密码或完整授权头。检索耗时与生成耗时分开，缓存复跑不当作原始检索耗时为零。
+
+九 CLI约定（待实现，不是现在可直接跑的命令）
+在各自仓库根运行，路径参数支持本机绝对路径或相对根路径，不能写死D盘：
+B：python preprocessing/prepare_data.py --config experiments/m3/data.json --output-dir data/processed/m3
+B：python preprocessing/eda.py --config experiments/m3/data.json --output-dir results/eda
+C：python scripts/retrieve.py --questions QUESTIONS --manifest MANIFEST --config experiments/m3/retrieval.json --output EVIDENCE
+D：python scripts/generate.py --questions QUESTIONS --manifest MANIFEST --baseline B0 --config experiments/m3/generation.json --output PREDICTIONS
+D：B1同上，增加--evidence EVIDENCE并把--baseline改为B1。
+E：python scripts/evaluate.py --questions QUESTIONS --answers ANSWERS --metadata METADATA --manifest MANIFEST --predictions PREDICTIONS --config experiments/m3/evaluation.json --output-dir OUTPUT
+A：python scripts/check_artifacts.py --manifest MANIFEST --questions QUESTIONS --answers ANSWERS --metadata METADATA [--evidence EVIDENCE] [--predictions PREDICTIONS] [--scores SCORES]
+D：可选run_from_cache.py只包装上述生成/评分入口，支持只生成模式，不导入C索引，不重写E评分。
+分批可选参数：C/D/E/A入口均支持--batch-ids BATCH_IDS.json，内容为原manifest中的ID字符串数组。提供该参数时，预期ID集合是该数组；不提供时必须处理整个subset。questions/answers/metadata都可传完整subset文件，由脚本先按同一batch清单筛选，再检查对应集合；证据/预测/scores文件须覆盖本批每个预期ID各一行。不得拿完整200条答案与20条批次预测直接比较并报缺180题。该参数不改变manifest哈希、不允许跨subset，也不允许批间重复。批次独立目录输出，全部完成后按ID合并为完整subset文件；各批沿用同一配置和实验run_id，run_meta记录批次ID。这样D/E不必等待C完成全部eval。正式结果汇总必须再次检查全subset覆盖率。
+--help不要求模型密钥、不下载模型/索引、不执行API。
+结构、ID、哈希或配置错误：退出非零并明确报错。完成预期ID遍历后存在技术失败：写出完整状态行与摘要并退出非零。不得仅因输出了文件就报告实验成功。
+
+十 合并边界与验收
+A维护scripts/check_artifacts.py、接口schema、README/公共依赖约定。B/C/D/E只修改自己模块、配置和依赖；修改公共文件先向A给出建议。
+模块间优先用文件/CLI交接，不让D/E导入C的大模型和索引模块。
+Python推荐3.11独立venv，各人按模块装依赖；提交实际验证版本和命令，不要求五台装完整官方vLLM环境。
+正式schema见“接口字段.schema.json”；这是规范文件，已有scripts/check_artifacts.py执行检查。examples仅是示意，不是实验数据。
+A验收必须检查：ID唯一/集合匹配、manifest与query哈希匹配、每题状态、B0/B1配置一致、请求没有禁用字段、真实来源可查、失败与分母公开、C仅文本、E截断与裁判差异。
+改变行顺序仍能对齐；漏行、重复、哈希不同或坏JSON必须报错。开发样例的通过不能替代真实smoke通过。
+
+十一 A代码实现后的补充约定（2026-10-07，m3.v1核心行字段不变）
+A入口现已实现；其余角色CLI待实现。--help与README给出完整用法，新增以下可选参数：
+--subset；--requests；--compare-predictions；--compare-scores；--compare-requests；--config STAGE=PATH（可重复）；--run-meta STAGE=PATH（可重复）；--group-metadata PATH和--group-questions PATH（可重复）；--require-provenance；--report。
+STAGE为retrieval/generation/evaluation。提供实际配置时按src/contracts/m3.py的config_sha256计算，配置不能存密钥。B0/B1可以有不同证据包装配置哈希，但实际provider/model/公共生成参数/公共system回答约束必须一致，不能只凭哈希相同就声称参数已核实。
+退出0只表示提供范围的检查通过，报告unverified_checks列明未核实项；退出1为接口不一致；退出2为结构通过但还有技术失败记录。报告valid表示结构合规，不表示所有实验成功或结果真实。
+
+requests.jsonl：公共四字段＋query_sha256＋baseline＋run_id＋prompt_sha256＋messages＋evidence_used。
+messages严格为[{role:system,content:字符串},{role:user,content:字符串}]，不含history/tool/图片content段。prompt_sha256为canonical_json(messages)的UTF-8 SHA256。不得在内容或日志中存密钥。
+evidence_used=[{doc_id:字符串,text:字符串}]，B0为空；B1从对应C的hits选择，文本必须能追到对应标题/片段的标准化子串。标准化仅HTML实体解码、去HTML标签、折叠空白。D保留使用的原始文本用于精确重建。
+generation配置增加prompt_templates={system:固定字符串,b0_user:模板,b1_user:模板}；用户模板只允许{query}/{evidence}。B0必须包含query且不能包含evidence；B1二者都包含。evidence字符串按各项"[doc_id]\ntext"、项间两个换行拼接。D可以调用公共render_messages(config,baseline,query,evidence_used)，A据此精确重建。模板选择仍由D在dev验证、A冻结，这里不提供已经验证的实验提示。
+generation=ok或存在非null prompt_sha256的尝试必须有对应请求记录。blocked不应伪造模型请求；未发送的准备故障可prompt_sha256=null。API发送后失败须保留实际messages和hash。请求文件只覆盖实际准备发送的题，不为blocked伪造记录。
+
+run_meta精确字段：run_id/stage/subset/schema_version/code_commit/input_files_sha256/output_files_sha256/config/config_sha256/started_at/finished_at/hardware/N_expected/N_success/N_failed/retries/peak_memory_mb。
+generation/evaluation建议增加baseline防混；分批必须增加batch_ids（实际ID数组）。时间为含时区的ISO8601，结束不早于开始；hardware为对象；内存未测为null。input_files_sha256/output_files_sha256为{文件路径:SHA256}，相对路径以run_meta文件所在目录为根。保留实际代码、模型、索引、tokenizer版本等额外信息；未提交代码需说明并保存源码哈希。
+N_expected是本次scope题数；检索ok/empty均成功，生成或评分只有ok为成功，其他为失败。N_success+N_failed=N_expected，必须与逐题状态一致。检查器核对实际产物字节hash、manifest/questions输入hash；评分还需答案输入hash，检索/生成不能将答案列为输入。
+--require-provenance要求提供阶段配置、链接的run_meta、生成实际requests及B1证据；synthetic样例不得通过正式来源验收。即使通过，真实来源、实际75-token截断和裁判可靠性仍需人工/模块复现验证。
+
+单subset无法证明跨集合组隔离；A要用--group-metadata/--group-questions提供其它集合完整数据，报告会标明检查覆盖。空image_group_id无法证明共享图像隔离。正式结果和freeze_record只在真实证据齐全后填写。

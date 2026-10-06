@@ -1,106 +1,148 @@
-# CH02-01：Meta CRAG-MM 多模态 RAG 项目
+# CH02-01：Meta CRAG-MM 多模态 RAG 课程项目
 
-## 项目简介
+本项目以 KDD Cup 2025 Meta CRAG-MM 的公开数据、检索工具和评价代码为实验平台。当前目标是完成课程 M2 数据分析和 M3 纯文本单轮 RAG 基线，M4 再研究多模态、多轮上下文和图像扰动。
 
-本项目为天津大学《机器学习综合实践》课程项目 **CH02-01**，选题来源于 **KDD Cup 2025 Meta CRAG-MM Challenge**。
+截至2026-10-07，A 的轻量验收代码和文档已加入项目；B/C/D/E 的数据、真实检索、生成和评分入口尚待实现。仓库没有真实 M2 EDA 或 M3 实验结果。开发样例测试不能替代真实 smoke 或正式实验。
 
-项目以 CRAG-MM 多模态视觉问答数据与检索环境为基础，构建一个可运行的多模态 RAG 系统，并围绕课程给定的三个研究问题进行实验和分析。
+## 研究问题与阶段范围
 
-本项目的重点并不是重新参加 KDD Cup，也不是完整复现比赛冠军方案，而是将 CRAG-MM 作为实验平台，通过对比实验研究多模态信息、多轮上下文以及图像质量对系统性能的影响。
+- **RQ1**：图像加文本检索相对纯文本检索，对答案准确性的影响。
+- **RQ2**：全历史、摘要和滑动窗口对多轮回答的影响。
+- **RQ3**：模糊、遮挡和低光照对多模态系统鲁棒性的影响。
 
----
+M2 分析 Single-turn/Multi-turn。M3 仅用 Single-turn，B1 是“原始问题→官方 Web 文本检索→生成→答案”，B0 是建议增加的无检索对照。两组不输入图片、图片 URL、OCR、caption、视觉实体、历史、图像生成的 full_query 或参考答案。M3 初步对照不能直接回答完整 RQ1–RQ3。
 
-## 研究问题
+## 当前代码和来源
 
-### RQ1：多模态检索效果
+| 路径 | 当前用途 |
+| --- | --- |
+| `scripts/check_artifacts.py` | A：产物验收 CLI |
+| `src/contracts/m3.py` | A：JSON/schema、编号、哈希、状态的公共校验 |
+| `requirements-integration.txt` | A：轻依赖，不部署模型或索引 |
+| `requirements-integration.lock.txt` | 本机 Python3.12.9 实际验证的依赖版本 |
+| `docs/M2_M3_execution/` | 五人任务、AI提示词、m3.v1协议、schema和预算方案 |
+| `experiments/m3/freeze_record.json` | 待确认项，当前 `is_frozen=false` |
+| `docs/M2/`、`docs/M3/` | 数据、报告和复现模板 |
+| `external/CRAG-MM/` | 导入的官方参考代码，不是本组实验成果 |
 
-多模态检索（图像 + 文本）相比纯文本检索，在答案准确性上的提升幅度如何？
+本地根仓库初始化提交为 `78acf3abbb656e989b8732f62d0dce50104ca6f3`，提交信息为 `chore: initialize CH02-01 project`。`external/CRAG-MM` 没有独立 Git checkout；这个 SHA **不是已核实的上游官方版本**。导入来源的上游 commit 仍待核实，在冻结记录中补证据。
 
-计划比较：
+正式字段以 [统一接口](docs/M2_M3_execution/01统一接口与验收.txt) 和 [JSON schema](docs/M2_M3_execution/接口字段.schema.json) 为准。验收代码能检查结构、配对、哈希和状态；证据真实性、完整输入无泄漏及裁判可靠性还需要实际来源、requests、配置和人工核查。
 
-- 纯文本检索
-- 图像 + 文本多模态检索
+## A 的 Windows 环境
 
----
+在仓库根目录的 PowerShell 中运行。推荐 Python3.11 独立环境；先用 `py -0p` 确认本机已有该版本。A 不需要 API 密钥、检索索引、CLIP/BGE 或生成模型权重。
 
-### RQ2：多轮上下文策略
+```powershell
+py -0p
+py -3.11 -m venv .venv-integration
+.\.venv-integration\Scripts\python.exe -m pip install -r requirements-integration.txt
+.\.venv-integration\Scripts\python.exe scripts/check_artifacts.py --help
+.\.venv-integration\Scripts\python.exe -m unittest discover -s tests -v
+```
 
-多轮对话中，不同上下文利用策略对答案质量有什么影响？
+本机实际验证使用 Windows/Python3.12.9；推荐环境为3.11，但尚未在3.11实测。需要复用本机验证依赖时安装 `requirements-integration.lock.txt`。
 
-计划比较：
+可以立即运行合成开发包检查，验证入口能工作；它不会调用API，也不代表真实smoke通过：
 
-- Full History：使用全部历史对话
-- Summary：使用历史摘要
-- Sliding Window：仅使用最近若干轮对话
+```powershell
+.\.venv-integration\Scripts\python.exe scripts/check_artifacts.py `
+  --manifest fixtures/synthetic/integration/manifest.json `
+  --questions fixtures/synthetic/integration/questions.jsonl `
+  --answers fixtures/synthetic/integration/answers.jsonl `
+  --metadata fixtures/synthetic/integration/metadata.jsonl `
+  --evidence fixtures/synthetic/integration/evidence.jsonl `
+  --predictions fixtures/synthetic/integration/predictions_b0.jsonl `
+  --compare-predictions fixtures/synthetic/integration/predictions_b1.jsonl `
+  --scores fixtures/synthetic/integration/scores_b0.jsonl `
+  --compare-scores fixtures/synthetic/integration/scores_b1.jsonl `
+  --report results/development/check_fixture.json
+```
 
----
+本机没有3.11时，先安装或使用已验证兼容的 Python，不把版本缺失误判为项目代码失败。直接调用虚拟环境的 Python 不要求改变 PowerShell 执行策略。
 
-### RQ3：图像质量鲁棒性
+B 提供真实 smoke 包后执行数据包检查；下面路径是未来交接产物，当前缺文件时不能运行完整检查：
 
-图像质量扰动对多模态 RAG 系统性能有什么影响？
+```powershell
+.\.venv-integration\Scripts\python.exe scripts/check_artifacts.py `
+  --manifest data/processed/m3/manifest.json `
+  --questions data/processed/m3/smoke/questions.jsonl `
+  --answers data/processed/m3/smoke/answers.jsonl `
+  --metadata data/processed/m3/smoke/metadata.jsonl `
+  --report results/m3/smoke/check_data.json
+```
 
-计划研究：
+收到阶段产物后追加 `--evidence`、`--predictions`、`--scores`。`--subset` 可显式指定，也可推断。逐批使用 `--batch-ids`，完整集合验收不传它。questions/answers/metadata 可以是完整 subset，脚本先按批次筛选；阶段产物须完整覆盖本批编号。批次通过后还要检查合并后的 full subset。
 
-- Clean：原始图片
-- Blur：图像模糊
-- Occlusion：图像遮挡
-- Low-light：低光照
+进阶核查选项：
 
----
+- `--requests`、`--compare-requests`：实际模型消息及证据使用记录。
+- `--compare-predictions`、`--compare-scores`：配对基线工件。
+- `--config STAGE=PATH`、`--run-meta STAGE=PATH`：可重复，STAGE 为 retrieval/generation/evaluation。
+- `--group-metadata PATH`、`--group-questions PATH`：可重复，用于跨集合分组检查。
+- `--require-provenance`：严格要求请求、配置和运行元数据可追溯。
+- `--report PATH`：保存机器可读报告；详细用法以 `--help` 为准。
 
-## CRAG-MM 数据
+退出0表示所提供工件结构合规，仍须查看报告中的未检查项；退出1表示接口/编号/哈希/状态不一致；退出2表示结构通过但有技术失败。缺少真实 requests 时不能凭退出0宣称输入完全无泄漏。技术失败记录仍可供 E 独立评分入口读取并标为 unscored，不能因非零退出就删除失败题。
 
-本项目使用 CRAG-MM 官方公开数据，主要包括：
+## 五台独立电脑的交接
 
-### Single-turn
+使用同一小型代码仓库，各自在自己的电脑运行负责模块，通过 Git 与现有文件渠道交换产物，无共享电脑或端口服务要求。
 
-单轮视觉问答数据：
+| 人员 | 所需环境和职责 | 交接 |
+| --- | --- | --- |
+| A | Python/Git/轻量验收依赖，维护接口、冻结、检查与材料 | 接收四人产物；各人交自己的方法与结果，A负责合并 |
+| B | 数据、表格、图片和绘图库，分批读图做 EDA | questions给A/C/D/E；answers给A/E；metadata给A/E；先交20条真实smoke |
+| C | 官方检索包、索引和编码模型，在自己电脑真实搜索 | evidence及来源/版本/资源测量给D/A/E |
+| D | 统一提供商的API客户端，B0/B1生成及demo | B0只等B；B1再等C。预测、实际messages、调用记录给E/A |
+| E | 轻量评分代码、官方tokenizer、裁判客户端 | 接B的问题/答案/metadata和D的预测，交评分、汇总与复核给A |
+
+B 下载 Single/Multi **QA数据**；C 在 M3 只准备 Web索引/BGE，做仅文本的适配层。完整统一管线还会初始化视觉部分，不能直接当轻量入口；16GB RAM 能否承载完整Web索引需C实测，M4再准备图像资源。E 不初始化搜索、不下载索引。各人提供自己的实际依赖版本，不要求五台装完整 vLLM；A不接管其他人的实现。
+
+## 其他角色待实现入口
+
+以下是约定，**目前尚未实现或验证**：
 
 ```text
-Image + Question -> Answer
-Image
- + Turn 1
- + Turn 2
- + Turn 3
- + ...
- CH02-01/
-│
-├── src/
-│   └── 小组自行开发的核心代码
-│
-├── scripts/
-│   └── 数据下载、预处理和实验运行脚本
-│
-├── tests/
-│   └── 测试代码
-│
-├── experiments/
-│   ├── rq1/
-│   ├── rq2/
-│   └── rq3/
-│
-├── docs/
-│   └── M1/
-│       └── M1 阶段文档、系统设计和 RQ 拆解
-│
-├── external/
-│   └── CRAG-MM/
-│       └── Meta 官方 CRAG-MM Benchmark 参考代码
-│
-├── data/
-│   └── CRAG-MM 数据，不提交 Git
-│
-├── search_indices/
-│   └── Image Search / Web Search 检索数据，不提交 Git
-│
-├── checkpoints/
-│   └── 本地模型权重，不提交 Git
-│
-├── .gitignore
-└── README.md
-docs/               官方说明文档
-evaluation/         官方评价代码
-example_agents/     官方示例 Agent
-example_scripts/    示例运行脚本
-utils/              公共工具
-local_evaluation.py 本地 Evaluation 入口
+python preprocessing/prepare_data.py --config experiments/m3/data.json --output-dir data/processed/m3
+python preprocessing/eda.py --config experiments/m3/data.json --output-dir results/eda
+python scripts/retrieve.py --questions QUESTIONS --manifest MANIFEST --config experiments/m3/retrieval.json --output EVIDENCE
+python scripts/generate.py --questions QUESTIONS --manifest MANIFEST --baseline B0 --config experiments/m3/generation.json --output PREDICTIONS
+python scripts/generate.py --questions QUESTIONS --manifest MANIFEST --baseline B1 --evidence EVIDENCE --config experiments/m3/generation.json --output PREDICTIONS
+python scripts/evaluate.py --questions QUESTIONS --answers ANSWERS --metadata METADATA --manifest MANIFEST --predictions PREDICTIONS --config experiments/m3/evaluation.json --output-dir OUTPUT
+```
+
+所有入口的 `--help` 不需密钥、不下载模型或索引。C/D/E支持同一批次规则；批次沿用同一manifest、阶段配置和对应run ID，最后按去重逐题记录重算，不能平均批次百分比。D 的可选 run_from_cache 只包装生成/评分命令，支持仅生成，不重写裁判代码。
+
+## 数据、配置与结果
+
+```text
+data/processed/m3/manifest.json
+data/processed/m3/<smoke|dev|eval>/{questions,answers,metadata}.jsonl
+results/m3/<subset>/evidence.jsonl
+results/m3/<subset>/predictions_b0.jsonl、predictions_b1.jsonl
+results/m3/<subset>/scores_b0.jsonl、scores_b1.jsonl、summary.csv
+results/m3/<subset>/run_meta_*.json、requests_b0.jsonl、requests_b1.jsonl
+results/eda/                         EDA图表、范围与失败记录
+fixtures/synthetic/                 开发样例，不混入正式数据/结果
+```
+
+目标20/50/200、seed42是方案建议。B按session、可识别共享图像和重复问题分组，A确认实际数量与编号。尽早确定三个集合完整ID清单并写manifest，先交smoke，后续dev/eval沿用同一manifest。manifest原字节SHA256写入所有逐题行；变更时发布一致新包并重新验收，不能只改旧结果哈希。
+
+候选生成模型为同款 Llama-3.2-11B-Vision-Instruct API，提供商、账号可用性、课程允许在线推理和实际参数待A/D确认；B0/B1使用同一家、同一模型和公共参数。裁判替换与官方tokenizer权限待A/E确认。目前没有API联调、数据集合或正式冻结证据，详见 [冻结记录](experiments/m3/freeze_record.json)。
+
+使用相应提供商时，变量名为 `NVIDIA_API_KEY` 或 `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`；E可能还需tokenizer访问凭证。A检查不读取这些变量。实际调用者在本机配置，密钥不写JSON、Git、日志或报告。
+
+当前 `.gitignore` 忽略 `data/`、`search_indices/`、`checkpoints/`、虚拟环境及密钥文件。manifest与集合位于被忽略的data目录，需要通过文件交接保留；Git提交不能替代数据包版本和哈希记录。
+
+C 的 empty是成功搜索零证据，error是技术故障。D B1在empty时可正常回答，error/missing默认blocked；API故障/空响应不能变拒答。usage始终对象，未返回用量时两个token值为null。
+
+E先按官方tokenizer截75 tokens，保存实际评分文本。生成error/blocked为unscored，裁判失败为error，均不算WRONG或MISSING。结果报告N_fixed、N_generated、N_scored和覆盖率；准确率C/N_scored、幻觉率W/N_scored、拒答率M/N_scored、Truthfulness=(C-W)/N_scored，分母0时比例null。替代裁判与汇总规则差异明确说明，不能直接声称排行榜同口径。未补齐集合时公开缺失ID，共同评分子集比较只作为补充。
+
+文档模板：
+
+- [M2 数据与EDA说明](docs/M2/data_eda_template.md)
+- [M3 中期报告](docs/M3/midterm_report_template.md)
+- [M3 复现记录](docs/M3/reproduction_record_template.md)
+
+官方来源：[CRAG-MM](https://github.com/facebookresearch/CRAG-MM)、[Single-turn QA](https://huggingface.co/datasets/crag-mm-2025/crag-mm-single-turn-public)、[Multi-turn QA](https://huggingface.co/datasets/crag-mm-2025/crag-mm-multi-turn-public)。实际版本以运行记录为准。

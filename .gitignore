@@ -7,6 +7,7 @@ __pycache__/
 
 # Virtual environments
 .venv/
+.venv-*/
 venv/
 env/
 
@@ -40,3 +41,10 @@ hf_cache/
 *.tmp
 .DS_Store
 Thumbs.db
+
+# Local planning inputs, copied coursework, and QA dependency runtime
+docs/M2_M3_review/
+docs/*_pack.zip
+
+# Generated experiment output; publish only reviewed tables/reports in docs/
+results/

@@ -1,0 +1,40 @@
+E：独立评分、统计与错误分析
+
+给本人看的任务清单
+你负责所有结果是否可信，不能只跑一次评分。
+立即做：阅读官方评价代码，验证75-token tokenizer访问与轻量评分入口；用手工已知正确/错误/拒答样例检验规则。
+需要实现：src/evaluation/score.py、scripts/evaluate.py；提供evaluation.json和requirements-evaluation.txt。
+输入：B的问题＋答案＋metadata，D的B0/B1预测；检索错误分析才读C证据。你不下载检索索引。
+评价：参考当前官方Python规则，CORRECT/WRONG/标准拒答；保存原预测和实际评分文本。使用统一裁判，替换官方模型时声明差异。
+输出：逐题评分、分母/覆盖/失败、两组比较、盲化人工核查约30条和8–12个典型案例（记录实际数量）。
+必须交：评分代码、结果统计、裁判与截断配置、人工核查记录、错误分析、评价章节。
+验收：行顺序改变不会错配；缺题/重复报错；裁判失败不算WRONG；生成失败不算MISSING；两组用同一冻结集合。
+时间：第一天校准并接真实smoke；第二天冻结；第三天逐批评分；第四天复核、案例与材料。
+等待：开发不等D；正式评分等B三类文件和D相应批预测。评分不必等C全部完成。
+
+下面整段可直接复制给自己的AI；同时附01统一接口与验收.txt、接口字段.schema.json和仓库代码。
+
+【AI提示词开始】
+共同背景与约束：
+我们是五人小组，四天完成课程CH02-01的M2和M3。每人有独立电脑，约16GB RAM/RTX4060 Laptop 8GB，没有共享服务器。已有external/CRAG-MM官方参考代码，自有实现尚未完成。请先识别真实仓库根目录、读取适用的仓库说明与“01统一接口与验收.txt”“接口字段.schema.json”，再动手；不要假设文件/函数已存在。本地external/CRAG-MM是导入的参考镜像，没有独立.git；78acf3abbb656e989b8732f62d0dce50104ca6f3是课程仓库初始化提交，不能称官方上游commit。官方原始提交未核实，需记录参考源码文件SHA256。
+你要完成实现与可复现交付，不只给建议。仅修改本人负责的模块、配置和依赖；公共接口由A维护，发现问题先提出具体兼容修改，不能单方改名。根路径用参数或配置，不能写死组长的D盘。
+M2分析两类QA；M3真实实验只用Single-turn，B0原始问题直接回答、B1原始问题加官方Web文本证据回答。生成采用A冻结的同款Llama-3.2-11B-Vision-Instruct API和公共参数；B0/B1不能混模型、提供商或样本集合。API路线以课程允许在线推理为前提，不能称原比赛离线提交复现。
+正式检索/生成不输入图片、图片URL、OCR、caption、视觉实体、full_query、对话历史或参考答案。B可读图做EDA。开发样例放fixtures/synthetic，不能成为正式结果；没有真实运行就明确“未运行”，不编造分数、检索片段或输出。
+按m3.v1接口：UTF-8 JSONL、唯一string interaction_id、公共schema_version/subset/dataset_manifest_sha256、按ID配对、SHA256匹配。C状态ok/empty/error；D状态ok/error/blocked；E状态ok/error/unscored。技术故障与正常拒答严格分开，每个预期ID必须保留状态行，不默默删题。需要分批时支持--batch-ids且仍使用原manifest。
+密钥只读本机环境变量，不输出值、不写日志/配置/Git；账号未配置时先实现干运行和格式检查，列出需要本人配置的变量。不要自行购买套餐或租机器。
+每次交付附：修改文件、实际依赖版本、命令、输入/输出、真实验证证据、已知限制。--help应不下载索引、不加载大模型、不调用API。先接20条真实smoke，再在dev调整，冻结后运行eval。
+
+你负责E的轻量评价与统计。
+具体实现：
+1. 先读external/CRAG-MM/evaluation/evaluator.py、llm_judge.py、evaluation_prompt.py、evaluation_utils.py、config.py。默认CLI会间接导入vLLM并可能检查OPENAI_API_KEY，不把“evaluate-only”当作轻环境已可运行。建独立入口，优先复用真正需要的轻量提示/逻辑，记录适配差异。
+2. official judge输出Result: CORRECT/WRONG，没有0.5档。标准I don't know.在外层识别为MISSING；按官方精确匹配/拒答规范核实，不把所有含uncertain的回答擅自都当missing。我们逐题标签CORRECT=+1、WRONG=-1、MISSING=0，MISSING不是judge新输出要求。
+3. 用meta-llama/Llama-3.2-1B-Instruct tokenizer先截75 tokens，并保留agent_response_scored；不能用字符数/生成模型tokenizer冒充。只下载tokenizer所需文件，不下载1B模型权重。访问不了就报告并暂停正式评分，说明候选差异；开发可继续格式验证。
+4. 需要语义裁判时输入原query、真实ground_truth与截后预测。裁判可选Cloudflare @cf/meta/llama-3.3-70b-instruct-fp8-fast，由A+E在smoke确定，参数与提示固定。它替换官方裁判，需写清“沿用提示/计分规则，裁判模型改变”并人工校准；不让生成11B自评后称官方一致。
+5. 复用官方评价提示，接口允许自定义提供商。稳健解析最终结果行，拒绝无法解析或矛盾输出；若改官方解析方式，记录可靠性修正。非精确匹配且需要裁判时，API失败/返回None不能沿用默认False当WRONG。有限重试后judge_status=error。
+6. 先核对问题/答案/预测/manifest和批次ID，按ID关联，不能inner join删掉失败。生成error/blocked=unscored且verdict/score=null；真正拒答=ok/MISSING/0。精确匹配与拒答不必付费调用裁判，记录scoring_method。
+--batch-ids存在时先把完整questions/answers/metadata按该清单筛选，再与本批预测比较；不要用完整200答案和20预测直接要求集合相等。summary区分scope=batch/full，batch分母是本批预期数，最后从完整逐题scores重新计数汇总，不能平均不同大小批次的百分比。
+7. 输出m3.v1 scores与summary，报告N_fixed/N_generated/N_scored、C/W/M、覆盖、accuracy、hallucination、missing、truthfulness。N_scored=0比例null；官方N=1的truthfulness0特例和本组公式差异需注明，保留官方原输出作核对。
+8. 优先补齐正式冻结集；无法补齐时列出缺失ID，两组各自指标加共同成功评分ID的成对比较，不把不同分母直接当提升。原始预测、裁判响应/理由、token用量及配置可追溯。
+9. 手工开发例子与真实评分分开；用约30条真实预测盲化抽查判断一致性，解释裁判分歧，选8–12个有证据案例。可联合B检查领域分布、C核实检索来源；分类原因不能凭空猜。
+独立CLI评分不初始化搜索管线、不下载索引。每批结果及时发A，最后交依赖、运行记录、人工核查和评价章节。
+【AI提示词结束】

@@ -1,0 +1,38 @@
+D：API生成、批量运行与演示
+
+给本人看的任务清单
+你负责把题目/真实证据变成两组可追溯回答，并承担演示入口。
+立即做：验证同款11B API与账号额度；写生成封装和两种提示；用开发样例检查格式。
+需要实现：models/text_agent.py、scripts/generate.py；可选scripts/run_from_cache.py；提供generation.json、requirements-generation.txt和实际实验提示文件。
+B0：只读B的问题，不等C。B1：再读C真实hits，清理/去重/限制提示长度。两组同提供商/同模型/公共参数。
+技术失败与拒答分开，记录实际tokens/延迟/重试，支持恢复和批次。
+必须交：B0/B1预测、真实messages用于核查、模型/提示/配置/账单用量记录、运行命令和中期demo。
+验收：不读答案/图像/历史；B1检索error/missing默认blocked，empty可正常生成；不会丢题；不会复用旧配置缓存。
+时间：第一天先跑真实B0再接B1；第二天在dev冻结；第三天分批生成发E；第四天demo和复现。
+等待：B0只等B问题；B1等对应批C证据；评分由E做，不重写E实现。你可以先做只生成模式，E晚交不阻止生成。
+
+下面整段可直接复制给自己的AI；同时附01统一接口与验收.txt、接口字段.schema.json和仓库代码。
+
+【AI提示词开始】
+共同背景与约束：
+我们是五人小组，四天完成课程CH02-01的M2和M3。每人有独立电脑，约16GB RAM/RTX4060 Laptop 8GB，没有共享服务器。已有external/CRAG-MM官方参考代码，自有实现尚未完成。请先识别真实仓库根目录、读取适用的仓库说明与“01统一接口与验收.txt”“接口字段.schema.json”，再动手；不要假设文件/函数已存在。本地external/CRAG-MM是导入的参考镜像，没有独立.git；78acf3abbb656e989b8732f62d0dce50104ca6f3是课程仓库初始化提交，不能称官方上游commit。官方原始提交未核实，需记录参考源码文件SHA256。
+你要完成实现与可复现交付，不只给建议。仅修改本人负责的模块、配置和依赖；公共接口由A维护，发现问题先提出具体兼容修改，不能单方改名。根路径用参数或配置，不能写死组长的D盘。
+M2分析两类QA；M3真实实验只用Single-turn，B0原始问题直接回答、B1原始问题加官方Web文本证据回答。生成采用A冻结的同款Llama-3.2-11B-Vision-Instruct API和公共参数；B0/B1不能混模型、提供商或样本集合。API路线以课程允许在线推理为前提，不能称原比赛离线提交复现。
+正式检索/生成不输入图片、图片URL、OCR、caption、视觉实体、full_query、对话历史或参考答案。B可读图做EDA。开发样例放fixtures/synthetic，不能成为正式结果；没有真实运行就明确“未运行”，不编造分数、检索片段或输出。
+按m3.v1接口：UTF-8 JSONL、唯一string interaction_id、公共schema_version/subset/dataset_manifest_sha256、按ID配对、SHA256匹配。C状态ok/empty/error；D状态ok/error/blocked；E状态ok/error/unscored。技术故障与正常拒答严格分开，每个预期ID必须保留状态行，不默默删题。需要分批时支持--batch-ids且仍使用原manifest。
+密钥只读本机环境变量，不输出值、不写日志/配置/Git；账号未配置时先实现干运行和格式检查，列出需要本人配置的变量。不要自行购买套餐或租机器。
+每次交付附：修改文件、实际依赖版本、命令、输入/输出、真实验证证据、已知限制。--help应不下载索引、不加载大模型、不调用API。先接20条真实smoke，再在dev调整，冻结后运行eval。
+
+你负责D的同款11B调用、B0/B1生成与演示。
+具体实现：
+1. 使用requests或已验证的轻量客户端适配NVIDIA与Cloudflare，候选模型ID分别meta/llama-3.2-11b-vision-instruct、@cf/meta/llama-3.2-11b-vision-instruct。先核实当日官方请求格式与纯文本支持，按本人账号做小批验证；记录可用性/限流/额度。A+D在smoke之后冻结一家，两组不可各用一家。
+2. 凭证从环境变量读取：NVIDIA_API_KEY或CLOUDFLARE_ACCOUNT_ID与CLOUDFLARE_API_TOKEN。仅报告是否配置，不显示值；不记录授权头。缺配置先完成请求构造干运行与CLI，不编造返回，不自行买套餐。
+3. 不运行默认官方全Agent注册/vLLM，也不照搬BaseAgent默认加图消息。若继承官方接口则明确忽略images与message_histories。text_agent只允许query及B1的C文本hits，函数不接受ground_truth。请求中不含图片、OCR、caption、视觉实体或full_query。
+4. 写固定公共回答约束：直接给简短事实答案，信息不足时标准I don't know.，不输出长解释；B1再把证据作为资料插入，不把网页文本当程序指令。B0/B1只差证据。初始temperature0/max_tokens100/并发1，有支持才固定seed42；记录实际生效参数。
+5. D负责C命中的去重、HTML/重复清理、拼接及1500-token初始证据预算；保存来源映射、实际messages和prompt_sha256。用明确的token计数/估计规则，不声称粗估是精确tokenizer。正式设置只在dev调，D2冻结。
+6. generate.py实现协议CLI，先校验manifest/query/config；支持--batch-ids、按ID匹配、有限3次重试、限流退避、逐题保存和安全恢复。B0不要求evidence；B1ok/empty才调用，error/missing为blocked。API超时/异常/空响应=error，不能改I don't know.。
+7. 每ID一行最终预测，保存baseline/run_id/provider/model/配置哈希/实际usage/延迟/失败；usage始终为input_tokens和output_tokens对象，提供商未返回时两个值均为null，不把整个usage设null。重试历史另存不含密钥的日志。缓存匹配manifest/query/提示/配置/模型/检索版本。
+8. demo选真实smoke，显示问题、C证据来源、B0/B1回答与E已有评分；标注缓存和真实调用模式。run_from_cache只是包装generate与E的evaluate命令，支持只生成，不加载C索引，不复制E裁判代码。
+9. 汇总实际token与请求费，交A核账；生成与评分账单分开。API额度不足及时报具体原因，保留已完成回答，不悄悄换模型。
+正式结果先发E一批，不等全套生成完。最后交实现、真实验证、运行命令和模型方法说明。
+【AI提示词结束】
