@@ -1,0 +1,14 @@
+{
+  "schema_version": "m3.v1",
+  "dataset_id": "crag-mm-2025/crag-mm-single-turn-public",
+  "revision": "e3a061380b9e5c7cab76f6001173872fe9149081",
+  "split": "validation",
+  "seed": 42,
+  "subsets": {
+    "smoke": 20,
+    "dev": 50,
+    "eval": 200
+  },
+  "subset_order": ["smoke", "dev", "eval"],
+  "max_rows": null
+}
