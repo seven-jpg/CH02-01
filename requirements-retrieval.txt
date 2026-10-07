@@ -1,0 +1,53 @@
+# C（检索）模块依赖 —— 本机 Python 3.11.13 实测通过的版本
+#
+# 环境：Windows / Python 3.11.13 / RTX 4050 Laptop（6141 MiB）
+# 安装位置：C:\Users\34353\anaconda3\envs\pytorch
+# 实测日期：2026-10-07
+#
+# ⚠️ 安装前必读：
+#   1. 装 torch 请按本机 CUDA 版本走官方索引，不要用下面这行直接装 CPU 版。
+#   2. protobuf / pydantic / urllib3 / typing_extensions 是**刻意锁定**的：
+#      chromadb 会把它们往前升（protobuf 6→7 等），而本机其他实验依赖当前版本。
+#      实测锁定后 chromadb 仍可正常打开并查询官方索引。
+#   3. chromadb>=1.0.3 是官方 cragmm-search-pipeline 0.5.1 的要求；
+#      官方索引由 chromadb 1.x 建立，不要降到 0.x。
+#   4. 不需要 sentence-transformers：官方 0.5.1 用 AutoModel + 手写 mean pooling，
+#      本模块照此复刻，以免引入语义漂移。
+#   5. 本模块**不安装**生成模型、vLLM、CLIP 图像索引或图像编码器。
+
+# --- 官方检索包（提供 web_search / extract_features 的参考语义）---
+cragmm-search-pipeline==0.5.1
+
+# --- 索引与向量库 ---
+chromadb==1.5.9
+chroma-hnswlib==0.7.6
+onnxruntime==1.30.0
+kubernetes==36.0.3
+aiohttp==3.14.4
+opentelemetry-api==1.45.1
+PyPika==0.51.1
+mmh3==5.3.1
+pybase64==1.5.1
+flatbuffers==25.12.19
+tenacity==9.2.1
+lmdb==3.0.0
+beautifulsoup4==4.13.5
+bs4==0.0.2
+
+# --- 编码器与张量 ---
+torch==2.8.0+cu128
+transformers==5.14.1
+tokenizers==0.22.2
+safetensors==0.8.0
+huggingface_hub==1.26.1
+numpy==2.4.5
+pillow==11.0.0
+
+# --- 刻意锁定，避免被 chromadb 升级 ---
+protobuf==6.33.0
+pydantic==2.11.9
+urllib3==2.7.0
+typing_extensions==4.15.0
+certifi==2026.7.22
+requests==2.33.1
+tqdm==4.67.3
