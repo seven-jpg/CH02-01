@@ -52,3 +52,4 @@ message/
 *.txt
 
 AGENTS.md
+tmp/
