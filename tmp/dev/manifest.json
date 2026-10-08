@@ -1,0 +1,29 @@
+{
+  "schema_version": "m3.v1",
+  "data_origin": "official",
+  "dataset_id": "dev-only/not-official-not-for-results",
+  "revision": "0123456789abcdef0123456789abcdef01234567",
+  "split": "validation",
+  "seed": 42,
+  "grouping": "dev placeholder",
+  "id_rule": "dev-### sequential, development self-test only",
+  "subsets": {
+    "smoke": {
+      "ids": [
+        "dev-001",
+        "dev-002",
+        "dev-003"
+      ],
+      "count": 3
+    },
+    "dev": {
+      "ids": [],
+      "count": 0
+    },
+    "eval": {
+      "ids": [],
+      "count": 0
+    }
+  },
+  "fixture_notice": "DEVELOPMENT SELF-TEST ONLY: 自拟问句，非官方数据，不是正式证据"
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "m3.v1",
+  "checked_at_utc": "2026-10-08T10:11:33.460329+00:00",
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    {
+      "code": "synthetic_fixture",
+      "message": "Synthetic development fixture; not official experiment evidence."
+    },
+    {
+      "code": "unverified",
+      "message": "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation."
+    },
+    {
+      "code": "unverified",
+      "message": "Official dataset/index/provider authenticity requires source records and manual review."
+    },
+    {
+      "code": "unverified",
+      "message": "Shared-image grouping cannot be proved for null image_group_id"
+    }
+  ],
+  "counts": {
+    "D:\\CH02-01\\tmp\\dev\\questions.jsonl": {
+      "expected": 3,
+      "rows": 3,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "D:\\CH02-01\\tmp\\dev\\answers.jsonl": {
+      "expected": 3,
+      "rows": 3,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "D:\\CH02-01\\tmp\\dev\\metadata.jsonl": {
+      "expected": 3,
+      "rows": 3,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "D:\\CH02-01\\tmp\\dev\\evidence.jsonl": {
+      "expected": 3,
+      "rows": 3,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "evidence": {
+      "ok": 3
+    }
+  },
+  "paired_comparison": null,
+  "unverified_checks": [
+    "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+    "Official dataset/index/provider authenticity requires source records and manual review.",
+    "Shared-image grouping cannot be proved for null image_group_id"
+  ],
+  "input_files_sha256": {
+    "D:\\CH02-01\\docs\\M2_M3_execution\\接口字段.schema.json": "6bc3c60594279a1bda5c5b943f1b5271e057aa4f0654e62592819c37dfa24d57",
+    "D:\\CH02-01\\tmp\\dev\\manifest.json": "9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa",
+    "D:\\CH02-01\\tmp\\dev\\questions.jsonl": "6092a33528090320883920677f0cfe681eb15b834b1611dfff70716eaa74843a",
+    "D:\\CH02-01\\tmp\\dev\\answers.jsonl": "b9e7356f338f464bfbe68f753043c1b9484eaa520651ca9bb047b0c994d7d6f4",
+    "D:\\CH02-01\\tmp\\dev\\metadata.jsonl": "06161d52acafeed5719429346fcdbae65acea2f9e93599cd15c247627acb3c65",
+    "D:\\CH02-01\\experiments\\m3\\retrieval.json": "92a6d5ab8b83fae38d0425c29022065c159ab316ad057a8de9557dc4f55a6fde",
+    "D:\\CH02-01\\tmp\\dev\\evidence.jsonl": "e46a333a090dad60e7fd789f3118e99fc37e849a6cf6e7f67626263d88ebcee7",
+    "D:\\CH02-01\\tmp\\dev\\run_meta_retrieval.json": "20676f1d64bb10ccb0df714ac488998c2484a7f8709a1ef81abce45f8f30ff7e"
+  },
+  "provenance": {
+    "config_hashes": {
+      "retrieval": [
+        "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98"
+      ]
+    }
+  },
+  "data_classification": "synthetic_development",
+  "subset": "smoke",
+  "scope": "full",
+  "batch_ids_sha256": null,
+  "dataset_manifest_sha256": "9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa",
+  "expected_ids": [
+    "dev-001",
+    "dev-002",
+    "dev-003"
+  ],
+  "technical_failures": 0,
+  "exit_code": 0,
+  "acceptance": "checked_scope_only"
+}
