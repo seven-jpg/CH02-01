@@ -1,0 +1,389 @@
+{
+  "schema_version": "m3.v1",
+  "checked_date": "2026-10-09",
+  "analysis_scope": "M2 EDA over official validation splits, pinned revisions; stats only, no sampling",
+  "datasets": {
+    "single-turn": {
+      "name": "single-turn",
+      "dataset_id": "crag-mm-2025/crag-mm-single-turn-public",
+      "revision": "e3a061380b9e5c7cab76f6001173872fe9149081",
+      "split": "validation",
+      "actual_splits_in_dataset": [
+        "validation",
+        "public_test"
+      ],
+      "sessions": 1938,
+      "turns_total": 1938,
+      "turns_per_session_stats": {
+        "n": 1938,
+        "mean": 1.0,
+        "median": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "turns_per_session_distribution": {
+        "1": 1938
+      },
+      "unique_images": {
+        "embedded_sha256_distinct": 1404,
+        "url_only": 515
+      },
+      "duplicates": {
+        "duplicate_interaction_ids": 0,
+        "duplicate_query_texts": 36,
+        "image_dup_group_sizes": {
+          "2": 19
+        }
+      },
+      "image_source_counts": {
+        "embedded": 1423,
+        "url_only": 515
+      },
+      "distributions": {
+        "domain": {
+          "plants and gardening": 307,
+          "local": 276,
+          "vehicle": 268,
+          "food": 236,
+          "shopping": 166,
+          "general object recognition": 163,
+          "animal": 161,
+          "text understanding": 131,
+          "other": 123,
+          "math and science": 63,
+          "book": 44
+        },
+        "query_category": {
+          "simple-knowledge": 729,
+          "multi-hop": 321,
+          "comparison": 313,
+          "aggregation": 223,
+          "reasoning": 220,
+          "simple-recognition": 132
+        },
+        "dynamism": {
+          "static": 1559,
+          "slow-changing": 309,
+          "fast-changing": 67,
+          "real-time": 3
+        },
+        "image_quality": {
+          "normal": 1631,
+          "truncated": 100,
+          "low light": 80,
+          "blurred": 60,
+          "rotated": 36,
+          "occluded": 31
+        }
+      },
+      "query_len_chars": {
+        "n": 1938,
+        "mean": 53.12,
+        "median": 50.5,
+        "min": 11.0,
+        "max": 150.0
+      },
+      "answer_len_chars": {
+        "n": 1938,
+        "mean": 110.87,
+        "median": 95.0,
+        "min": 10.0,
+        "max": 710.0
+      },
+      "image_size_px": {
+        "width": {
+          "n": 1423,
+          "mean": 3024.0,
+          "median": 3024.0,
+          "min": 3024.0,
+          "max": 3024.0
+        },
+        "height": {
+          "n": 1423,
+          "mean": 4032.0,
+          "median": 4032.0,
+          "min": 4032.0,
+          "max": 4032.0
+        },
+        "aspect_ratio_mean": 0.75
+      },
+      "brightness_proxy": {
+        "n": 1423,
+        "mean": 114.8,
+        "median": 118.14,
+        "min": 19.46469210272844,
+        "max": 189.44574250900206
+      },
+      "sharpness_proxy": {
+        "n": 1423,
+        "mean": 131.02,
+        "median": 69.21,
+        "min": 9.880290045588906,
+        "max": 2844.5334035290207
+      },
+      "exclusion_counts": {},
+      "load_failures": {},
+      "elapsed_seconds": 450.36,
+      "opener_reference_rate": 0.0031,
+      "answer_over_75token_estimate": {
+        "n": 33,
+        "fraction": 0.017,
+        "rule": "chars / 4 approx tokens; threshold = 300 chars"
+      },
+      "proxy_by_quality": {
+        "low light": {
+          "n": 69,
+          "brightness_median": 69.01,
+          "brightness_mean": 76.34,
+          "sharpness_median": 43.92,
+          "sharpness_mean": 67.62
+        },
+        "normal": {
+          "n": 1152,
+          "brightness_median": 118.86,
+          "brightness_mean": 117.07,
+          "sharpness_median": 71.37,
+          "sharpness_mean": 135.03
+        },
+        "truncated": {
+          "n": 87,
+          "brightness_median": 117.22,
+          "brightness_mean": 115.9,
+          "sharpness_median": 72.38,
+          "sharpness_mean": 138.24
+        },
+        "rotated": {
+          "n": 34,
+          "brightness_median": 117.51,
+          "brightness_mean": 116.43,
+          "sharpness_median": 100.12,
+          "sharpness_mean": 129.05
+        },
+        "occluded": {
+          "n": 28,
+          "brightness_median": 120.86,
+          "brightness_mean": 118.3,
+          "sharpness_median": 91.81,
+          "sharpness_mean": 188.97
+        },
+        "blurred": {
+          "n": 53,
+          "brightness_median": 111.93,
+          "brightness_mean": 110.95,
+          "sharpness_median": 52.16,
+          "sharpness_mean": 85.03
+        }
+      }
+    },
+    "multi-turn": {
+      "name": "multi-turn",
+      "dataset_id": "crag-mm-2025/crag-mm-multi-turn-public",
+      "revision": "5f87aed919b7bb35a00a518ea401e1fb70a02d20",
+      "split": "validation",
+      "actual_splits_in_dataset": [
+        "validation",
+        "public_test"
+      ],
+      "sessions": 586,
+      "turns_total": 2857,
+      "turns_per_session_stats": {
+        "n": 586,
+        "mean": 4.88,
+        "median": 5.0,
+        "min": 2.0,
+        "max": 6.0
+      },
+      "turns_per_session_distribution": {
+        "2": 11,
+        "3": 20,
+        "4": 107,
+        "5": 341,
+        "6": 107
+      },
+      "unique_images": {
+        "embedded_sha256_distinct": 585,
+        "url_only": 0
+      },
+      "duplicates": {
+        "duplicate_interaction_ids": 0,
+        "duplicate_query_texts": 76,
+        "image_dup_group_sizes": {
+          "2": 1
+        }
+      },
+      "image_source_counts": {
+        "embedded": 586
+      },
+      "distributions": {
+        "domain": {
+          "other": 583,
+          "shopping": 377,
+          "local": 309,
+          "general object recognition": 289,
+          "food": 283,
+          "animal": 228,
+          "book": 220,
+          "vehicle": 211,
+          "plants and gardening": 146,
+          "math and science": 137,
+          "text understanding": 74
+        },
+        "query_category": {
+          "simple-knowledge": 1590,
+          "simple-recognition": 408,
+          "comparison": 326,
+          "multi-hop": 253,
+          "reasoning": 179,
+          "aggregation": 101
+        },
+        "dynamism": {
+          "static": 2382,
+          "slow-changing": 424,
+          "fast-changing": 40,
+          "real-time": 11
+        },
+        "image_quality": {
+          "normal": 2392,
+          "truncated": 162,
+          "low light": 152,
+          "blurred": 77,
+          "occluded": 58,
+          "rotated": 16
+        }
+      },
+      "query_len_chars": {
+        "n": 2857,
+        "mean": 44.98,
+        "median": 42.0,
+        "min": 10.0,
+        "max": 150.0
+      },
+      "answer_len_chars": {
+        "n": 2856,
+        "mean": 86.89,
+        "median": 71.0,
+        "min": 3.0,
+        "max": 723.0
+      },
+      "image_size_px": {
+        "width": {
+          "n": 586,
+          "mean": 3024.0,
+          "median": 3024.0,
+          "min": 3024.0,
+          "max": 3024.0
+        },
+        "height": {
+          "n": 586,
+          "mean": 4032.0,
+          "median": 4032.0,
+          "min": 4032.0,
+          "max": 4032.0
+        },
+        "aspect_ratio_mean": 0.75
+      },
+      "brightness_proxy": {
+        "n": 586,
+        "mean": 114.53,
+        "median": 118.3,
+        "min": 23.09485229276896,
+        "max": 187.90253148423722
+      },
+      "sharpness_proxy": {
+        "n": 586,
+        "mean": 138.89,
+        "median": 69.72,
+        "min": 6.680305659566889,
+        "max": 2081.8165718581477
+      },
+      "exclusion_counts": {
+        "missing_answer": 1
+      },
+      "load_failures": {},
+      "elapsed_seconds": 195.02,
+      "opener_reference_rate": 0.0004,
+      "answer_over_75token_estimate": {
+        "n": 33,
+        "fraction": 0.0116,
+        "rule": "chars / 4 approx tokens; threshold = 300 chars"
+      },
+      "proxy_by_quality": {
+        "normal": {
+          "n": 491,
+          "brightness_median": 119.4,
+          "brightness_mean": 117.78,
+          "sharpness_median": 76.14,
+          "sharpness_mean": 146.42
+        },
+        "rotated": {
+          "n": 3,
+          "brightness_median": 101.1,
+          "brightness_mean": 91.05,
+          "sharpness_median": 43.74,
+          "sharpness_mean": 39.07
+        },
+        "low light": {
+          "n": 31,
+          "brightness_median": 54.79,
+          "brightness_mean": 64.64,
+          "sharpness_median": 40.36,
+          "sharpness_mean": 42.34
+        },
+        "truncated": {
+          "n": 33,
+          "brightness_median": 119.39,
+          "brightness_mean": 114.86,
+          "sharpness_median": 88.9,
+          "sharpness_mean": 168.57
+        },
+        "blurred": {
+          "n": 16,
+          "brightness_median": 116.01,
+          "brightness_mean": 115.44,
+          "sharpness_median": 34.13,
+          "sharpness_mean": 60.08
+        },
+        "occluded": {
+          "n": 12,
+          "brightness_median": 113.88,
+          "brightness_mean": 114.06,
+          "sharpness_median": 75.92,
+          "sharpness_mean": 128.84
+        }
+      },
+      "turn1_opener_rate": 0.0,
+      "later_opener_rate": 0.0004,
+      "history_reuse_by_turn": {
+        "2": 0.5017,
+        "3": 0.6452,
+        "4": 0.6613,
+        "5": 0.7299,
+        "6": 0.7383
+      },
+      "history_reuse_overall": 0.6332
+    }
+  },
+  "proxies_note": {
+    "brightness": "mean of grayscale (0-255); embedded images only, url_only images not downloaded",
+    "sharpness": "variance of 3x3 Laplacian kernel convolution on grayscale; embedded images only; chart uses log10 scale",
+    "thresholds": "none defined: proxies are continuous indicators, compared with official labels only (C3); no cutoff applied",
+    "status": "proxy metrics, NOT official labels"
+  },
+  "exclusion_rules": {
+    "turn_no_interaction_id": "turn has no interaction_id; counted, not filtered",
+    "empty_query": "query is empty or whitespace-only; counted, not filtered",
+    "missing_answer": "no ans_full matched by interaction_id, or ans_full is blank; counted, not filtered",
+    "proxy_failed": "embedded image failed brightness/sharpness computation",
+    "image_hash_error": "embedded image failed SHA256 hashing",
+    "row_parse_error": "row failed turn/answer extraction",
+    "note": "EDA does not exclude rows: it only counts these conditions (no filtering)"
+  },
+  "limitations": [
+    "url_only images not downloaded: size/brightness/sharpness not measured for them",
+    "unique-image count is byte-level SHA256 over embedded images; url_only counted by URL presence only",
+    "EDA counts missing answers/empty queries but does not exclude rows (no filtering)",
+    "history reuse (C1) is a lexical proxy: stopword-filtered word overlap with earlier turns; not a semantic judgement",
+    "opener reference rate (C1) is a lexical proxy: leading this/that/it/the/these/those; image-referential phrasing baseline",
+    "answer over-75-token estimate (C2) uses chars/4 rule; official tokenizer belongs to E, not measured here"
+  ]
+}
