@@ -21,7 +21,6 @@ env/
 .idea/
 
 # CRAG-MM datasets / retrieval resources
-data/
 search_indices/
 
 # Model weights
@@ -46,8 +45,7 @@ Thumbs.db
 docs/M2_M3_review/
 docs/*_pack.zip
 
-# Generated experiment output; publish only reviewed tables/reports in docs/
-results/
+# Generated experiment output
 message/
 *.txt
 
