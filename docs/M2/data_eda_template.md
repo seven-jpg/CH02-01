@@ -91,7 +91,7 @@ M3 只用 Single-turn；Multi-turn 本阶段用于 EDA（M4 多轮阶段题源�
   - `python preprocessing/prepare_data.py --config experiments/m3/data.json --output-dir data/processed/m3`
   - `python preprocessing/eda.py --config experiments/m3/data.json --output-dir results/eda --offline`（--offline 可选，本机缓存已就绪）
 - 依赖版本：Python 3.11.17；datasets 5.1.0、huggingface_hub 2.1.1、pandas 3.0.6、numpy 2.4.6、pyarrow 25.0.1、Pillow 12.3.0、matplotlib 3.11.2、seaborn 0.13.2、tqdm 4.70.1、jsonschema 4.26.0；未安装 torch/vLLM/检索库。
-- commit：prepare_data.py 为 `7263c9b5ac`；eda.py、data.json（含 eda 段）与本文档为 `eea3476`。
+- commit：prepare_data.py 为 `7263c9b5ac`；eda.py、data.json（含 eda 段）与本文档为 `ef1b856`。
 - 输出路径：`data/processed/m3/`（manifest + 三集合 9 个 jsonl，manifest SHA256 `e4dc72b4...f34fd0`）、`results/eda/eda_report.json`、`results/eda/charts/` 22 张图。
 - 峰值内存：未测（16GB RAM 机器，逐行处理、图像即用即弃，未出现内存告警）。
 - A/E 复跑人员、时间、输入哈希和统计一致性：待补（数据包交接后由 A/E 填写）。
