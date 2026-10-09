@@ -1,0 +1,3 @@
+{"dataset_manifest_sha256":"9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa","ground_truth":"Paris","interaction_id":"dev-001","schema_version":"m3.v1","subset":"smoke"}
+{"dataset_manifest_sha256":"9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa","ground_truth":"Jane Austen","interaction_id":"dev-002","schema_version":"m3.v1","subset":"smoke"}
+{"dataset_manifest_sha256":"9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa","ground_truth":"Mount Everest","interaction_id":"dev-003","schema_version":"m3.v1","subset":"smoke"}

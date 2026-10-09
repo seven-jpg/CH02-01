@@ -1,0 +1,20 @@
+{
+  "top_k": 5,
+  "index_repo": "crag-mm-2025/web-search-index-public-test",
+  "index_revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+  "encoder_id": "BAAI/bge-large-en-v1.5",
+  "encoder_revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+  "collection_name": "web_search_embeddings",
+  "hnsw_space_expected": "cosine",
+  "score_kind": "similarity",
+  "max_length": 512,
+  "pooling": "mean",
+  "normalize": true,
+  "query_prefix": "",
+  "device": "auto",
+  "dedupe_by_chunk_prefix": true,
+  "rerank": false,
+  "live_web_fetch": false,
+  "retry_max": 3,
+  "index_cache_dir": "E:\\totally\\different\\path"
+}

@@ -48,3 +48,8 @@ docs/*_pack.zip
 
 # Generated experiment output; publish only reviewed tables/reports in docs/
 results/
+message/
+*.txt
+
+AGENTS.md
+tmp/

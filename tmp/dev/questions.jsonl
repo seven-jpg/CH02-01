@@ -1,0 +1,3 @@
+{"dataset_manifest_sha256":"9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa","interaction_id":"dev-001","query":"What is the capital of France?","schema_version":"m3.v1","session_id":"sess-dev","subset":"smoke"}
+{"dataset_manifest_sha256":"9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa","interaction_id":"dev-002","query":"Who wrote the novel Pride and Prejudice?","schema_version":"m3.v1","session_id":"sess-dev","subset":"smoke"}
+{"dataset_manifest_sha256":"9770b9a745e69de4cba326cf7c757c4738cf25439d216755e29fd24c1e6aaafa","interaction_id":"dev-003","query":"What is the tallest mountain in the world?","schema_version":"m3.v1","session_id":"sess-dev","subset":"smoke"}
