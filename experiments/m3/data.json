@@ -10,5 +10,21 @@
     "eval": 200
   },
   "subset_order": ["smoke", "dev", "eval"],
-  "max_rows": null
+  "max_rows": null,
+  "eda": {
+    "datasets": [
+      {
+        "name": "single-turn",
+        "dataset_id": "crag-mm-2025/crag-mm-single-turn-public",
+        "revision": "e3a061380b9e5c7cab76f6001173872fe9149081",
+        "split": "validation"
+      },
+      {
+        "name": "multi-turn",
+        "dataset_id": "crag-mm-2025/crag-mm-multi-turn-public",
+        "revision": "5f87aed919b7bb35a00a518ea401e1fb70a02d20",
+        "split": "validation"
+      }
+    ]
+  }
 }
