@@ -1,0 +1,29 @@
+{
+  "schema_version": "m3.v1",
+  "data_origin": "official",
+  "dataset_id": "synthetic/test-only-crag-contract",
+  "revision": "0123456789abcdef0123456789abcdef01234567",
+  "split": "validation",
+  "seed": 42,
+  "grouping": "session and image group and duplicate query",
+  "id_rule": "synthetic identifiers for unit tests only",
+  "subsets": {
+    "smoke": {
+      "ids": [
+        "synthetic-001",
+        "synthetic-002",
+        "synthetic-003"
+      ],
+      "count": 3
+    },
+    "dev": {
+      "ids": [],
+      "count": 0
+    },
+    "eval": {
+      "ids": [],
+      "count": 0
+    }
+  },
+  "fixture_notice": "SYNTHETIC CONTRACT TEST ONLY: not official data or measured model output"
+}

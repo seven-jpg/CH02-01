@@ -1,0 +1,7 @@
+group,subset,baseline,top_k,N_fixed,N_generated,N_missing,N_exact_match,N_pending_judge,N_unique_judge_inputs,generation_coverage,rule_refusal_fraction_of_fixed,accuracy,hallucination_rate,truthfulness,status
+smoke_B0,smoke,B0,,20,20,20,0,0,0,1.0,1.0,,,,awaiting_semantic_judge
+smoke_B1_k5,smoke,B1,5,20,20,8,0,12,12,1.0,0.4,,,,awaiting_semantic_judge
+dev_B0,dev,B0,,50,50,49,0,1,1,1.0,0.98,,,,awaiting_semantic_judge
+dev_B1_k1,dev,B1,1,50,50,23,0,27,27,1.0,0.46,,,,awaiting_semantic_judge
+dev_B1_k3,dev,B1,3,50,50,19,0,31,31,1.0,0.38,,,,awaiting_semantic_judge
+dev_B1_k5,dev,B1,5,50,50,17,0,33,33,1.0,0.34,,,,awaiting_semantic_judge

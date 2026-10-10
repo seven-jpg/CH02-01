@@ -1,0 +1,7 @@
+{
+  "provider": "synthetic-provider",
+  "model": "synthetic-model",
+  "temperature": 0,
+  "max_tokens": 100,
+  "answer_instruction": "Synthetic test: answer briefly or abstain."
+}
