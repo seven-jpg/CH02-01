@@ -1,0 +1,118 @@
+{
+  "schema_version": "m3.v1",
+  "checked_at_utc": "2026-10-07T09:29:06.436541+00:00",
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    {
+      "code": "unverified",
+      "message": "Cross-subset metadata grouping incomplete: only 20/270 IDs supplied"
+    },
+    {
+      "code": "unverified",
+      "message": "Cross-subset questions grouping incomplete: only 20/270 IDs supplied"
+    },
+    {
+      "code": "unverified",
+      "message": "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation."
+    },
+    {
+      "code": "unverified",
+      "message": "Official dataset/index/provider authenticity requires source records and manual review."
+    }
+  ],
+  "counts": {
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\smoke\\questions.jsonl": {
+      "expected": 20,
+      "rows": 20,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\smoke\\answers.jsonl": {
+      "expected": 20,
+      "rows": 20,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\smoke\\metadata.jsonl": {
+      "expected": 20,
+      "rows": 20,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\CH02-01-main\\results\\m3\\smoke\\predictions_b0.jsonl": {
+      "expected": 20,
+      "rows": 20,
+      "missing_ids": [],
+      "unexpected_ids": []
+    },
+    "predictions": {
+      "ok": 20
+    },
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\CH02-01-main\\results\\m3\\smoke\\requests_b0.jsonl": {
+      "expected": 20,
+      "rows": 20,
+      "missing_ids": [],
+      "unexpected_ids": []
+    }
+  },
+  "paired_comparison": null,
+  "unverified_checks": [
+    "Cross-subset metadata grouping incomplete: only 20/270 IDs supplied",
+    "Cross-subset questions grouping incomplete: only 20/270 IDs supplied",
+    "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+    "Official dataset/index/provider authenticity requires source records and manual review."
+  ],
+  "input_files_sha256": {
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\CH02-01-main\\docs\\M2_M3_execution\\接口字段.schema.json": "6bc3c60594279a1bda5c5b943f1b5271e057aa4f0654e62592819c37dfa24d57",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\manifest.json": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\smoke\\questions.jsonl": "d9b51bff89fd34432c9607df5bdd10fe1cf5df97b42f80646fbe41b7f038c36c",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\smoke\\answers.jsonl": "efe64fb76b80af4043a05735bec1dda532d621e82402d6334b46c388baaeb9c8",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\B_数据交付\\data\\processed\\m3\\smoke\\metadata.jsonl": "7cb8d9bbb48da1cb29253dc6841fb518248f526afe3971b15689bef0726c5082",
+    "experiments\\m3\\generation.json": "7abfeed46cfd0ed1090f32b3b21e873e7eeba2f262c0249d813dc464b36d553e",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\CH02-01-main\\results\\m3\\smoke\\predictions_b0.jsonl": "8cd8d1b8bd26dfa033c5212e7d90d58e8ca5f4961da44056b9bc9c3b457a118f",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\CH02-01-main\\results\\m3\\smoke\\requests_b0.jsonl": "636cd7b6f2f9ac6e696dab97e0bc7f8cbe26efafbbb35de7e2c25a99e434e41a",
+    "C:\\Users\\X\\Desktop\\机器学习小学期\\CH02-01-main\\results\\m3\\smoke\\run_meta_b0.json": "a6e0da459a432842e66582a434354aeb4b499eb3fcb11a554a4111159a3a8d13"
+  },
+  "provenance": {
+    "config_hashes": {
+      "generation": [
+        "dee0e5ea47324393e87687794da30c00b91e5f7f3f31203e18b7bdea79342502"
+      ]
+    },
+    "requests": {
+      "logged": 20,
+      "template_reconstructed": 20
+    }
+  },
+  "data_classification": "declared_official_unverified",
+  "subset": "smoke",
+  "scope": "full",
+  "batch_ids_sha256": null,
+  "dataset_manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+  "expected_ids": [
+    "129fc5be-e485-4e82-a5d3-fcbee8503d3e",
+    "1427a108-1ac1-4f0c-90ec-7dc58dbff93a",
+    "1baffe9f-b104-44b9-b9e2-3f98a4d572e6",
+    "3b812dee-002d-4057-a46a-589e34f51a00",
+    "43b7c341-2446-448f-9a10-4c7d59461d58",
+    "4fd4cfea-c184-49bf-8ebc-16f5a70bcdf8",
+    "505a79f1-98c6-42b0-8a3a-d3d87367bd22",
+    "5de0079e-0373-4254-8030-af80d6c14353",
+    "6269fe31-3619-44c8-8e04-d8e28f285198",
+    "6ad3c77e-1845-46cc-8f38-3a3e52b11ead",
+    "6d1ef928-ab41-43a3-b605-e0dbe67884e4",
+    "878088c7-21ea-48db-a9f5-508d36a24fdb",
+    "9cd9a95a-bd9c-4400-9ac2-68251f6b5e22",
+    "9d51b5a3-6fd0-4f10-9bfe-f8efd1239cf4",
+    "a878926b-26f2-4abd-a3d7-bbd003f6be8a",
+    "b383fc61-a0fc-4784-9387-2f6da611a975",
+    "b8d1a9f5-66f7-448a-a790-9bdafacb2b31",
+    "c17fcb68-a407-4fb2-86bf-33be2f9f22b5",
+    "c4f20924-f997-4f95-8cd3-bd9af85f32dd",
+    "e74b09cf-5abb-4838-88a1-ee13df9b8d35"
+  ],
+  "technical_failures": 0,
+  "exit_code": 0,
+  "acceptance": "checked_scope_only"
+}
