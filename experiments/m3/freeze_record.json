@@ -2,13 +2,13 @@
   "record_type": "configuration_freeze_tracking",
   "record_version": 1,
   "schema_version": "m3.v1",
-  "updated_date": "2026-10-07",
+  "updated_date": "2026-10-10",
   "timezone": "Asia/Shanghai",
   "status": "pending_confirmation",
   "is_frozen": false,
   "frozen_at": null,
   "frozen_by": null,
-  "notice": "Tracking record only; not a runnable experiment config. No real dataset manifest, API smoke, formal results or freeze approval has been supplied.",
+  "notice": "B has supplied the actual manifest and smoke/dev/eval data; C has supplied real smoke20/dev50 retrieval artifacts. Retrieval-only baseline parameters are selected, not proven optimal. Whole-experiment freeze remains pending generation/evaluation/API/course-permission evidence.",
   "verified_items": {
     "interface_source": "docs/M2_M3_execution/01统一接口与验收.txt",
     "schema_source": "docs/M2_M3_execution/接口字段.schema.json",
@@ -27,13 +27,12 @@
     "large_files_ignore_policy": {
       "source": ".gitignore",
       "ignored_directories": [
-        "data/",
         "search_indices/",
         "checkpoints/",
         ".venv/",
         ".venv-*/",
-        "results/",
-        "docs/M2_M3_review/"
+        "docs/M2_M3_review/",
+        "tmp/"
       ],
       "secrets_ignored": [
         ".env",
@@ -47,6 +46,24 @@
       "validation_record": "docs/M3/A_validation_record.md",
       "tests_passed": 98,
       "real_experiment_verified": false
+    },
+    "retrieval_review": {
+      "source_commit": "7b79e64050420026d2d2feed8fe34ff37b709a39",
+      "diagnostic": "docs/M3/retrieval_review/diagnostic.json",
+      "source_content_review": "docs/M3/retrieval_review/source_content_review.json",
+      "parameter_decision": "experiments/m3/retrieval_decision.json",
+      "fresh_local_index_run": false,
+      "answer_quality_verified": false,
+      "structural_acceptance": {
+        "smoke": "docs/M3/retrieval_review/smoke_acceptance.json",
+        "dev": "docs/M3/retrieval_review/dev_acceptance.json",
+        "exit_codes": [
+          0,
+          0
+        ],
+        "original_run_meta_unmodified": true,
+        "index_not_rerun": true
+      }
     }
   },
   "planned_scope": {
@@ -81,35 +98,39 @@
       "evidence": null
     },
     "dataset": {
-      "status": "pending",
+      "status": "structure_hash_and_cross_subset_grouping_verified_source_declared",
       "single_turn_id_proposal": "crag-mm-2025/crag-mm-single-turn-public",
       "multi_turn_id_proposal": "crag-mm-2025/crag-mm-multi-turn-public",
-      "single_turn_revision": null,
+      "single_turn_revision": "e3a061380b9e5c7cab76f6001173872fe9149081",
       "multi_turn_revision": null,
-      "selected_split": null,
-      "manifest_path": null,
-      "manifest_sha256": null,
+      "selected_split": "validation",
+      "manifest_path": "data/processed/m3/manifest.json",
+      "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
       "actual_subset_sizes": {
-        "smoke": null,
-        "dev": null,
-        "eval": null
+        "smoke": 20,
+        "dev": 50,
+        "eval": 200
       },
-      "id_rule": null,
-      "grouping_check_report": null
+      "id_rule": "official-id-kept",
+      "grouping_check_report": "docs/M3/retrieval_review/dev_acceptance.json"
     },
     "retrieval": {
-      "status": "pending",
-      "package_version": null,
-      "web_index_id": null,
-      "web_index_revision": null,
-      "encoder_id": null,
-      "encoder_revision": null,
+      "status": "fixed_baseline_selected_waiting_full_experiment_freeze",
+      "package_version": "0.5.1",
+      "web_index_id": "crag-mm-2025/web-search-index-public-test",
+      "web_index_revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+      "encoder_id": "BAAI/bge-large-en-v1.5",
+      "encoder_revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
       "top_k_proposal": 5,
       "top_k_frozen": null,
-      "config_path": null,
-      "config_sha256": null,
-      "text_only_input_verified": false,
-      "sixteen_gb_ram_smoke_report": null
+      "config_path": "experiments/m3/retrieval.json",
+      "config_sha256": "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98",
+      "text_only_input_verified": true,
+      "sixteen_gb_ram_smoke_report": "results/m3/smoke/run_meta_retrieval.json (C-reported original hardware measurements; not a local rerun)",
+      "top_k_confirmed": 5,
+      "fetch_k_implemented": false,
+      "top_k_optimum_proven": false,
+      "parameter_decision_path": "experiments/m3/retrieval_decision.json"
     },
     "generation": {
       "status": "pending",
@@ -147,11 +168,12 @@
     }
   },
   "evidence_status": {
-    "real_smoke_validation_report": null,
+    "real_smoke_validation_report": "docs/M3/retrieval_review/smoke_acceptance.json",
     "formal_prediction_files": [],
     "formal_score_files": [],
     "formal_result_summary": null,
-    "independent_reproduction_record": null
+    "independent_reproduction_record": null,
+    "retrieval_artifact_review": "docs/M3/retrieval_review/"
   },
   "freeze_acceptance": {
     "owner": "A",

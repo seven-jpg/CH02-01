@@ -1,0 +1,86 @@
+{
+  "record_type": "dev_retrieval_diagnostic",
+  "schema_version": "m3.v1",
+  "subset": "dev",
+  "N_expected": 50,
+  "dataset_manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+  "retrieval_config_sha256": "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98",
+  "top_k": 5,
+  "fetch_k": "not_implemented",
+  "run_id": "retrieval-dev-47d54550ef62-e4dc72b4",
+  "input_files_sha256": {
+    "manifest": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "questions": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
+    "evidence": "07db457d84c42b417184e791779e1e9cee3d2106d2d120a9837171c3bc2689b7",
+    "config_raw_bytes": "92a6d5ab8b83fae38d0425c29022065c159ab316ad057a8de9557dc4f55a6fde"
+  },
+  "statuses": {
+    "ok": 50,
+    "empty": 0,
+    "error": 0
+  },
+  "total_hits": 214,
+  "hits_per_question": {
+    "1": 1,
+    "2": 2,
+    "3": 5,
+    "4": 16,
+    "5": 26
+  },
+  "mean_hits": 4.28,
+  "fewer_than_top_k": 24,
+  "title_only_hits": 49,
+  "title_only_question_ids": [
+    "03671829-3cd0-4b3b-83a1-01871c22bae5",
+    "2a4d9d48-a2c8-4051-8f95-46539b642c6a",
+    "2f98c003-af17-4891-aca9-989498977ff9",
+    "392a93b2-97fa-4dde-8c2d-6a6cb91f5f28",
+    "3cad8c87-492b-4c0d-bc24-3aff5f6a653f",
+    "43cf0706-9e83-40af-b9c9-6ec440a605e6",
+    "4d829990-c40c-4dc2-ad5f-233ff97ac436",
+    "64f788ec-d00a-4261-a14a-bfcce23250b1",
+    "8b8daf42-6b9a-42a0-9f5d-5c6634257c56",
+    "8bb479e6-8c83-4536-a41d-accef6883b4f",
+    "8e9efe39-8f8e-4f0b-867c-83faf740aa0d",
+    "9a6b08ed-2a13-4f88-840d-d72f08b77aff",
+    "a021437e-d23e-4182-87ac-80855c884344",
+    "a041db57-f402-488c-880b-fb4d205ee63b",
+    "a7ba68d1-f241-44f8-93b9-c8fb0d2709ef",
+    "b293f46f-1618-4e96-b609-990df0d81e33",
+    "b328be7f-85ba-4b36-9ad9-b5f2a080dc0b",
+    "b506f1ba-46b8-45d8-a57f-457b09b1fbf8",
+    "b56d3368-1df4-4ee5-9804-5fe2073b2393",
+    "d998d529-026c-49f5-a673-e3450c4db395",
+    "e0967c91-77aa-4c6a-8dcb-197d6718174e",
+    "e32e089f-5ad1-4494-bb65-b0fa5c26d6b9",
+    "ef31c7ad-356b-461c-ba64-4bf478aefe90",
+    "efe0f64e-fbea-4b0e-b8a7-118e1433d35c",
+    "f5f212e7-b973-415f-9502-97bb84c4173a"
+  ],
+  "duplicate_page_question_ids": [],
+  "duplicate_text_question_ids": [
+    "0688fb7f-5339-487f-95e4-0df0e6455e7d",
+    "64f788ec-d00a-4261-a14a-bfcce23250b1",
+    "efe0f64e-fbea-4b0e-b8a7-118e1433d35c"
+  ],
+  "score_kinds": {
+    "similarity": 214
+  },
+  "scores": {
+    "min": 0.6827573776245117,
+    "median": 0.7783043086528778,
+    "max": 0.9067541360855103
+  },
+  "total_evidence_characters": 234969,
+  "cached_prefix_hit_counts": {
+    "1": 50,
+    "3": 146,
+    "5": 214
+  },
+  "limitations": [
+    "Cached prefixes are evidence-budget candidates, not fresh Chroma k runs.",
+    "Cosine scores and hit counts do not prove answer quality or Recall@k.",
+    "No answers, image inputs, online source fetch, model or judge was used.",
+    "Source inspection samples require a separate recorded manual review."
+  ]
+}

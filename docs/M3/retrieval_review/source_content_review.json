@@ -1,0 +1,138 @@
+{
+  "record_type": "cached_source_content_review",
+  "reviewed_date": "2026-10-10",
+  "reviewer": "A assisted by Codex",
+  "subset": "dev",
+  "source_commit": "7b79e64050420026d2d2feed8fe34ff37b709a39",
+  "selection": "manifest indices 0,5,...45 plus lowest top1 similarity; no reference answers used",
+  "sample_questions": 11,
+  "reviewed_hits": 22,
+  "inspection_scope": "Original question, top-two cached titles/URLs and first 400 characters of each text. No live URL fetch, image or reference-answer verification.",
+  "limitations": [
+    "These are qualitative cache observations, not relevant-document labels, answer accuracy or source-download authentication.",
+    "Unresolved entity is a hypothesis about information missing from the text-only input; no image-grounded answer verification was performed."
+  ],
+  "items": [
+    {
+      "interaction_id": "03671829-3cd0-4b3b-83a1-01871c22bae5",
+      "query": "How many states are in the country whose national bird is this animal?",
+      "reviewed_doc_ids": [
+        "https://blog.batchgeo.com/national-birds/_chunk_0",
+        "https://en.wikipedia.org/wiki/List_of_U.S._state_birds_chunk_1"
+      ],
+      "assessment": "与国鸟主题相关，但缺少图中动物身份，无法确定国家及州数；不能从美国州鸟标题直接认定国家。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "269a792a-1516-48f3-bfa1-ccf7e689d57f",
+      "query": "Can I get this Dog easily in the UK?",
+      "reviewed_doc_ids": [
+        "https://www.thekennelclub.org.uk/getting-a-dog/buying-a-dog/overseas-registration/_chunk_1",
+        "https://rescue-dogs.org.uk/adopt/dogs/872-maddie.html_chunk_2"
+      ],
+      "assessment": "犬类注册与领养主题相关，但没有品种识别，无法证明该品种在英国是否容易获取。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "3cad8c87-492b-4c0d-bc24-3aff5f6a653f",
+      "query": "What is the typical serving size of this?",
+      "reviewed_doc_ids": [
+        "https://seaveg.com/products/laver-granules-wild-atlantic-nori-organic_chunk_3",
+        "https://www.cortlandaux.com/dining-services/nutrition-services-1/nutrition-articles/portions_chunk_0"
+      ],
+      "assessment": "出现紫菜产品和通用份量标题，原query未指定食物，无法确认具体食物的份量。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "50558f08-95a7-450e-bdb1-640a300cc4f1",
+      "query": "how many color options are there for this phone?",
+      "reviewed_doc_ids": [
+        "https://www.tomsguide.com/news/samsung-galaxy-s23-colors_chunk_0",
+        "https://www.techradar.com/news/samsung-galaxy-s23-colors-every-rumored-shade-including-the-s23-plus-and-ultra_chunk_1"
+      ],
+      "assessment": "包含Galaxy S23颜色信息，但原query只说this phone，没有信息证明目标手机为S23。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "6e626fdd-3815-4e74-a1be-3fdff5201e6f",
+      "query": "what color are the blooms on this plant?",
+      "reviewed_doc_ids": [
+        "https://www.pacificbulbsociety.org/pbswiki/index.php/AlliumFlavumRelatives_chunk_2",
+        "https://www.epicgardening.com/types-of-flowers/_chunk_8"
+      ],
+      "assessment": "有Allium和花卉分类内容，包含多种花色，无法确定目标植物及其花色。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "8bb479e6-8c83-4536-a41d-accef6883b4f",
+      "query": "what is the lifespan of this tree?",
+      "reviewed_doc_ids": [
+        "https://bigtree.cnre.vt.edu/lifespan.html_chunk_0",
+        "https://www.answers.com/biology/What_is_the_average_lifespan_of_a_ficus_tree_chunk_0"
+      ],
+      "assessment": "前两条仅标题，没有树寿命数值；原query也未指定树种。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "a7ba68d1-f241-44f8-93b9-c8fb0d2709ef",
+      "query": "what features would that need to have in order to be considered ergonomic?",
+      "reviewed_doc_ids": [
+        "https://www.quora.com/What-are-some-ergonomic-features-of-computer-workstation-office-furniture_chunk_0",
+        "https://rework-furniture.com/blogs/think-outside-the-cubicle/9-necessary-features-of-a-good-ergonomic-office-chair_chunk_1"
+      ],
+      "assessment": "有办公椅的人体工学介绍，可提供一般条件；未明确that指什么，不能证明对应目标物体。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "b506f1ba-46b8-45d8-a57f-457b09b1fbf8",
+      "query": "how does the tartness of these compare to granny smith apples?",
+      "reviewed_doc_ids": [
+        "https://www.orangepippin.com/varieties/apples/granny-smith_chunk_5",
+        "https://www.reddit.com/r/unpopularopinion/comments/15q4iuk/granny_smith_are_the_best_apples/?rdt=61513_chunk_1"
+      ],
+      "assessment": "与Granny Smith相关，但these的对象不明确，且当前片段未给出可靠的两者酸度比较。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "d998d529-026c-49f5-a673-e3450c4db395",
+      "query": "what's the typical blooming period for this plant?",
+      "reviewed_doc_ids": [
+        "https://blossmcart.com/blog/when-do-roses-bloom/_chunk_1",
+        "https://www.gardenguides.com/12534294-when-do-dandelions-bloom/_chunk_1"
+      ],
+      "assessment": "混入玫瑰与蒲公英的花期内容，缺少目标植物身份，不能据检索排序决定物种。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "efe0f64e-fbea-4b0e-b8a7-118e1433d35c",
+      "query": "how many locations do they have in new york city?",
+      "reviewed_doc_ids": [
+        "https://app.foursquare.com/locations/7-eleven/new-york-city_chunk_0",
+        "https://www.lyft.com/hub/hours/new-york_chunk_0"
+      ],
+      "assessment": "7-Eleven片段有73家店的数字，但原query未指定品牌，不能默认they就是7-Eleven。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    },
+    {
+      "interaction_id": "64f788ec-d00a-4261-a14a-bfcce23250b1",
+      "query": "who is the founder of the company that produces this?",
+      "reviewed_doc_ids": [
+        "https://www.kaercher.com/hk/inside-kaercher/company.html_chunk_0",
+        "https://www.yum.com/company/_chunk_0"
+      ],
+      "assessment": "前两条均只有Company，来自不同公司；不足以判断产品所属公司及创始人。",
+      "live_url_verified": false,
+      "ground_truth_used": false
+    }
+  ]
+}

@@ -2,7 +2,9 @@
 
 本项目以 KDD Cup 2025 Meta CRAG-MM 的公开数据、检索工具和评价代码为实验平台。当前目标是完成课程 M2 数据分析和 M3 纯文本单轮 RAG 基线，M4 再研究多模态、多轮上下文和图像扰动。
 
-截至2026-10-07，A 的轻量验收代码和文档已加入项目；B/C/D/E 的数据、真实检索、生成和评分入口尚待实现。仓库没有真实 M2 EDA 或 M3 实验结果。开发样例测试不能替代真实 smoke 或正式实验。
+截至2026-10-10，B 已提交 M2 EDA、固定 manifest 和 smoke20/dev50/eval200 数据；C 已提交 Web 文本检索入口及真实 smoke20/dev50 证据。A 已补充缓存诊断、跨电脑路径映射验收和 top_k 对比准备代码。仓库尚未提交 D/E 的正式生成与评分结果，完整实验仍未冻结。开发样例测试不能替代真实实验。
+
+本次接手采用固定 `top_k=5`，不添加 `fetch_k`，不声称参数最优。具体检查、运行命令及群内交接消息见 [C 参数确认与接手说明](docs/M3/C_parameter_handoff.md)。本机没有检索索引/BGE，参数对比仅准备代码，尚未实际执行。
 
 ## 研究问题与阶段范围
 
@@ -101,7 +103,7 @@ B 下载 Single/Multi **QA数据**；C 在 M3 只准备 Web索引/BGE，做仅�
 
 ## 其他角色待实现入口
 
-以下是约定，**目前尚未实现或验证**：
+以下为统一入口约定；C 的 retrieve 已实现并提交真实结果，D/E 的生成与评价入口在当前仓库尚未提交：
 
 ```text
 python preprocessing/prepare_data.py --config experiments/m3/data.json --output-dir data/processed/m3
@@ -129,11 +131,11 @@ fixtures/synthetic/                 开发样例，不混入正式数据/结果
 
 目标20/50/200、seed42是方案建议。B按session、可识别共享图像和重复问题分组，A确认实际数量与编号。尽早确定三个集合完整ID清单并写manifest，先交smoke，后续dev/eval沿用同一manifest。manifest原字节SHA256写入所有逐题行；变更时发布一致新包并重新验收，不能只改旧结果哈希。
 
-候选生成模型为同款 Llama-3.2-11B-Vision-Instruct API，提供商、账号可用性、课程允许在线推理和实际参数待A/D确认；B0/B1使用同一家、同一模型和公共参数。裁判替换与官方tokenizer权限待A/E确认。目前没有API联调、数据集合或正式冻结证据，详见 [冻结记录](experiments/m3/freeze_record.json)。
+候选生成模型为同款 Llama-3.2-11B-Vision-Instruct API，提供商、账号可用性、课程允许在线推理和实际参数待A/D确认；B0/B1使用同一家、同一模型和公共参数。裁判替换与官方tokenizer权限待A/E确认。数据和检索结果已提交，API联调和正式生成/评分证据尚未提交到本仓库，详见 [冻结记录](experiments/m3/freeze_record.json)。
 
 使用相应提供商时，变量名为 `NVIDIA_API_KEY` 或 `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`；E可能还需tokenizer访问凭证。A检查不读取这些变量。实际调用者在本机配置，密钥不写JSON、Git、日志或报告。
 
-当前 `.gitignore` 忽略 `data/`、`search_indices/`、`checkpoints/`、虚拟环境及密钥文件。manifest与集合位于被忽略的data目录，需要通过文件交接保留；Git提交不能替代数据包版本和哈希记录。
+当前仓库已跟踪 manifest、处理后的问题/答案/metadata 及审查过的检索结果。`.gitignore` 忽略 `search_indices/`、`checkpoints/`、虚拟环境及密钥文件；大型索引和模型不进 Git。传输和提交后仍须核对数据包版本与原始字节哈希。
 
 C 的 empty是成功搜索零证据，error是技术故障。D B1在empty时可正常回答，error/missing默认blocked；API故障/空响应不能变拒答。usage始终对象，未返回用量时两个token值为null。
 

@@ -88,6 +88,11 @@ class RetrievalConfig:
     def from_dict(cls, config: dict[str, Any]) -> "RetrievalConfig":
         if not isinstance(config, dict):
             raise ConfigError("retrieval config must be a JSON object")
+        if "fetch_k" in config:
+            raise ConfigError(
+                "fetch_k is not implemented; top_k controls the raw chunk query "
+                "and the final page cap. Remove fetch_k instead of silently ignoring it."
+            )
         merged = {**_DEFAULTS, **config}
 
         for key in ("index_repo", "index_revision", "encoder_id", "encoder_revision"):

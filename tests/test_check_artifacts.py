@@ -125,6 +125,132 @@ class ArtifactCheckerTests(unittest.TestCase):
             judge_status="unscored", verdict=None, score=None, agent_response_scored=None,
             scoring_method="unscored", error_code="SYNTHETIC_GENERATION_FAILED"), index)
 
+    def write_portable_run_meta(self, old=r"Z:\C-computer\CH02-01"):
+        """Hash local fixture bytes but preserve a different computer's paths."""
+        config = json.loads((self.directory / "generation.json").read_text(encoding="utf-8"))
+        def recorded(name):
+            return old.rstrip("\\/") + "/" + name if old is not None else name
+        def digest(name):
+            return hashlib.sha256((self.directory / name).read_bytes()).hexdigest()
+        meta = {
+            "run_id": self.rows("predictions_b0.jsonl")[0]["run_id"],
+            "stage": "generation", "subset": "smoke", "schema_version": "m3.v1",
+            "baseline": "B0", "code_commit": "synthetic-code-only",
+            "config": config, "config_sha256": canonical_hash(config),
+            "input_files_sha256": {recorded(name): digest(name) for name in ("manifest.json", "questions.jsonl")},
+            "output_files_sha256": {recorded("predictions_b0.jsonl"): digest("predictions_b0.jsonl")},
+            "started_at": "2026-10-10T00:00:00+08:00", "finished_at": "2026-10-10T00:00:01+08:00",
+            "hardware": {"notice": "synthetic portability test; no model called"},
+            "N_expected": 3, "N_success": 3, "N_failed": 0, "retries": 0, "peak_memory_mb": None,
+        }
+        self.write_json("run_meta_portable.json", meta)
+        return meta
+
+    def portable_meta_args(self, *maps):
+        args = ["--config", "generation=" + str(self.directory / "generation.json"),
+                "--run-meta", "generation=" + str(self.directory / "run_meta_portable.json")]
+        for mapping in maps:
+            args.extend(["--path-map", mapping])
+        return tuple(args)
+
+    def test_path_map_verifies_portable_hashes_without_rewriting_sidecar(self):
+        old = r"Z:\C-computer\CH02-01"
+        self.write_portable_run_meta(old)
+        path = self.directory / "run_meta_portable.json"
+        before = path.read_bytes()
+        report = self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+        self.assertEqual(before, path.read_bytes())
+        self.assertEqual([{"old": old, "new": str(self.directory.resolve())}], report["provenance"]["path_mappings"])
+        resolved = report["provenance"]["resolved_files"]
+        self.assertEqual(3, len(resolved))
+        self.assertTrue(all(row["status"] == "verified" and row["mapped_from"] == old for row in resolved))
+        self.assertTrue(all(row["expected_sha256"] == row["actual_sha256"] for row in resolved))
+
+    def test_path_map_matches_windows_slashes_and_case(self):
+        self.write_portable_run_meta("z:/c-COMPUTER/ch02-01")
+        old = r"Z:\C-computer\CH02-01"
+        report = self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+        self.assertTrue(all(row["mapped_from"] == old for row in report["provenance"]["resolved_files"]))
+
+    def test_path_map_uses_longest_directory_prefix(self):
+        old = r"Z:\C-computer\CH02-01"
+        self.write_portable_run_meta(old)
+        report = self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(
+            r"Z:\C-computer" + "=" + str(self.directory / "wrong-parent-target"),
+            old + "=" + str(self.directory)))
+        self.assertTrue(all(row["mapped_from"] == old for row in report["provenance"]["resolved_files"]))
+
+    def test_path_map_does_not_match_a_partial_directory_component(self):
+        self.write_portable_run_meta(r"Z:\C-computer\CH02-010")
+        report = self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(
+            r"Z:\C-computer\CH02-01" + "=" + str(self.directory)))
+        resolved = report["provenance"]["resolved_files"]
+        self.assertTrue(all(row["mapped_from"] is None and row["status"] == "missing" for row in resolved))
+        self.assertIn("run_meta_path", {item["code"] for item in report["warnings"]})
+
+    def test_path_map_does_not_bypass_a_tampered_referenced_file(self):
+        old = r"Z:\C-computer\CH02-01"
+        self.write_json("supporting.json", {"notice": "synthetic original content"})
+        meta = self.write_portable_run_meta(old)
+        digest = hashlib.sha256((self.directory / "supporting.json").read_bytes()).hexdigest()
+        meta["input_files_sha256"][old + "/supporting.json"] = digest
+        self.write_json("run_meta_portable.json", meta)
+        self.write_json("supporting.json", {"notice": "synthetic altered content"})
+        report = self.assert_exit(1, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+        self.assertIn("run_meta_hash", {item["code"] for item in report["errors"]})
+        mismatched = [row for row in report["provenance"]["resolved_files"] if row["status"] == "mismatch"]
+        self.assertEqual(1, len(mismatched))
+        self.assertNotEqual(mismatched[0]["expected_sha256"], mismatched[0]["actual_sha256"])
+
+    def test_invalid_path_maps_are_rejected(self):
+        self.write_portable_run_meta()
+        target = str(self.directory)
+        invalid = (
+            ["=" + target], ["relative/source=" + target], ["Z:drive-relative=" + target],
+            [r"Z:\source="], [r"Z:\source=relative-target"], [r"Z:\source"],
+            [r"Z:\source\..\other=" + target],
+            [r"Z:\source=" + str(self.directory / ".." / "other")],
+            [r"Z:\source=" + target, "z:/SOURCE/=" + target],
+        )
+        for rules in invalid:
+            with self.subTest(rules=rules):
+                report = self.assert_exit(1, baseline="b0", extra=self.portable_meta_args(*rules))
+                self.assertIn("path_map_argument", {item["code"] for item in report["errors"]})
+
+    def test_path_map_rejects_parent_traversal_outside_target(self):
+        old = r"Z:\C-computer\CH02-01"
+        meta = self.write_portable_run_meta(old)
+        meta["input_files_sha256"][old + "/../outside.json"] = "a" * 64
+        self.write_json("run_meta_portable.json", meta)
+        report = self.assert_exit(1, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+        self.assertIn("path_map_escape", {item["code"] for item in report["errors"]})
+        self.assertTrue(any(row["status"] == "rejected" for row in report["provenance"]["resolved_files"]))
+
+    def test_path_map_allows_parent_normalization_that_stays_inside_target(self):
+        old = r"Z:\C-computer\CH02-01"
+        meta = self.write_portable_run_meta(old)
+        digest = meta["input_files_sha256"].pop(old + "/manifest.json")
+        meta["input_files_sha256"][old + "/nested/../manifest.json"] = digest
+        self.write_json("run_meta_portable.json", meta)
+        self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+
+    def test_path_map_accepts_foreign_posix_directory_prefix(self):
+        old = "/home/c-member/CH02-01"
+        self.write_portable_run_meta(old)
+        self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+
+    def test_path_map_accepts_unc_prefix_with_forward_slashes(self):
+        old = r"\\C-COMPUTER\shared\CH02-01"
+        self.write_portable_run_meta("//c-computer/SHARED/CH02-01")
+        self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(old + "=" + str(self.directory)))
+
+    def test_unmatched_relative_run_meta_paths_keep_original_behavior(self):
+        self.write_portable_run_meta(None)
+        report = self.assert_exit(0, baseline="b0", extra=self.portable_meta_args(
+            r"Z:\unrelated-project" + "=" + str(self.directory / "unused")))
+        self.assertTrue(all(row["mapped_from"] is None and row["status"] == "verified"
+                            for row in report["provenance"]["resolved_files"]))
+
     def test_fixture_matches_published_row_schemas(self):
         import jsonschema
         schema = json.loads(SCHEMA.read_text(encoding="utf-8"))

@@ -1,0 +1,36 @@
+{
+  "record_type": "retrieval_baseline_parameter_decision",
+  "decision_date": "2026-10-10",
+  "status": "fixed_baseline_selected_not_quality_optimized",
+  "owner": "A (covering C parameter confirmation)",
+  "selected": {
+    "top_k": 5,
+    "fetch_k": null,
+    "rerank": false,
+    "live_web_fetch": false
+  },
+  "retrieval_config_path": "experiments/m3/retrieval.json",
+  "retrieval_config_sha256": "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98",
+  "dataset_manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+  "basis": [
+    "Original task initializes top_k=5.",
+    "C supplied real smoke20/dev50 caches using this configuration; no empty/error rows.",
+    "Keep the tested baseline configuration and existing evidence rather than claim an unsupported optimum."
+  ],
+  "quality_optimum_proven": false,
+  "fetch_k_implemented": false,
+  "fresh_top_k_comparison_executed": false,
+  "local_index_or_encoder_available": false,
+  "whole_experiment_frozen": false,
+  "evidence": [
+    "docs/M3/retrieval_review/diagnostic.json",
+    "docs/M3/retrieval_review/source_content_review.json"
+  ],
+  "prepared_sweep": "scripts/sweep_retrieval.py",
+  "change_policy": "Compare settings only on dev before final experiment freeze. If changed, preserve old outputs and regenerate matching evidence/config hashes; never select parameters from eval performance.",
+  "dependencies": [
+    "D verifies evidence cleanup and token budget with real requests.",
+    "D/E provide same-model, same-budget dev predictions/scores if optimal answer quality is to be claimed.",
+    "Real sweep or eval retrieval requires the pinned index working copy and BGE encoder on the executing machine."
+  ]
+}

@@ -14,7 +14,7 @@ from collections import Counter
 from datetime import datetime, timezone
 import html
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import re
 import sys
 from typing import Any
@@ -42,6 +42,8 @@ def parser() -> argparse.ArgumentParser:
                         help="Repeat retrieval/generation/evaluation configs; match by canonical hash")
     result.add_argument("--run-meta", action="append", default=[], metavar="STAGE=PATH",
                         help="Repeat stage run metadata sidecars")
+    result.add_argument("--path-map", action="append", default=[], metavar="OLD=NEW",
+                        help="Map an absolute run-meta directory prefix to a local absolute directory; hashes remain unchanged")
     result.add_argument("--group-metadata", action="append", type=Path, default=[],
                         help="Other subsets' complete metadata for session/image grouping checks")
     result.add_argument("--group-questions", action="append", type=Path, default=[],
@@ -53,6 +55,15 @@ def parser() -> argparse.ArgumentParser:
 
 def normalized_text(value: str) -> str:
     return " ".join(html.unescape(re.sub(r"<[^>]*>", " ", value)).split())
+
+
+def absolute_portable_path(value: str) -> PureWindowsPath | PurePosixPath | None:
+    """Recognize foreign Windows paths without treating a drive-relative path as absolute."""
+    windows = PureWindowsPath(value)
+    if windows.is_absolute():
+        return windows
+    posix = PurePosixPath(value)
+    return posix if posix.is_absolute() else None
 
 
 def metrics(rows: dict[str, dict[str, Any]], expected: int) -> dict[str, Any]:
@@ -90,6 +101,7 @@ class Checker:
         self.technical_failures = 0
         self.rows: dict[str, dict[str, dict[str, Any]]] = {}
         self.artifact_paths: dict[str, Path] = {}
+        self.path_mappings: list[dict[str, Any]] = []
 
     def issue(self, code: str, message: str, *, file: str | Path | None = None,
               interaction_id: str | None = None, warning: bool = False) -> None:
@@ -521,6 +533,8 @@ class Checker:
                 self.issue("comparison", "Scores comparison must include B0 and B1")
 
     def check_run_meta(self) -> None:
+        if not self.prepare_path_mappings():
+            return
         supplied = []
         for item in self.args.run_meta:
             stage, separator, path_text = item.partition("=")
@@ -576,17 +590,34 @@ class Checker:
                     self.issue("run_meta_hash", "Run file hashes must be nonempty objects", file=path)
                     continue
                 for filename, digest in mapping.items():
-                    target = Path(filename)
-                    if not target.is_absolute():
-                        target = path.parent / target
+                    resolution = {"run_meta": str(path), "hash_field": field,
+                                  "original_path": filename, "expected_sha256": digest,
+                                  "actual_sha256": None}
+                    try:
+                        target, mapped_from = self.resolve_run_meta_file(filename, path)
+                    except ContractError as exc:
+                        self.issue("path_map_escape", str(exc), file=path)
+                        resolution.update(resolved_path=None, mapped_from=None, status="rejected")
+                        self.report["provenance"]["resolved_files"].append(resolution)
+                        continue
+                    resolution.update(resolved_path=str(target), mapped_from=mapped_from)
                     if not re.fullmatch(r"[0-9a-f]{64}", str(digest)):
                         self.issue("run_meta_hash", "Invalid run file SHA256", file=path)
+                        resolution["status"] = "invalid_hash"
                     elif target.is_file():
-                        if file_sha256(target) != digest:
+                        actual_digest = file_sha256(target)
+                        resolution.update(actual_sha256=actual_digest,
+                                          status="verified" if actual_digest == digest else "mismatch")
+                        if mapped_from is not None:
+                            # The report may not overwrite a newly located input.
+                            self.report["input_files_sha256"][str(target)] = actual_digest
+                        if actual_digest != digest:
                             self.issue("run_meta_hash", "Referenced file bytes differ", file=target)
                     else:
                         self.issue("run_meta_path", "Referenced file is unavailable", file=target,
                                    warning=not self.args.require_provenance)
+                        resolution["status"] = "missing"
+                    self.report["provenance"]["resolved_files"].append(resolution)
             supplied.append((stage, value))
         for label, rows in self.rows.items():
             stage = {"evidence": "retrieval", "predictions": "generation", "compare_predictions": "generation",
@@ -634,6 +665,62 @@ class Checker:
                 success = sum(row[status] in ({"ok", "empty"} if stage == "retrieval" else {"ok"}) for row in rows.values())
                 if value["N_success"] != success or value["N_failed"] != len(self.expected) - success:
                     self.issue("run_meta_count", f"{label} counts differ from artifact status rows")
+
+    def prepare_path_mappings(self) -> bool:
+        """Validate relocation rules without modifying metadata/configuration bytes."""
+        self.report["provenance"]["path_mappings"] = []
+        self.report["provenance"]["resolved_files"] = []
+        seen = set()
+        valid = True
+        for rule in getattr(self.args, "path_map", []):
+            old, separator, new = rule.partition("=")
+            source = absolute_portable_path(old) if old.strip() and "\0" not in old else None
+            destination = Path(new) if new.strip() and "\0" not in new else None
+            if (not separator or source is None or destination is None or
+                not destination.is_absolute() or ".." in source.parts or ".." in destination.parts):
+                self.issue("path_map_argument", "Use --path-map with absolute OLD and local absolute NEW directory prefixes, without '..'")
+                valid = False
+                continue
+            windows = isinstance(source, PureWindowsPath)
+            parts = tuple(part.casefold() for part in source.parts) if windows else source.parts
+            key = (windows, parts)
+            if key in seen:
+                self.issue("path_map_argument", "Duplicate OLD directory prefix in --path-map")
+                valid = False
+                continue
+            seen.add(key)
+            try:
+                destination = destination.resolve()
+            except (OSError, ValueError, RuntimeError):
+                self.issue("path_map_argument", "NEW directory prefix could not be resolved")
+                valid = False
+                continue
+            self.path_mappings.append({"old": old, "parts": parts, "windows": windows,
+                                       "destination": destination})
+            self.report["provenance"]["path_mappings"].append({"old": old, "new": str(destination)})
+        self.path_mappings.sort(key=lambda item: len(item["parts"]), reverse=True)
+        return valid
+
+    def resolve_run_meta_file(self, filename: str, sidecar: Path) -> tuple[Path, str | None]:
+        """Relocate complete components, then enforce the mapped root boundary."""
+        source = absolute_portable_path(filename)
+        if source is not None:
+            windows = isinstance(source, PureWindowsPath)
+            parts = tuple(part.casefold() for part in source.parts) if windows else source.parts
+            for mapping in self.path_mappings:
+                prefix = mapping["parts"]
+                if windows == mapping["windows"] and parts[:len(prefix)] == prefix:
+                    root = mapping["destination"]
+                    try:
+                        target = root.joinpath(*source.parts[len(prefix):]).resolve()
+                    except (OSError, ValueError, RuntimeError) as exc:
+                        raise ContractError("Mapped run-meta path could not be resolved") from exc
+                    if not target.is_relative_to(root):
+                        raise ContractError("Mapped run-meta path escapes the NEW directory prefix")
+                    return target, mapping["old"]
+        # No relocation applies: retain the original sidecar-relative behavior.
+        target = Path(filename)
+        return (target if target.is_absolute() else sidecar.parent / target), None
 
     def run(self) -> dict[str, Any]:
         if not self.initialize():

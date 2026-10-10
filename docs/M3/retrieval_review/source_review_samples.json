@@ -1,0 +1,288 @@
+[
+  {
+    "interaction_id": "03671829-3cd0-4b3b-83a1-01871c22bae5",
+    "query": "How many states are in the country whose national bird is this animal?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://blog.batchgeo.com/national-birds/_chunk_0",
+        "rank": 1,
+        "score": 0.8232043385505676,
+        "score_kind": "similarity",
+        "text": "Most people know that the Bald Eagle represents the United States. But can you name the national bird of Argentina or Luxembourg? A total of 114 countries are represented by one avian species or another—whether officially or unofficially. In fact, some have more than one!Notably, most Caribbean countries have official national birds, that is, aside from Puerto Rico. The Puerto Rican spindalis, also known as reina mora, may be native to the island country, yet it’s still only connected to Puerto Rico unofficially. These birds help in seed dispersal and plant reproduction, making them a key part of the Puerto Rican ecosystem. Most of the 120 birds on the map are officially designated. Yet some hold only an unofficial status. In total, 91 are official national birds. The remaining 29—though not official—still have meaning to their associated countries. Canadian Geographic magazine suggested the bird should be validated, but the federal government has yet to acknowledge the proposal. The 29 countries without an official national bird aren’t only made up of places like Puerto Rico and Canada that have no official national bird. Group the map by “Official status” to learn more, because we’re flying to the most bird-happy nations. We’ve already mentioned two of the countries with multiple national birds, Pakistan and Poland.",
+        "title": "120 of the World’s National Birds on a Map - BatchGeo Blog",
+        "url": "https://blog.batchgeo.com/national-birds/"
+      },
+      {
+        "doc_id": "https://en.wikipedia.org/wiki/List_of_U.S._state_birds_chunk_1",
+        "rank": 2,
+        "score": 0.8194534778594971,
+        "score_kind": "similarity",
+        "text": "List of U.S. state birds - Wikipedia",
+        "title": "List of U.S. state birds - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/List_of_U.S._state_birds"
+      }
+    ]
+  },
+  {
+    "interaction_id": "269a792a-1516-48f3-bfa1-ccf7e689d57f",
+    "query": "Can I get this Dog easily in the UK?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://www.thekennelclub.org.uk/getting-a-dog/buying-a-dog/overseas-registration/_chunk_1",
+        "rank": 1,
+        "score": 0.7814276814460754,
+        "score_kind": "similarity",
+        "text": "Important information about importing, re-importing and exporting dogs to/from the UK and how to apply for an Authority to Complete (ATC) number.Toggle Menu Registrations Shop Young Kennel Club Login Toggle Search Basket items ... If your dog is registered with an overseas kennel club but living in the United Kingdom, you can apply to import it, whereas owners of UK-registered dogs moving overseas can apply for an export. If the dog resides in the UK, it cannot receive an ATC number and must instead undergo a full import. Details on how to do this can be found below. Information on applying for an authority to compete (ATC) number (Ireland and the Channel Islands) If your dog is registered with either the Irish Kennel Club, Guernsey Kennel Club or Kennel Club of Jersey, and is residing in the United Kingdom, you can apply for an import with an application for the registration of an imported dog (form 4). If the bitch is returned to the country of origin without leaving quarantine after whelping, then it does not need to be registered with The Kennel Club. The litter registration form should be accompanied by certified Three Generation Pedigrees of both dam and sire from the country of origin. I own a kennel name. Can I add to the name of the dog I am importing? My dog has won international titles. Can these be recorded? The Kennel Club will only record a title won at a national show from the country of origin. Please submit a copy of the award with the application. How long does it take for the import to be processed?",
+        "title": "Overseas registrations | The Kennel Club",
+        "url": "https://www.thekennelclub.org.uk/getting-a-dog/buying-a-dog/overseas-registration/"
+      },
+      {
+        "doc_id": "https://rescue-dogs.org.uk/adopt/dogs/872-maddie.html_chunk_2",
+        "rank": 2,
+        "score": 0.753122091293335,
+        "score_kind": "similarity",
+        "text": "Maddie is a young little lady, about 5 months old. She&#x27;s very sweet tempered and if you give her a chance, she promises to make you smile every day!Maddie ❤️ Adopted and home! Maddie is a young little lady, about 5 months old. She's very sweet tempered and if you give her a chance, she promises to make you smile every day! Click on the button below to see our available dogs or scroll down to see more details about Maddie`s new life! Maddie was adopted and now it`s heading for a much better life. But our shelter is still full and many other dogs wait to be adopted.",
+        "title": "Maddie | Medium Size Black and white Puppy Female Sociable | Rescue Dogs Romania",
+        "url": "https://rescue-dogs.org.uk/adopt/dogs/872-maddie.html"
+      }
+    ]
+  },
+  {
+    "interaction_id": "3cad8c87-492b-4c0d-bc24-3aff5f6a653f",
+    "query": "What is the typical serving size of this?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://seaveg.com/products/laver-granules-wild-atlantic-nori-organic_chunk_3",
+        "rank": 1,
+        "score": 0.7898824214935303,
+        "score_kind": "similarity",
+        "text": "Premium laver (Porphyra spp.) granules in bulk. Our laver is sustainably wild-harvested in the pristine waters of the North Atlantic Ocean is tested for quality and contaminants, ensuring you get the best product possible. Containing iodine, B vitamins, and essential minerals like iron, magnesium, ...Premium laver (Porphyra spp.) granules in bulk. Our laver is sustainably wild-harvested in the pristine waters of the North Atlantic Ocean is tested for quality and contaminants, ensuring you get the best product possible. Containing iodine, B vitamins, and essential minerals like iron, magnesium, manganese, and zinc, laver is a powerhouse of nutrition. What's more, laver contains more protein than other sea vegetables and is a great source of high-quality protein for vegetarians. Sprinkle these granules onto soups, salads, pasta, potatoes, or any dish needing a subtle, salty savory taste. Laver flakes are an easy way to add nutrition to your meals! High in protein: Laver contains about 40% protein by weight - more than any other sea vegetable we sell!",
+        "title": "Organic Laver Granules Bulk (Porphyra umbilicalis) - \"Wild Atlantic Nori\" - Wild-Harvested Sea Vegetable",
+        "url": "https://seaveg.com/products/laver-granules-wild-atlantic-nori-organic"
+      },
+      {
+        "doc_id": "https://www.cortlandaux.com/dining-services/nutrition-services-1/nutrition-articles/portions_chunk_0",
+        "rank": 2,
+        "score": 0.7851748466491699,
+        "score_kind": "similarity",
+        "text": "Making Sense of Serving Sizes",
+        "title": "Making Sense of Serving Sizes",
+        "url": "https://www.cortlandaux.com/dining-services/nutrition-services-1/nutrition-articles/portions"
+      }
+    ]
+  },
+  {
+    "interaction_id": "50558f08-95a7-450e-bdb1-640a300cc4f1",
+    "query": "how many color options are there for this phone?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://www.tomsguide.com/news/samsung-galaxy-s23-colors_chunk_0",
+        "rank": 1,
+        "score": 0.8238763809204102,
+        "score_kind": "similarity",
+        "text": "Samsung&#x27;s streamlined its color options somewhat this year, with the four basic colors on offer whether you pick a Galaxy S23, Galaxy S23 Plus or Galaxy S23 Ultra. But then if those aren&#x27;t enough for you, there are a few extra options if you&#x27;re prepared to buy your phone directly from Samsung.Take a look at the color options for all three Galaxy S23 models Samsung's streamlined its color options somewhat this year, with the four basic colors on offer whether you pick a Galaxy S23, Galaxy S23 Plus or Galaxy S23 Ultra. But then if those aren't enough for you, there are a few extra options if you're prepared to buy your phone directly from Samsung. Samsung's offering four colors for the Galaxy S23 series, including the Plus and Ultra models. Those are, as seen on the Galaxy S23 Plus models below: Green, Phantom Black, Cream, and Lavender. ... You can see these colors on the Galaxy S23 Ultra below too. Unlike previous years, there aren't unique hues for the Ultra model in the regular slate of color options. While the leaks published prior to launch gave us a very good idea of what to expect on Galaxy Unpacked day, we now have the official details on the Samsung Galaxy S23 color options just in time for you to place your Galaxy S23 preorder.",
+        "title": "Samsung Galaxy S23 colors — here are your options | Tom's Guide",
+        "url": "https://www.tomsguide.com/news/samsung-galaxy-s23-colors"
+      },
+      {
+        "doc_id": "https://www.techradar.com/news/samsung-galaxy-s23-colors-every-rumored-shade-including-the-s23-plus-and-ultra_chunk_1",
+        "rank": 2,
+        "score": 0.7951622009277344,
+        "score_kind": "similarity",
+        "text": "And if you still haven&#x27;t decided ... a look at all the best offers available. Note that with the exception of Sky Blue and Red, every color is available for every Galaxy S23 model....The Samsung Galaxy S23 series is here, and if you're planning to buy one, then as well as choosing which model to get, you also need to decide on the color. There's no shortage of options there, particularly if you buy direct from Samsung.com, where a selection of additional exclusive colors can be found. But to help you out you'll find an overview of every option below. And if you still haven't decided which phone to buy, we can help you there too – check out our complete Samsung Galaxy S23 review, our thorough Samsung Galaxy S23 Plus review, and our full Samsung Galaxy S23 Ultra review for our impressions of each new device. Then head on over to our Samsung Galaxy S23 deals page for a look at all the best offers available. Note that with the exception of Sky Blue and Red, every color is available for every Galaxy S23 model. You can also get the Samsung Galaxy S23, Galaxy S23 Plus and Samsung Galaxy S23 Ultra in green, and this shade is one of the most interesting options, simply because it's not a particularly common color for a phone. It's worth noting that there's also a green option for the Samsung Galaxy S22 series, but that's a lot bolder than this one. Of course, there’s more than one type of black, and the way light diffuses on the phones' Gorilla Glass Victus 2 back shows that there's a dark metallic grey quality to it as well, that adds a little interest. Samsung clearly isn't interested in bright, bold or flashy shades with this line of phones. ... The four colors above are widely available for the Samsung Galaxy S23 series, but Lime is one of a number of shades that you can only get from Samsung.com. That means it will probably be less common than the options above, simply because fewer people will know about it or be able to get it.",
+        "title": "Samsung Galaxy S23 colors: every shade, including the S23 Plus and Ultra | TechRadar",
+        "url": "https://www.techradar.com/news/samsung-galaxy-s23-colors-every-rumored-shade-including-the-s23-plus-and-ultra"
+      }
+    ]
+  },
+  {
+    "interaction_id": "6e626fdd-3815-4e74-a1be-3fdff5201e6f",
+    "query": "what color are the blooms on this plant?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://www.pacificbulbsociety.org/pbswiki/index.php/AlliumFlavumRelatives_chunk_2",
+        "rank": 1,
+        "score": 0.7721173167228699,
+        "score_kind": "similarity",
+        "text": "Allium carinatum L. is from much of Europe into Asia, naturalized elsewhere (the Brittish Isles). Informal sprays of little rose-purple, rose-pink, to white flowers dangling on very long slender pedicels, sometimes with bulbils (though many selections are bulbil-free).Allium carinatum ssp. pulchellum (G.Don) Bonnier & Layens is a European species that is very close to Allium flavum, flowering at the same time in June or July depending on the variety grown. The second photo is of a a dwarf bluish-purple form and a creamy white form, collected on Mt. Olympus, Greece. This is the plant that was offered by Hoog & Dix as a blue-flowered form of Allium flavum ssp. tauricum, but it is undoubtedly a \"pulchellum\" variant. Since the photograph shows such a confusing jumble of flowers, I circled the topic species in red. Allium carinatum ssp. pulchellum f. album is a white form often sold by Dutch bulb dealers. Photos below by Travis Owen of an adaptable selection. It has thrived in sun and shade, though it flowers better in the sun. The leaves are nearly evergreen in irrigated beds, dying down after new leaves have already broke the soil surface. Allium convallarioides Grossh. is a European species that's not generally in cultivation. It is a pleasing species with handsome umbels of white flowers. It is similar in appearance to Allium paniculatum L. and Allium pallens L., but in this species the slightly \"ballooned\" hollow leaves distinguish it from the other species.",
+        "title": "Allium flavum relatives | Pacific Bulb Society",
+        "url": "https://www.pacificbulbsociety.org/pbswiki/index.php/AlliumFlavumRelatives"
+      },
+      {
+        "doc_id": "https://www.epicgardening.com/types-of-flowers/_chunk_8",
+        "rank": 2,
+        "score": 0.7684749960899353,
+        "score_kind": "similarity",
+        "text": "Finding the right flowers for your home or garden can be very challenging. Not only do you have to think about seasonality, but you have to consider color, climate, environment, sunlight, and more. In this article, gardening enthusiast Jason Wilson walks through over three hundred different ...Finding the right flowers for your home or garden can be very challenging. Not only do you have to think about seasonality, but you have to consider color, climate, environment, sunlight, and more. In this article, gardening enthusiast Jason Wilson walks through over three hundred different types of flowers including their names and pictures of each! This evergreen perennial exotic flower is sometimes called the Tail Flower. It has been awarded the RHS Garden Merit Award. It can bloom all year long in the right conditions, with one plant producing four to six flowers throughout the year. Flowers are six inches long, usually red in color, waxy in appearance, and have a tail-shaped spadic. Are you looking to add some flowers to your home or garden but aren't sure which to add? Explore over 300 different types of flowers! The flowers are star-shaped and arranged in clusters on top of sturdy stems. Bluestar is low maintenance, pest and disease resistant, and native to the US, making it a top choice for all American gardens. It needs moist and loamy soils to thrive.  · Another name for these little beauties is Quaker Ladies. ... Also known as Quaker Ladies, this is a flowering perennial plant that boasts delicate and compact blooms.",
+        "title": "301 Different Types of Flowers With Names and Pictures",
+        "url": "https://www.epicgardening.com/types-of-flowers/"
+      }
+    ]
+  },
+  {
+    "interaction_id": "8bb479e6-8c83-4536-a41d-accef6883b4f",
+    "query": "what is the lifespan of this tree?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://bigtree.cnre.vt.edu/lifespan.html_chunk_0",
+        "rank": 1,
+        "score": 0.8981955051422119,
+        "score_kind": "similarity",
+        "text": "Tree Lifespans",
+        "title": "Tree Lifespans",
+        "url": "https://bigtree.cnre.vt.edu/lifespan.html"
+      },
+      {
+        "doc_id": "https://www.answers.com/biology/What_is_the_average_lifespan_of_a_ficus_tree_chunk_0",
+        "rank": 2,
+        "score": 0.8471421003341675,
+        "score_kind": "similarity",
+        "text": "What is the average lifespan of a ficus tree? - Answers",
+        "title": "What is the average lifespan of a ficus tree? - Answers",
+        "url": "https://www.answers.com/biology/What_is_the_average_lifespan_of_a_ficus_tree"
+      }
+    ]
+  },
+  {
+    "interaction_id": "a7ba68d1-f241-44f8-93b9-c8fb0d2709ef",
+    "query": "what features would that need to have in order to be considered ergonomic?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://www.quora.com/What-are-some-ergonomic-features-of-computer-workstation-office-furniture_chunk_0",
+        "rank": 1,
+        "score": 0.8046368360519409,
+        "score_kind": "similarity",
+        "text": "What are some ergonomic features of computer workstation office furniture? - Quora",
+        "title": "What are some ergonomic features of computer workstation office furniture? - Quora",
+        "url": "https://www.quora.com/What-are-some-ergonomic-features-of-computer-workstation-office-furniture"
+      },
+      {
+        "doc_id": "https://rework-furniture.com/blogs/think-outside-the-cubicle/9-necessary-features-of-a-good-ergonomic-office-chair_chunk_1",
+        "rank": 2,
+        "score": 0.7934284806251526,
+        "score_kind": "similarity",
+        "text": "Ergonomic office chairs are essential for any workspace. They help you remain comfortable during long hours of work and can reduce the risk of injuries associated with poor posture and a sedentary lifestyle. If you want to better protect your team’s overall health and well-being, it’s vital ...Ergonomic office chairs are essential for any workspace. They help you remain comfortable during long hours of work and can reduce the risk of injuries associated with poor posture and a sedentary lifestyle. If you want to better protect your team’s overall health and well-being, it’s vital to find the right chair. Not every chair is ergonomic. Learn about the necessary features all good ergonomic office chairs should have and why these aspects are crucial to performance. Being able to adjust the width and depth of the seat is also an important aspect of ergonomic chairs to consider. By adjusting the seat depth with a slider, the legs are properly supported while sitting. Sitting this way reduces pressure on the back and hips, providing better support, and ultimately promoting good posture. Having the flexibility to pull up a chair to a conference table or perch next to a colleague for an ad hoc meeting is an important detail to consider. This is great for overall workplace flexibility, allowing individuals to feel comfortable working in a variety of places. When it comes to having a comfortable and safe workspace, an ergonomic office chair is an essential piece of furniture. Ergonomic chairs provide the perfect combination of comfort and support, promoting better posture and keeping you feeling good throughout the day.",
+        "title": "9 Necessary Features of a Good Ergonomic Office Chair – Rework Office Furniture",
+        "url": "https://rework-furniture.com/blogs/think-outside-the-cubicle/9-necessary-features-of-a-good-ergonomic-office-chair"
+      }
+    ]
+  },
+  {
+    "interaction_id": "b506f1ba-46b8-45d8-a57f-457b09b1fbf8",
+    "query": "how does the tartness of these compare to granny smith apples?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://www.orangepippin.com/varieties/apples/granny-smith_chunk_5",
+        "rank": 1,
+        "score": 0.8631506562232971,
+        "score_kind": "similarity",
+        "text": "By the 1960s Granny Smith was practically syonymous with &#x27;apple&#x27; and the variety was used by the Beatles as the logo for their company &#x27;Apple Records&#x27;. Granny Smith was one of the original staple supermarket varieties, and one of the first international varieties, a role for which it was well ...Perhaps the most instantly recognisable of all apple varieties and one of the most widely known, Granny Smith is also one of Australia's most famous exports. Granny Smith pre-dates the modern approach to apple development and marketing. Like all the best old varieties it has a bizarre history, being discovered in Austrialia in the 1860s as a seedling growing in the remains of a rubbish tip. The discoverer - a Mrs Maria Smith (sometimes referred to as Mary Smith but see note below) - found that the apple was versatile for cooking and eating, and was involved in spreading its popularity. In an inspired piece of marketing she called the new apple Granny Smith. By the 1960s Granny Smith was practically syonymous with 'apple' and the variety was used by the Beatles as the logo for their company 'Apple Records'. Granny Smith was one of the original staple supermarket varieties, and one of the first international varieties, a role for which it was well suited. In the northern hemisphere it is grown in France and the warmer zones of North America. The trademark apple-green skin requires warm days and nights - we have seen Granny Smiths grown at a relatively high altitude in central France which develop a blush because of the cold night temperatures towards the end of the growing season.",
+        "title": "Apple - Granny Smith - tasting notes, identification, reviews",
+        "url": "https://www.orangepippin.com/varieties/apples/granny-smith"
+      },
+      {
+        "doc_id": "https://www.reddit.com/r/unpopularopinion/comments/15q4iuk/granny_smith_are_the_best_apples/?rdt=61513_chunk_1",
+        "rank": 2,
+        "score": 0.8513398766517639,
+        "score_kind": "similarity",
+        "text": "Granny Smith are the best apples. : r/unpopularopinion",
+        "title": "Granny Smith are the best apples. : r/unpopularopinion",
+        "url": "https://www.reddit.com/r/unpopularopinion/comments/15q4iuk/granny_smith_are_the_best_apples/?rdt=61513"
+      }
+    ]
+  },
+  {
+    "interaction_id": "d998d529-026c-49f5-a673-e3450c4db395",
+    "query": "what's the typical blooming period for this plant?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://blossmcart.com/blog/when-do-roses-bloom/_chunk_1",
+        "rank": 1,
+        "score": 0.7976306676864624,
+        "score_kind": "similarity",
+        "text": "The Blooming Cycle of Roses",
+        "title": "The Blooming Cycle of Roses",
+        "url": "https://blossmcart.com/blog/when-do-roses-bloom/"
+      },
+      {
+        "doc_id": "https://www.gardenguides.com/12534294-when-do-dandelions-bloom/_chunk_1",
+        "rank": 2,
+        "score": 0.7949730157852173,
+        "score_kind": "similarity",
+        "text": "A single flower produces up to 400 seeds, but averages 180. Seeds ripen from nine to 12 days after the flowers bloom. The Garden Organic website notes that about 90 percent of the seeds germinate.Despite being maligned for blooming where homeowners and turf managers don't want it, the dandelion is also blooming commercially. U.S. consumers bit into $2 million of fresh dandelion greens in a one-year period ending in March 2009, according to \"The Wall Street Journal.\" Their seedlings develop into a rosette of leaves on the soil's surface and produce flowers on hollow stalks. The flowers bloom about eight to 15 weeks after germination at the end of the seedling stage. Individual plants bloom continuously while active, but most profusely in May and June. A single flower produces up to 400 seeds, but averages 180. Seeds ripen from nine to 12 days after the flowers bloom. The Garden Organic website notes that about 90 percent of the seeds germinate.",
+        "title": "When Do Dandelions Bloom?",
+        "url": "https://www.gardenguides.com/12534294-when-do-dandelions-bloom/"
+      }
+    ]
+  },
+  {
+    "interaction_id": "efe0f64e-fbea-4b0e-b8a7-118e1433d35c",
+    "query": "how many locations do they have in new york city?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://app.foursquare.com/locations/7-eleven/new-york-city_chunk_0",
+        "rank": 1,
+        "score": 0.7897767424583435,
+        "score_kind": "similarity",
+        "text": "NYC is finally getting the 7-11&#x27;s we deserved!7-11 is planning to open hundreds of new stores in Manhattan - driving local bodegas out. NYC is mall-like enough for my taste already so I'm recommending a city-wide boycott of 7-11. Find 7-Eleven locations near you. See hours, menu, directions, photos, and tips for the 73 7-Eleven locations in New York City.",
+        "title": "7-Eleven locations in New York City - See hours, menu, directions, tips, and photos.",
+        "url": "https://app.foursquare.com/locations/7-eleven/new-york-city"
+      },
+      {
+        "doc_id": "https://www.lyft.com/hub/hours/new-york_chunk_0",
+        "rank": 2,
+        "score": 0.7796453237533569,
+        "score_kind": "similarity",
+        "text": "New York Service Locations and Hours",
+        "title": "New York Service Locations and Hours",
+        "url": "https://www.lyft.com/hub/hours/new-york"
+      }
+    ]
+  },
+  {
+    "interaction_id": "64f788ec-d00a-4261-a14a-bfcce23250b1",
+    "query": "who is the founder of the company that produces this?",
+    "selection": "manifest_every_fifth_plus_lowest_top1_score",
+    "review_status": "unreviewed",
+    "hits": [
+      {
+        "doc_id": "https://www.kaercher.com/hk/inside-kaercher/company.html_chunk_0",
+        "rank": 1,
+        "score": 0.7226707935333252,
+        "score_kind": "similarity",
+        "text": "Company",
+        "title": "Company",
+        "url": "https://www.kaercher.com/hk/inside-kaercher/company.html"
+      },
+      {
+        "doc_id": "https://www.yum.com/company/_chunk_0",
+        "rank": 2,
+        "score": 0.7226707935333252,
+        "score_kind": "similarity",
+        "text": "Company",
+        "title": "Company",
+        "url": "https://www.yum.com/company/"
+      }
+    ]
+  }
+]
