@@ -8,7 +8,7 @@
   "is_frozen": false,
   "frozen_at": null,
   "frozen_by": null,
-  "notice": "B has supplied the actual manifest and smoke/dev/eval data; C has supplied real smoke20/dev50 retrieval artifacts. Retrieval-only baseline parameters are selected, not proven optimal. Whole-experiment freeze remains pending generation/evaluation/API/course-permission evidence.",
+  "notice": "B data and C dev50 top-k retrieval are structurally verified. D real smoke/dev B0 and B1 k1/k3/k5 predictions and requests pass handoff checks. E scoring/tokenizer calibration remains pending; k5 is a fixed baseline, not a proven optimum, and the whole experiment is not frozen.",
   "verified_items": {
     "interface_source": "docs/M2_M3_execution/01统一接口与验收.txt",
     "schema_source": "docs/M2_M3_execution/接口字段.schema.json",
@@ -52,7 +52,7 @@
       "diagnostic": "docs/M3/retrieval_review/diagnostic.json",
       "source_content_review": "docs/M3/retrieval_review/source_content_review.json",
       "parameter_decision": "experiments/m3/retrieval_decision.json",
-      "fresh_local_index_run": false,
+      "fresh_local_index_run": true,
       "answer_quality_verified": false,
       "structural_acceptance": {
         "smoke": "docs/M3/retrieval_review/smoke_acceptance.json",
@@ -63,7 +63,18 @@
         ],
         "original_run_meta_unmodified": true,
         "index_not_rerun": true
-      }
+      },
+      "local_reproduction_review": "docs/M3/retrieval_review/local_environment_verification.json"
+    },
+    "generation_review": {
+      "source_commit": "fd89064443595e801b397ad0907f7cd098f0154f",
+      "review": "docs/M3/retrieval_review/cd_generation_review.json",
+      "formal_prediction_rows": 240,
+      "strict_dev_acceptance_passed": true,
+      "prompt_input_review": "240 logged requests contain two text messages; prediction, request and actual-message hashes agree",
+      "answer_quality_verified": false,
+      "boundary_regression_tests_passed": 11,
+      "full_tests_passed": 145
     }
   },
   "planned_scope": {
@@ -130,13 +141,15 @@
       "top_k_confirmed": 5,
       "fetch_k_implemented": false,
       "top_k_optimum_proven": false,
-      "parameter_decision_path": "experiments/m3/retrieval_decision.json"
+      "parameter_decision_path": "experiments/m3/retrieval_decision.json",
+      "dev_top_k_execution": "results/m3/dev_topk_sweep_run1/execution.json",
+      "local_sixteen_gb_ram_smoke_report": "docs/M3/retrieval_review/local_environment_verification.json"
     },
     "generation": {
-      "status": "pending",
+      "status": "real_predictions_and_request_contracts_verified_provider_declared",
       "model_family_proposal": "Llama-3.2-11B-Vision-Instruct",
-      "provider": null,
-      "model_id": null,
+      "provider": "nvidia",
+      "model_id": "meta/llama-3.2-11b-vision-instruct",
       "model_revision": null,
       "api_access_verified": false,
       "account_budget_confirmed": false,
@@ -146,11 +159,12 @@
       "seed_supported": null,
       "evidence_token_budget_proposal": 1500,
       "parameters_frozen": null,
-      "config_path": null,
-      "config_sha256": null,
+      "config_path": "experiments/m3/generation.json",
+      "config_sha256": "dee0e5ea47324393e87687794da30c00b91e5f7f3f31203e18b7bdea79342502",
       "public_prompt_sha256": null,
-      "b0_b1_same_model_and_parameters_verified": false,
-      "input_leakage_review": null
+      "b0_b1_same_model_and_parameters_verified": true,
+      "input_leakage_review": "docs/M3/retrieval_review/cd_generation_review.json",
+      "d_reported_real_api_runs": true
     },
     "evaluation": {
       "status": "pending",
@@ -169,11 +183,19 @@
   },
   "evidence_status": {
     "real_smoke_validation_report": "docs/M3/retrieval_review/smoke_acceptance.json",
-    "formal_prediction_files": [],
+    "formal_prediction_files": [
+      "results/m3/smoke/predictions_b0.jsonl",
+      "results/m3/smoke/predictions_b1.jsonl",
+      "results/m3/dev/predictions_b0.jsonl",
+      "results/m3/dev_topk_sweep_run1/top_k_1/predictions_b1.jsonl",
+      "results/m3/dev_topk_sweep_run1/top_k_3/predictions_b1.jsonl",
+      "results/m3/dev/predictions_b1.jsonl"
+    ],
     "formal_score_files": [],
     "formal_result_summary": null,
-    "independent_reproduction_record": null,
-    "retrieval_artifact_review": "docs/M3/retrieval_review/"
+    "independent_reproduction_record": "docs/M3/retrieval_review/local_environment_verification.json",
+    "retrieval_artifact_review": "docs/M3/retrieval_review/",
+    "generation_artifact_review": "docs/M3/retrieval_review/cd_generation_review.json"
   },
   "freeze_acceptance": {
     "owner": "A",

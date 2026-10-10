@@ -54,3 +54,6 @@ tmp/
 
 # Local sweep preparation contains this machine's executable and absolute paths.
 /results/m3/dev_topk_sweep/
+
+# Machine-specific setup checks and local experimental commands.
+/results/m3/local_*/

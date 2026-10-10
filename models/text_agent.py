@@ -40,6 +40,16 @@ def _token_count(usage: Any, *names: str) -> int | None:
     return None
 
 
+def _choice_text(choices: Any) -> Any:
+    """Reject malformed provider envelopes without leaking their contents."""
+    if not isinstance(choices, list) or not choices or not isinstance(choices[0], dict):
+        raise GenerationError("invalid_response_schema")
+    message = choices[0].get("message")
+    if not isinstance(message, dict):
+        raise GenerationError("invalid_response_schema")
+    return message.get("content")
+
+
 class TextAgent:
     """Provider-neutral client with explicit provider configuration."""
 
@@ -106,23 +116,28 @@ class TextAgent:
             raise GenerationError("timeout") from exc
         except requests.RequestException as exc:
             raise GenerationError("request_error", type(exc).__name__) from exc
+        status = getattr(response, "status_code", None)
+        if type(status) is not int or not callable(getattr(response, "json", None)):
+            raise GenerationError("invalid_response_schema")
         try:
             data = response.json()
         except ValueError as exc:
             raise GenerationError("invalid_json_response") from exc
-        if response.status_code >= 400:
-            status = response.status_code
+        if status >= 400:
             raise GenerationError(f"http_{status}", retryable=(status == 429 or status >= 500))
+        if not isinstance(data, dict):
+            raise GenerationError("invalid_response_schema")
         if self.provider == "nvidia":
-            choices = data.get("choices") if isinstance(data, dict) else None
-            text = choices[0].get("message", {}).get("content") if choices else None
-            usage = data.get("usage") if isinstance(data, dict) else None
+            text = _choice_text(data.get("choices"))
+            usage = data.get("usage")
         else:
-            result = data.get("result") if isinstance(data, dict) else None
-            text = result.get("response") if isinstance(result, dict) else None
-            usage = result.get("usage") if isinstance(result, dict) else None
-            if isinstance(result, dict) and text is None and isinstance(result.get("choices"), list):
-                text = result["choices"][0].get("message", {}).get("content")
+            result = data.get("result")
+            if not isinstance(result, dict):
+                raise GenerationError("invalid_response_schema")
+            text = result.get("response")
+            usage = result.get("usage")
+            if text is None:
+                text = _choice_text(result.get("choices"))
         if not isinstance(text, str) or not text.strip():
             raise GenerationError("empty_response")
         return GenerationResult(text.strip(), _token_count(usage, "prompt_tokens", "input_tokens"),

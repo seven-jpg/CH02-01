@@ -1,0 +1,359 @@
+{
+  "record_type": "local_retrieval_environment_verification",
+  "verified_at_utc": "2026-10-10T13:54:50.144334+00:00",
+  "status": "real_smoke20_and_strict_contract_checks_passed",
+  "environment": {
+    "python": "3.12.9",
+    "packages": {
+      "chromadb": "1.5.9",
+      "transformers": "5.14.1",
+      "huggingface_hub": "1.26.1",
+      "tokenizers": "0.22.2",
+      "safetensors": "0.8.0",
+      "numpy": "2.4.5",
+      "protobuf": "6.33.0",
+      "pydantic": "2.11.9",
+      "pillow": "11.0.0",
+      "psutil": "7.2.2",
+      "jsonschema": "4.26.0",
+      "torch": "2.8.0+cu126",
+      "sympy": "1.14.0",
+      "networkx": "3.7",
+      "jinja2": "3.1.6"
+    },
+    "torch_installed": true,
+    "encoder_preflight": "encoder_preflight.json",
+    "pip_check": "No broken requirements found."
+  },
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "platform": "win32",
+    "python": "3.12.9",
+    "cpu_logical": 32,
+    "ram_total_gb": 15.69,
+    "ram_available_gb": 0.61
+  },
+  "resources": {
+    "index_revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+    "encoder_revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+    "verification_time_utc_before_chroma": "2026-10-10T13:53:58Z",
+    "files_verified": 17,
+    "total_bytes": 18969863602,
+    "index_layout": "downloaded directly to mutable working directory; no immutable index snapshot retained",
+    "files": [
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "1_Pooling/config.json",
+        "size": 191,
+        "lfs_sha256": null,
+        "git_blob_oid": "9bd85925f325e25246d94c4918dc02ab98f2a1b7",
+        "actual_sha256": "e54c164a07274f2eb45bb724f54a79d1efcc90c41573887cd9a29aeee0597352",
+        "actual_git_blob_sha1": "9bd85925f325e25246d94c4918dc02ab98f2a1b7",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "config.json",
+        "size": 779,
+        "lfs_sha256": null,
+        "git_blob_oid": "ab101ed8d012df683ef32f92cea51e97615ad07c",
+        "actual_sha256": "446712fac367857b4b1302762fe1cd7bfa8b3c4b77b4dc5d77c4025407660896",
+        "actual_git_blob_sha1": "ab101ed8d012df683ef32f92cea51e97615ad07c",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "config_sentence_transformers.json",
+        "size": 124,
+        "lfs_sha256": null,
+        "git_blob_oid": "dcb0c0d97d09b930d13600b1a773ddb27e441aab",
+        "actual_sha256": "940d5f50db195fa6e5e6a4f122c095f77880de259d74b14a65779ed48bdd7c56",
+        "actual_git_blob_sha1": "dcb0c0d97d09b930d13600b1a773ddb27e441aab",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "model.safetensors",
+        "size": 1340616616,
+        "lfs_sha256": "45e1954914e29bd74080e6c1510165274ff5279421c89f76c418878732f64ae7",
+        "git_blob_oid": "3ae8bdc1f536c0b4c85f928d08ff990290e83e3a",
+        "actual_sha256": "45e1954914e29bd74080e6c1510165274ff5279421c89f76c418878732f64ae7",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "modules.json",
+        "size": 349,
+        "lfs_sha256": null,
+        "git_blob_oid": "952a9b81c0bfd99800fabf352f69c7ccd46c5e43",
+        "actual_sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf",
+        "actual_git_blob_sha1": "952a9b81c0bfd99800fabf352f69c7ccd46c5e43",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "sentence_bert_config.json",
+        "size": 52,
+        "lfs_sha256": null,
+        "git_blob_oid": "ea85692bff64b0d1917833c31ddbca8ab10f5455",
+        "actual_sha256": "84e39fda68ccbff05bfa723ae9c0e70e23e2ec373b76e0f8c6e71af72a693cbf",
+        "actual_git_blob_sha1": "ea85692bff64b0d1917833c31ddbca8ab10f5455",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "special_tokens_map.json",
+        "size": 125,
+        "lfs_sha256": null,
+        "git_blob_oid": "a8b3208c2884c4efb86e49300fdd3dc877220cdf",
+        "actual_sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+        "actual_git_blob_sha1": "a8b3208c2884c4efb86e49300fdd3dc877220cdf",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "tokenizer.json",
+        "size": 711396,
+        "lfs_sha256": null,
+        "git_blob_oid": "688882a79f44442ddc1f60d70334a7ff5df0fb47",
+        "actual_sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+        "actual_git_blob_sha1": "688882a79f44442ddc1f60d70334a7ff5df0fb47",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "tokenizer_config.json",
+        "size": 366,
+        "lfs_sha256": null,
+        "git_blob_oid": "37fca74771bc76a8e01178ce3a6055a0995f8093",
+        "actual_sha256": "9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3",
+        "actual_git_blob_sha1": "37fca74771bc76a8e01178ce3a6055a0995f8093",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "encoder",
+        "repo": "BAAI/bge-large-en-v1.5",
+        "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+        "file": "vocab.txt",
+        "size": 231508,
+        "lfs_sha256": null,
+        "git_blob_oid": "fb140275c155a9c7c5a3b3e0e77a9e839594a938",
+        "actual_sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+        "actual_git_blob_sha1": "fb140275c155a9c7c5a3b3e0e77a9e839594a938",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": ".gitattributes",
+        "size": 2512,
+        "lfs_sha256": null,
+        "git_blob_oid": "5bcf35802afab3d81672915a9fbaea4d0fad265a",
+        "actual_sha256": "b8523095639887939b69fc0e9fcca4564fed2e8c283633c76f385c65e14459c7",
+        "actual_git_blob_sha1": "5bcf35802afab3d81672915a9fbaea4d0fad265a",
+        "lfs_matches": null,
+        "git_blob_matches": true
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": "6fb7c70d-f09f-4f63-ad42-f93256f0288a/data_level0.bin",
+        "size": 7119961992,
+        "lfs_sha256": "313bad84421f6c31e77de2e78bc8307f8c52f784e97ff8cfcb8f1ee78ab9c4a9",
+        "git_blob_oid": "1eea88b93f837e2d314420970cd574f26e4bcc62",
+        "actual_sha256": "313bad84421f6c31e77de2e78bc8307f8c52f784e97ff8cfcb8f1ee78ab9c4a9",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": "6fb7c70d-f09f-4f63-ad42-f93256f0288a/header.bin",
+        "size": 100,
+        "lfs_sha256": "96f8518fbb816409f1e23a417a737254b16b265af942a4487cf155e7ed90f3c9",
+        "git_blob_oid": "d9b5481924b59631e16ee9e35f2898730d75c66d",
+        "actual_sha256": "96f8518fbb816409f1e23a417a737254b16b265af942a4487cf155e7ed90f3c9",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": "6fb7c70d-f09f-4f63-ad42-f93256f0288a/index_metadata.pickle",
+        "size": 281435648,
+        "lfs_sha256": "6b5aceb410a1f8e6c765997f247e44a157b4f0f1c671f6a964039459de5d7457",
+        "git_blob_oid": "663c69b471289b8b4b68f6a2e9e8ef2bc1a4d2b2",
+        "actual_sha256": "6b5aceb410a1f8e6c765997f247e44a157b4f0f1c671f6a964039459de5d7457",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": "6fb7c70d-f09f-4f63-ad42-f93256f0288a/length.bin",
+        "size": 6723288,
+        "lfs_sha256": "e61abae2e88df845e7218493b30ee7860220647429d13e1c8a497ed7c701cfad",
+        "git_blob_oid": "f8d372ffe7e82971f8167b6665e4bf0dd56dd5ec",
+        "actual_sha256": "e61abae2e88df845e7218493b30ee7860220647429d13e1c8a497ed7c701cfad",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": "6fb7c70d-f09f-4f63-ad42-f93256f0288a/link_lists.bin",
+        "size": 14310524,
+        "lfs_sha256": "2c5ee2e272f4d68d72b75345242fb2643950ae3b5026dd39175db0dab1e54a20",
+        "git_blob_oid": "8c22e6bac14d2d5320b3bb81f664c73577731cf7",
+        "actual_sha256": "2c5ee2e272f4d68d72b75345242fb2643950ae3b5026dd39175db0dab1e54a20",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      },
+      {
+        "kind": "index",
+        "repo": "datasets/crag-mm-2025/web-search-index-public-test",
+        "revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+        "file": "chroma.sqlite3",
+        "size": 10205868032,
+        "lfs_sha256": "652e9b2dd75396f70dbb3546de6311ec0d14120220f22eb532e0252ec957e271",
+        "git_blob_oid": "826694e2d55bf500d8a6a9bab5d930a22fd49eb8",
+        "actual_sha256": "652e9b2dd75396f70dbb3546de6311ec0d14120220f22eb532e0252ec957e271",
+        "actual_git_blob_sha1": null,
+        "lfs_matches": true,
+        "git_blob_matches": null
+      }
+    ]
+  },
+  "encoder_preflight": {
+    "status": "passed",
+    "checks": [
+      {
+        "interaction_id": "129fc5be-e485-4e82-a5d3-fcbee8503d3e",
+        "shape": [
+          1,
+          1024
+        ],
+        "norm": 1.0,
+        "finite": true,
+        "seconds": 0.344
+      },
+      {
+        "interaction_id": "1427a108-1ac1-4f0c-90ec-7dc58dbff93a",
+        "shape": [
+          1,
+          1024
+        ],
+        "norm": 0.9999999403953552,
+        "finite": true,
+        "seconds": 0.016
+      }
+    ],
+    "peak_gpu_allocated_MiB": 1288.69,
+    "scope": "Encoder only; full-retrieval GPU peak was not measured"
+  },
+  "smoke": {
+    "run_id": "retrieval-smoke-47d54550ef62-e4dc72b4",
+    "config_sha256": "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98",
+    "dataset_manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "code_commit_at_run": "fd89064443595e801b397ad0907f7cd098f0154f:dirty",
+    "code_files_sha256": {
+      "scripts/retrieve.py": "843c83c6fbc5f86a347e9348c2dc1b95510b59d896dd8d477fb2c5d5e1be482e",
+      "src/retrieval/text_retrieval.py": "9249924e0bbaf6cbd96717a336e7dc626f45d5736a780a4966ced199a203f774",
+      "src/contracts/m3.py": "244edaa078d4595a0ca10ea85b9c57c7118adb9a0646eda1e0f9fbb35def51e5"
+    },
+    "N_expected": 20,
+    "N_success": 20,
+    "N_failed": 0,
+    "retries": 0,
+    "resumed_rows_reused": 0,
+    "total_hits": 88,
+    "device_resolved": "cuda",
+    "index_space_observed": "cosine",
+    "wall_seconds": 38.3,
+    "peak_process_memory_mb": 7516.2,
+    "first_query_ms": 20039.34,
+    "remaining_19_mean_ms": 33.422,
+    "latency_ms_mean_all_20": 1033.718,
+    "warmup_attempt_seconds": 3.702,
+    "warmup_warning_observed": "RetrievalError printed; underlying cause not recorded. All 20 real queries succeeded without retries.",
+    "timing_limitation": "First real query retains cold-start overhead; all-20 mean is not a steady-state latency or proof of competition timeout compliance.",
+    "artifacts": {
+      "evidence.jsonl": {
+        "path": "results/m3/local_retrieval_smoke_run1/evidence.jsonl",
+        "sha256": "e321d9bc3b9e72140521b131475734b41cf1be7e20cf21d33135f700f11aa647"
+      },
+      "run_meta_retrieval.json": {
+        "path": "results/m3/local_retrieval_smoke_run1/run_meta_retrieval.json",
+        "sha256": "d0055a9bc6a811b993a4cb4e029b39004ec8dc6d485c25e4f225ddd0e1c708d8"
+      },
+      "acceptance.json": {
+        "path": "results/m3/local_retrieval_smoke_run1/acceptance.json",
+        "sha256": "a59a5d85d8b4e85ed55d6bbb0949f993a0d41f8fe5cd282793f47ad44c69984d"
+      }
+    }
+  },
+  "strict_acceptance": {
+    "valid": true,
+    "exit_code": 0,
+    "errors": [],
+    "unverified_checks": [
+      "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+      "Official dataset/index/provider authenticity requires source records and manual review."
+    ]
+  },
+  "comparison_with_C_smoke": {
+    "questions_with_same_doc_ids_rank_and_content": 20,
+    "score_differences": 54,
+    "max_absolute_score_difference": 1.7881393432617188e-07,
+    "original_C_artifact_sha256": "efdef166190aa58578ead9dcb13ab5b628fa3155fc76e68117cdd2eefaa64b9b"
+  },
+  "answer_generation_or_judge_api_calls_in_this_setup": 0,
+  "answer_quality_or_top_k_optimality_claimed": false,
+  "large_resources_and_machine_run_artifacts_in_git": false,
+  "limitations": [
+    "Measured on this one Windows machine and smoke20 only; eval200 and multimodal stages were not run.",
+    "The source files are hashed because code_commit_at_run records a dirty checkout; original run_meta was not rewritten.",
+    "Working Chroma index can migrate on open; download hashes certify bytes before its first open.",
+    "E semantic scoring and official tokenizer/manual calibration remain pending at reviewed upstream commit fd89064."
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "record_type": "cd_generation_handoff_review",
+  "reviewed_commit": "fd89064443595e801b397ad0907f7cd098f0154f",
+  "reviewed_at_utc": "2026-10-10T13:39:20.361738+00:00",
+  "e_scoring_present": false,
+  "source_refusal_rule": "Raw response contains the case-insensitive phrase I don't know; matches inspected official-cleaning counts for this delivery. No 75-token scoring applied.",
+  "counts": {
+    "smoke_B0": {
+      "path": "results/m3/smoke/predictions_b0.jsonl",
+      "rows": 20,
+      "normal_refusal": 20,
+      "non_refusal": 0,
+      "technical_failures": 0,
+      "sha256": "8cd8d1b8bd26dfa033c5212e7d90d58e8ca5f4961da44056b9bc9c3b457a118f"
+    },
+    "smoke_B1_k5": {
+      "path": "results/m3/smoke/predictions_b1.jsonl",
+      "rows": 20,
+      "normal_refusal": 8,
+      "non_refusal": 12,
+      "technical_failures": 0,
+      "sha256": "61982e3a86da8fa30fd2b43adbd6fa788fc45468ee359f5d22f1ade3ad863fc6"
+    },
+    "dev_B0": {
+      "path": "results/m3/dev/predictions_b0.jsonl",
+      "rows": 50,
+      "normal_refusal": 49,
+      "non_refusal": 1,
+      "technical_failures": 0,
+      "sha256": "a7c3ace74a5805350cbbce5674945e74abca68680d501d1ddecba8315c8281ab"
+    },
+    "dev_B1_k1": {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_1/predictions_b1.jsonl",
+      "rows": 50,
+      "normal_refusal": 23,
+      "non_refusal": 27,
+      "technical_failures": 0,
+      "sha256": "5dafd100fb0e673c56b101266d19e27589f7826f32a67200d06fef47d6e7bbb1"
+    },
+    "dev_B1_k3": {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_3/predictions_b1.jsonl",
+      "rows": 50,
+      "normal_refusal": 19,
+      "non_refusal": 31,
+      "technical_failures": 0,
+      "sha256": "ce5ff0fddd7cdb838ea70fe6405c61b7a4b2dfe192831e5411307902b10336a4"
+    },
+    "dev_B1_k5": {
+      "path": "results/m3/dev/predictions_b1.jsonl",
+      "rows": 50,
+      "normal_refusal": 17,
+      "non_refusal": 33,
+      "technical_failures": 0,
+      "sha256": "8d34fe59ed1903e711d41f458f9a0fc757d977ef551b66d3bee10a67ef21abc7"
+    }
+  },
+  "strict_acceptance": {
+    "C_k1": {
+      "exit": 0,
+      "valid": true,
+      "errors": []
+    },
+    "C_k3": {
+      "exit": 0,
+      "valid": true,
+      "errors": []
+    },
+    "C_k5": {
+      "exit": 0,
+      "valid": true,
+      "errors": []
+    },
+    "D_k1": {
+      "exit": 0,
+      "valid": true,
+      "errors": []
+    },
+    "D_k3": {
+      "exit": 0,
+      "valid": true,
+      "errors": []
+    },
+    "D_k5": {
+      "exit": 0,
+      "valid": true,
+      "errors": []
+    }
+  },
+  "same_dev_ids_and_generation_config": true,
+  "old_dev_k5_hits_match_fresh_sweep_k5": 50,
+  "paired_quality_scores_present": false,
+  "quality_optimum_proven": false,
+  "manual_sample": {
+    "rule": "First five non-refusal k5 rows sorted by interaction_id; not an overall accuracy estimate",
+    "clear_error": {
+      "interaction_id": "2f98c003-af17-4891-aca9-989498977ff9",
+      "query": "how tall is it?",
+      "response": "8 feet 6 inches.",
+      "reference_height": "50 feet tall"
+    }
+  },
+  "remaining": [
+    "E: score dev B0 and B1 k1/k3/k5 with the same rubric and official token truncation, publish coverage and per-ID scores",
+    "A: choose top_k using paired dev quality results, then freeze before eval200"
+  ],
+  "original_results_modified": false,
+  "generation_boundary_fixes": {
+    "status": "implemented",
+    "existing_delivery_affected": false,
+    "api_calls": 0,
+    "full_tests_passed": 145,
+    "changes": [
+      "Resume checks prediction hash, logged request hash and actual messages hash before reuse",
+      "Malformed provider choices/message envelopes become technical errors",
+      "Credential fields in configs are rejected before API/client/output creation"
+    ],
+    "regression_tests": "tests/test_generation_adapter.py + tests/test_generation_pipeline.py"
+  }
+}

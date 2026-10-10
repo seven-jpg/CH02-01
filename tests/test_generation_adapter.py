@@ -50,5 +50,52 @@ class GenerationAdapterTests(unittest.TestCase):
         agent.generate.assert_called_once()
 
 
+    def test_malformed_nvidia_payloads_are_technical_failures(self):
+        payloads = [None, [], {}, {"choices": []}, {"choices": {}},
+                    {"choices": [None]}, {"choices": [{"message": None}]},
+                    {"choices": [{"message": "unexpected"}]}]
+        for payload in payloads:
+            with self.subTest(payload=payload):
+                session = Mock()
+                session.post.return_value.status_code = 200
+                session.post.return_value.json.return_value = payload
+                agent = TextAgent({"provider": "nvidia", "model": "synthetic-model"}, session=session)
+                with patch.dict("os.environ", {"NVIDIA_API_KEY": "synthetic-test-key"}):
+                    result, code, retries = retry_generate(agent, [], max_retries=0, backoff_s=0)
+                self.assertIsNone(result)
+                self.assertEqual("invalid_response_schema", code)
+                self.assertEqual(0, retries)
+
+    def test_malformed_cloudflare_choices_are_technical_failures(self):
+        results = [None, "unexpected", {"choices": []}, {"choices": None},
+                   {"choices": [None]}, {"choices": [{"message": None}]}]
+        for value in results:
+            with self.subTest(result=value):
+                session = Mock()
+                session.post.return_value.status_code = 200
+                session.post.return_value.json.return_value = {"result": value}
+                agent = TextAgent({"provider": "cloudflare", "model": "synthetic-model"}, session=session)
+                with patch.dict("os.environ", {"CLOUDFLARE_ACCOUNT_ID": "synthetic-account",
+                                               "CLOUDFLARE_API_TOKEN": "synthetic-test-key"}):
+                    result, code, retries = retry_generate(agent, [], max_retries=0, backoff_s=0)
+                self.assertIsNone(result)
+                self.assertEqual("invalid_response_schema", code)
+                self.assertEqual(0, retries)
+
+    def test_missing_or_malformed_http_response_is_a_technical_failure(self):
+        responses = [None, "unexpected", {}, Mock(status_code=None),
+                     Mock(status_code=200, json=None)]
+        for response in responses:
+            with self.subTest(response=response):
+                session = Mock()
+                session.post.return_value = response
+                agent = TextAgent({"provider": "nvidia", "model": "synthetic-model"}, session=session)
+                with patch.dict("os.environ", {"NVIDIA_API_KEY": "synthetic-test-key"}):
+                    result, code, retries = retry_generate(agent, [], max_retries=0, backoff_s=0)
+                self.assertIsNone(result)
+                self.assertEqual("invalid_response_schema", code)
+                self.assertEqual(0, retries)
+
+
 if __name__ == "__main__":
     unittest.main()

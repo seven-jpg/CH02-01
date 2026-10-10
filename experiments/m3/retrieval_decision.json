@@ -15,12 +15,13 @@
   "basis": [
     "Original task initializes top_k=5.",
     "C supplied real smoke20/dev50 caches using this configuration; no empty/error rows.",
-    "Keep the tested baseline configuration and existing evidence rather than claim an unsupported optimum."
+    "Keep the tested baseline configuration and existing evidence rather than claim an unsupported optimum.",
+    "C completed real dev50 retrieval for k1/k3/k5 and D completed matching B1 generation; E quality scores are not yet present at reviewed commit."
   ],
   "quality_optimum_proven": false,
   "fetch_k_implemented": false,
-  "fresh_top_k_comparison_executed": false,
-  "local_index_or_encoder_available": false,
+  "fresh_top_k_comparison_executed": true,
+  "local_index_or_encoder_available": true,
   "whole_experiment_frozen": false,
   "evidence": [
     "docs/M3/retrieval_review/diagnostic.json",
@@ -32,5 +33,9 @@
     "D verifies evidence cleanup and token budget with real requests.",
     "D/E provide same-model, same-budget dev predictions/scores if optimal answer quality is to be claimed.",
     "Real sweep or eval retrieval requires the pinned index working copy and BGE encoder on the executing machine."
-  ]
+  ],
+  "top_k_comparison_stage": "same_dev50_retrieval_and_generation_complete_evaluation_pending",
+  "comparison_execution": "results/m3/dev_topk_sweep_run1/execution.json",
+  "generation_review": "docs/M3/retrieval_review/cd_generation_review.json",
+  "local_reproduction_review": "docs/M3/retrieval_review/local_environment_verification.json"
 }

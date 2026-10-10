@@ -2,9 +2,9 @@
 
 本项目以 KDD Cup 2025 Meta CRAG-MM 的公开数据、检索工具和评价代码为实验平台。当前目标是完成课程 M2 数据分析和 M3 纯文本单轮 RAG 基线，M4 再研究多模态、多轮上下文和图像扰动。
 
-截至2026-10-10，B 已提交 M2 EDA、固定 manifest 和 smoke20/dev50/eval200 数据；C 已提交 Web 文本检索入口及真实 smoke20/dev50 证据。A 已补充缓存诊断、跨电脑路径映射验收和 top_k 对比准备代码。仓库尚未提交 D/E 的正式生成与评分结果，完整实验仍未冻结。开发样例测试不能替代真实实验。
+截至2026-10-10，B 已提交 M2 EDA、固定 manifest 和 smoke20/dev50/eval200 数据；C 已完成 dev50 上 top_k=1/3/5 的真实检索；D 已提交生成入口、smoke/dev 的 B0/B1 回答及 dev 的 k=1/3 B1 回答。三组 dev 检索与生成的严格验收通过，E 的正式评分入口和逐题结果尚未找到，完整实验仍未冻结。验收通过不代表答案正确。
 
-本次接手采用固定 `top_k=5`，不添加 `fetch_k`，不声称参数最优。具体检查、运行命令及群内交接消息见 [C 参数确认与接手说明](docs/M3/C_parameter_handoff.md)。本机没有检索索引/BGE，参数对比仅准备代码，尚未实际执行。
+当前固定基线仍为 `top_k=5`，不添加 `fetch_k`，尚未证明参数最优。最新结果检查见 [C/D 交付审查](docs/M3/retrieval_review/cd_generation_review.json)；组长电脑已准备官方 Web 索引/BGE，并在 RTX 4060 Laptop / 16 GB RAM 上完成真实 smoke20 和严格验收，见 [本地检索说明](docs/M3/local_retrieval_setup.md) 与 [本机验证记录](docs/M3/retrieval_review/local_environment_verification.json)。
 
 ## 研究问题与阶段范围
 
@@ -33,7 +33,7 @@ M2 分析 Single-turn/Multi-turn。M3 仅用 Single-turn，B1 是“原始问题
 
 ## A 的 Windows 环境
 
-在仓库根目录的 PowerShell 中运行。推荐 Python3.11 独立环境；先用 `py -0p` 确认本机已有该版本。A 不需要 API 密钥、检索索引、CLIP/BGE 或生成模型权重。
+只做 A 的轻量验收时，在仓库根目录的 PowerShell 中运行。推荐 Python3.11 独立环境；先用 `py -0p` 确认本机已有该版本。该验收步骤不需要 API 密钥、检索索引、CLIP/BGE 或生成模型权重。组长代跑 C 的检索使用另外的 `.venv-retrieval`，按上方本地检索说明操作。
 
 ```powershell
 py -0p
@@ -63,7 +63,7 @@ py -3.11 -m venv .venv-integration
 
 本机没有3.11时，先安装或使用已验证兼容的 Python，不把版本缺失误判为项目代码失败。直接调用虚拟环境的 Python 不要求改变 PowerShell 执行策略。
 
-B 提供真实 smoke 包后执行数据包检查；下面路径是未来交接产物，当前缺文件时不能运行完整检查：
+B 已提供真实 smoke 包，下面命令可执行数据包检查：
 
 ```powershell
 .\.venv-integration\Scripts\python.exe scripts/check_artifacts.py `
@@ -99,11 +99,11 @@ B 提供真实 smoke 包后执行数据包检查；下面路径是未来交接�
 | D | 统一提供商的API客户端，B0/B1生成及demo | B0只等B；B1再等C。预测、实际messages、调用记录给E/A |
 | E | 轻量评分代码、官方tokenizer、裁判客户端 | 接B的问题/答案/metadata和D的预测，交评分、汇总与复核给A |
 
-B 下载 Single/Multi **QA数据**；C 在 M3 只准备 Web索引/BGE，做仅文本的适配层。完整统一管线还会初始化视觉部分，不能直接当轻量入口；16GB RAM 能否承载完整Web索引需C实测，M4再准备图像资源。E 不初始化搜索、不下载索引。各人提供自己的实际依赖版本，不要求五台装完整 vLLM；A不接管其他人的实现。
+B 下载 Single/Multi **QA数据**；C 在 M3 只准备 Web索引/BGE，做仅文本的适配层。完整统一管线还会初始化视觉部分，不能直接当轻量入口；本机 16GB RAM 已通过完整 Web 索引 smoke20 查询，但冷加载较慢且内存余量较小，M4 再测图像资源。E 不初始化搜索、不下载索引。各人提供自己的实际依赖版本，不要求五台装完整 vLLM；A 代跑 C 时复用同一配置与独立批次产物。
 
-## 其他角色待实现入口
+## 统一运行入口
 
-以下为统一入口约定；C 的 retrieve 已实现并提交真实结果，D/E 的生成与评价入口在当前仓库尚未提交：
+以下为统一入口约定；C 的 retrieve 与 D 的 generate 已实现并提交真实结果，E 的 evaluate 仍为待实现入口：
 
 ```text
 python preprocessing/prepare_data.py --config experiments/m3/data.json --output-dir data/processed/m3
@@ -114,7 +114,7 @@ python scripts/generate.py --questions QUESTIONS --manifest MANIFEST --baseline 
 python scripts/evaluate.py --questions QUESTIONS --answers ANSWERS --metadata METADATA --manifest MANIFEST --predictions PREDICTIONS --config experiments/m3/evaluation.json --output-dir OUTPUT
 ```
 
-所有入口的 `--help` 不需密钥、不下载模型或索引。C/D/E支持同一批次规则；批次沿用同一manifest、阶段配置和对应run ID，最后按去重逐题记录重算，不能平均批次百分比。D 的可选 run_from_cache 只包装生成/评分命令，支持仅生成，不重写裁判代码。
+C/D 已实现入口的 `--help` 不需密钥、不下载模型或索引。C/D 支持同一批次规则，E 也应遵循该约定；批次沿用同一 manifest、阶段配置和对应 run ID，最后按去重逐题记录重算，不能平均批次百分比。完整 B1 运行说明见 [D 生成说明](docs/M3/generation_run.md)。
 
 ## 数据、配置与结果
 
@@ -131,7 +131,7 @@ fixtures/synthetic/                 开发样例，不混入正式数据/结果
 
 目标20/50/200、seed42是方案建议。B按session、可识别共享图像和重复问题分组，A确认实际数量与编号。尽早确定三个集合完整ID清单并写manifest，先交smoke，后续dev/eval沿用同一manifest。manifest原字节SHA256写入所有逐题行；变更时发布一致新包并重新验收，不能只改旧结果哈希。
 
-候选生成模型为同款 Llama-3.2-11B-Vision-Instruct API，提供商、账号可用性、课程允许在线推理和实际参数待A/D确认；B0/B1使用同一家、同一模型和公共参数。裁判替换与官方tokenizer权限待A/E确认。数据和检索结果已提交，API联调和正式生成/评分证据尚未提交到本仓库，详见 [冻结记录](experiments/m3/freeze_record.json)。
+D 已提交使用 NVIDIA `meta/llama-3.2-11b-vision-instruct` 的真实生成结果和请求记录，B0/B1 使用相同模型与公共参数，仅发送文本。当前审查核实了请求和文件哈希，未独立验证提供商账号及课程在线推理许可。E 的裁判、官方 tokenizer 和正式评分仍待提交，详见 [冻结记录](experiments/m3/freeze_record.json)。
 
 使用相应提供商时，变量名为 `NVIDIA_API_KEY` 或 `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`；E可能还需tokenizer访问凭证。A检查不读取这些变量。实际调用者在本机配置，密钥不写JSON、Git、日志或报告。
 

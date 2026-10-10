@@ -1,0 +1,30 @@
+{
+  "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+  "rule": "Preserve manifest order; A first half, C second half. Same original questions/manifest/config on each computer.",
+  "subsets": {
+    "dev": {
+      "A": {
+        "path": "experiments/m3/batches/dev_A.json",
+        "count": 25,
+        "sha256": "59ba0cda968549489cc4b772070111d1526c6ebd3562988cbd4db73acd4a9130"
+      },
+      "C": {
+        "path": "experiments/m3/batches/dev_C.json",
+        "count": 25,
+        "sha256": "20bf0ccd5674c1a8fac18849c0e2dfde30e1071391d0d8d782fdc17a1600d505"
+      }
+    },
+    "eval": {
+      "A": {
+        "path": "experiments/m3/batches/eval_A.json",
+        "count": 100,
+        "sha256": "7008bddaf9154a91c58ccebed1bd2bc4bbfcc3280cd7f7a91af7a2a27e33e906"
+      },
+      "C": {
+        "path": "experiments/m3/batches/eval_C.json",
+        "count": 100,
+        "sha256": "3a058392df6a0b75f34721096ac03ac91544ab07e586cb2b1864cf43bf61ac6d"
+      }
+    }
+  }
+}

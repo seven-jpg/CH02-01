@@ -30,6 +30,7 @@ from src.contracts.m3 import (  # noqa: E402
     SUBSETS,
     config_sha256,
     file_sha256,
+    find_secret_keys,
     load_json,
     parse_json,
     prompt_sha256,
@@ -209,6 +210,8 @@ def main(argv: list[str] | None = None) -> int:
         config = load_json(args.config)
         if not isinstance(config, dict):
             raise ValueError("generation config must be a JSON object")
+        if find_secret_keys(config):
+            raise ValueError("generation config must not contain credential fields; use environment variables")
         generation_hash = config_sha256(config)
         if args.baseline == "B0" and args.evidence:
             raise ValueError("B0 must not receive evidence")
@@ -281,11 +284,16 @@ def main(argv: list[str] | None = None) -> int:
                         and cached.get("dataset_manifest_sha256") == manifest_hash
                         and cached.get("query_sha256") == q_hash
                         and cached.get("generation_config_sha256") == generation_hash
+                        and cached.get("prompt_sha256") == p_hash
                         and cached.get("baseline") == args.baseline
                         and cached.get("provider") == str(config.get("provider", ""))
                         and cached.get("model") == str(config.get("model", ""))
                         and cached.get("retrieval_config_sha256") == row_retrieval_hash)
-            if cache_ok and ident in requests_by_id and requests_by_id[ident].get("prompt_sha256") == p_hash:
+            cached_request = requests_by_id.get(ident)
+            if (cache_ok and isinstance(cached_request, dict)
+                    and cached_request.get("prompt_sha256") == p_hash
+                    and isinstance(cached_request.get("messages"), list)
+                    and prompt_sha256(cached_request["messages"]) == p_hash):
                 success_count += cached.get("generation_status") == "ok"
                 failure_count += cached.get("generation_status") != "ok"
                 continue
