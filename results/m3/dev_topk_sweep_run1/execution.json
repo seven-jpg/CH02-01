@@ -1,0 +1,39 @@
+{
+  "schema_version": "m3.retrieval_sweep.v1",
+  "subset": "dev",
+  "started_at": "2026-10-10T12:40:07.176746+00:00",
+  "status": "retrieval_complete",
+  "candidates": [
+    {
+      "top_k": 1,
+      "status": "retrieval_complete",
+      "returncode": 0,
+      "counts": {
+        "ok": 50
+      },
+      "elapsed_seconds": 162.828
+    },
+    {
+      "top_k": 3,
+      "status": "retrieval_complete",
+      "returncode": 0,
+      "counts": {
+        "ok": 50
+      },
+      "elapsed_seconds": 145.078
+    },
+    {
+      "top_k": 5,
+      "status": "retrieval_complete",
+      "returncode": 0,
+      "counts": {
+        "ok": 50
+      },
+      "elapsed_seconds": 116.547
+    }
+  ],
+  "answer_quality_evaluation": "not_run",
+  "optimal_top_k": null,
+  "finished_at": "2026-10-10T12:47:11.656442+00:00",
+  "not_run_top_k": []
+}

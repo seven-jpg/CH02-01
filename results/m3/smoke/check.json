@@ -1,6 +1,6 @@
 {
   "schema_version": "m3.v1",
-  "checked_at_utc": "2026-10-09T16:35:02.599814+00:00",
+  "checked_at_utc": "2026-10-10T11:21:39.341955+00:00",
   "valid": true,
   "errors": [],
   "warnings": [
@@ -65,7 +65,7 @@
     "data\\processed\\m3\\smoke\\metadata.jsonl": "7cb8d9bbb48da1cb29253dc6841fb518248f526afe3971b15689bef0726c5082",
     "experiments\\m3\\retrieval.json": "92a6d5ab8b83fae38d0425c29022065c159ab316ad057a8de9557dc4f55a6fde",
     "results\\m3\\smoke\\evidence.jsonl": "efdef166190aa58578ead9dcb13ab5b628fa3155fc76e68117cdd2eefaa64b9b",
-    "results\\m3\\smoke\\run_meta_retrieval.json": "f1ca93e4a8881ff5494ace784401876b3cb7d8f31798dbc8658d7d41565199a5"
+    "results\\m3\\smoke\\run_meta_retrieval.json": "519a94b53b23ab17c25743d613fbf5b6ac7e08ccb23bbd49df112e8a32703a5c"
   },
   "provenance": {
     "config_hashes": {

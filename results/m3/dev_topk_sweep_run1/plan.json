@@ -1,0 +1,103 @@
+{
+  "schema_version": "m3.retrieval_sweep.v1",
+  "subset": "dev",
+  "scope": "full",
+  "N_expected": 50,
+  "data_classification": "declared_official_unverified",
+  "input_files_sha256": {
+    "D:\\CH02-01\\data\\processed\\m3\\manifest.json": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
+    "D:\\CH02-01\\experiments\\m3\\retrieval.json": "92a6d5ab8b83fae38d0425c29022065c159ab316ad057a8de9557dc4f55a6fde"
+  },
+  "dataset_manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+  "index_path": "D:\\CH02-01\\search_indices\\index_working",
+  "timeout_seconds": 3600,
+  "variants": [
+    {
+      "top_k": 1,
+      "retrieval_config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
+      "run_id": "retrieval-dev-526f7ed6fae8-e4dc72b4",
+      "config_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\retrieval.json",
+      "evidence_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\evidence.jsonl",
+      "run_meta_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\run_meta_retrieval.json",
+      "command": [
+        "C:\\Users\\34353\\anaconda3\\envs\\pytorch\\python.exe",
+        "D:\\CH02-01\\scripts\\retrieve.py",
+        "--manifest",
+        "D:\\CH02-01\\data\\processed\\m3\\manifest.json",
+        "--questions",
+        "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl",
+        "--subset",
+        "dev",
+        "--config",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\retrieval.json",
+        "--output",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\evidence.jsonl",
+        "--run-meta",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\run_meta_retrieval.json",
+        "--index-path",
+        "D:\\CH02-01\\search_indices\\index_working"
+      ],
+      "powershell_command": "& 'C:\\Users\\34353\\anaconda3\\envs\\pytorch\\python.exe' 'D:\\CH02-01\\scripts\\retrieve.py' '--manifest' 'D:\\CH02-01\\data\\processed\\m3\\manifest.json' '--questions' 'D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl' '--subset' 'dev' '--config' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\retrieval.json' '--output' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\evidence.jsonl' '--run-meta' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\run_meta_retrieval.json' '--index-path' 'D:\\CH02-01\\search_indices\\index_working'"
+    },
+    {
+      "top_k": 3,
+      "retrieval_config_sha256": "178d00391d583f2b63a90274f1091c22cdf43e0c6097f33832eae2f9e438da75",
+      "run_id": "retrieval-dev-178d00391d58-e4dc72b4",
+      "config_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\retrieval.json",
+      "evidence_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl",
+      "run_meta_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json",
+      "command": [
+        "C:\\Users\\34353\\anaconda3\\envs\\pytorch\\python.exe",
+        "D:\\CH02-01\\scripts\\retrieve.py",
+        "--manifest",
+        "D:\\CH02-01\\data\\processed\\m3\\manifest.json",
+        "--questions",
+        "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl",
+        "--subset",
+        "dev",
+        "--config",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\retrieval.json",
+        "--output",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl",
+        "--run-meta",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json",
+        "--index-path",
+        "D:\\CH02-01\\search_indices\\index_working"
+      ],
+      "powershell_command": "& 'C:\\Users\\34353\\anaconda3\\envs\\pytorch\\python.exe' 'D:\\CH02-01\\scripts\\retrieve.py' '--manifest' 'D:\\CH02-01\\data\\processed\\m3\\manifest.json' '--questions' 'D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl' '--subset' 'dev' '--config' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\retrieval.json' '--output' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl' '--run-meta' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json' '--index-path' 'D:\\CH02-01\\search_indices\\index_working'"
+    },
+    {
+      "top_k": 5,
+      "retrieval_config_sha256": "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98",
+      "run_id": "retrieval-dev-47d54550ef62-e4dc72b4",
+      "config_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\retrieval.json",
+      "evidence_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\evidence.jsonl",
+      "run_meta_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\run_meta_retrieval.json",
+      "command": [
+        "C:\\Users\\34353\\anaconda3\\envs\\pytorch\\python.exe",
+        "D:\\CH02-01\\scripts\\retrieve.py",
+        "--manifest",
+        "D:\\CH02-01\\data\\processed\\m3\\manifest.json",
+        "--questions",
+        "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl",
+        "--subset",
+        "dev",
+        "--config",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\retrieval.json",
+        "--output",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\evidence.jsonl",
+        "--run-meta",
+        "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\run_meta_retrieval.json",
+        "--index-path",
+        "D:\\CH02-01\\search_indices\\index_working"
+      ],
+      "powershell_command": "& 'C:\\Users\\34353\\anaconda3\\envs\\pytorch\\python.exe' 'D:\\CH02-01\\scripts\\retrieve.py' '--manifest' 'D:\\CH02-01\\data\\processed\\m3\\manifest.json' '--questions' 'D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl' '--subset' 'dev' '--config' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\retrieval.json' '--output' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\evidence.jsonl' '--run-meta' 'D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_5\\run_meta_retrieval.json' '--index-path' 'D:\\CH02-01\\search_indices\\index_working'"
+    }
+  ],
+  "retrieval_execution": "not_run_by_preparation",
+  "answer_quality_evaluation": "not_run",
+  "optimal_top_k": null,
+  "execution_report": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\execution.json",
+  "notice": "Preparation is not a retrieval result. Execution, if requested, is recorded separately; successful retrieval does not select the best top_k. Existing outputs require a new --output-dir."
+}

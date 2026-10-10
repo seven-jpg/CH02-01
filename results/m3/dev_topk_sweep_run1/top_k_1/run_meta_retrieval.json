@@ -1,0 +1,72 @@
+{
+  "run_id": "retrieval-dev-526f7ed6fae8-e4dc72b4",
+  "stage": "retrieval",
+  "subset": "dev",
+  "schema_version": "m3.v1",
+  "code_commit": "0745c41460d0e0a155a4c5542e756a25e22ce142:dirty",
+  "code_files_sha256": {
+    "scripts/retrieve.py": "843c83c6fbc5f86a347e9348c2dc1b95510b59d896dd8d477fb2c5d5e1be482e",
+    "src/retrieval/text_retrieval.py": "9249924e0bbaf6cbd96717a336e7dc626f45d5736a780a4966ced199a203f774",
+    "src/contracts/m3.py": "244edaa078d4595a0ca10ea85b9c57c7118adb9a0646eda1e0f9fbb35def51e5"
+  },
+  "input_files_sha256": {
+    "D:\\CH02-01\\data\\processed\\m3\\manifest.json": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760"
+  },
+  "output_files_sha256": {
+    "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_1\\evidence.jsonl": "3fc45ec7dd91ff555ab3c474dc0b98ee3929525c2fb8f90c88f2484adf6d7206"
+  },
+  "config": {
+    "top_k": 1,
+    "index_repo": "crag-mm-2025/web-search-index-public-test",
+    "index_revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
+    "encoder_id": "BAAI/bge-large-en-v1.5",
+    "encoder_revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+    "collection_name": "web_search_embeddings",
+    "hnsw_space_expected": "cosine",
+    "score_kind": "similarity",
+    "max_length": 512,
+    "pooling": "mean",
+    "normalize": true,
+    "query_prefix": "",
+    "device": "auto",
+    "dedupe_by_chunk_prefix": true,
+    "rerank": false,
+    "live_web_fetch": false,
+    "retry_max": 3,
+    "index_cache_dir": "D:\\CH02-01\\search_indices\\index_working"
+  },
+  "config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
+  "started_at": "2026-10-10T12:40:07.789852+00:00",
+  "finished_at": "2026-10-10T12:42:41.070234+00:00",
+  "hardware": {
+    "platform": "win32",
+    "python": "3.11.13",
+    "cpu_logical": 24,
+    "ram_total_gb": 15.78,
+    "ram_available_gb": 1.04
+  },
+  "N_expected": 50,
+  "N_success": 50,
+  "N_failed": 0,
+  "retries": 0,
+  "retrieval_performed": true,
+  "resumed_rows_reused": 0,
+  "peak_memory_mb": 6301.0,
+  "index_path": "D:\\CH02-01\\search_indices\\index_working",
+  "index_collection": "web_search_embeddings",
+  "index_space_observed": "cosine",
+  "device_resolved": "cuda",
+  "warmup_seconds_excluded_from_latency": 81.073,
+  "initialization_error": null,
+  "top_k": 1,
+  "counts_by_status": {
+    "ok": 50,
+    "empty": 0,
+    "error": 0
+  },
+  "latency_ms_mean": 60.653,
+  "latency_ms_max": 810.483,
+  "wall_seconds": 153.288,
+  "notes": "输入只有原始 query；从未读取 answers.jsonl；score = 1 - distance，集合空间为 cosine 故等价于余弦相似度；按 _chunk 前缀先页面去重再截断，故 hits 条数可能少于 top_k；run_id 由 (subset, 配置哈希, manifest 哈希) 确定性派生，批次间共享"
+}

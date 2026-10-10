@@ -11,6 +11,21 @@
         [--batch-ids batch.json] [--index-path DIR] [--device auto|cpu|cuda] \\
         [--run-meta PATH] [--no-resume]
 
+分批跑完后合并成完整 subset 文件（第 3 天）::
+
+    python scripts/retrieve.py --merge-batches \\
+        --questions data/processed/m3/eval/questions.jsonl \\
+        --manifest  data/processed/m3/manifest.json \\
+        --config    experiments/m3/retrieval.json \\
+        --output    results/m3/eval/evidence.jsonl \\
+        --inputs    results/m3/eval/batch01/evidence.jsonl \\
+                    results/m3/eval/batch02/evidence.jsonl ...
+
+一次性准备索引工作副本::
+
+    python scripts/retrieve.py --prepare-working-copy DIR \\
+        --config experiments/m3/retrieval.json
+
 约定要点：
   * 输入**只有原始 query**：本程序从不读取 answers.jsonl，也不接触图片、图片 URL、
     OCR、caption、视觉实体、full_query 或对话历史。
@@ -534,6 +549,18 @@ def summarize(
     return counts, latencies
 
 
+def default_run_meta_path(output: Path) -> Path:
+    """run_meta 的默认落点。
+
+    标准布局（协议规定的 ``results/m3/<subset>/evidence.jsonl``）用固定名
+    ``run_meta_retrieval.json``；输出文件名不是 ``evidence.jsonl`` 时带上其前缀，
+    避免同一目录下不同产物互相覆盖 run_meta——否则 A 拿到的 run_meta 可能对应另一个文件。
+    """
+    if output.name == "evidence.jsonl":
+        return output.with_name("run_meta_retrieval.json")
+    return output.with_name(f"{output.stem}.run_meta_retrieval.json")
+
+
 # --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
@@ -561,6 +588,10 @@ def parser() -> argparse.ArgumentParser:
                         help="把固定 revision 的索引快照复制成可写工作副本后退出")
     result.add_argument("--overwrite", action="store_true",
                         help="配合 --prepare-working-copy，允许覆盖已存在的目标目录")
+    result.add_argument("--merge-batches", action="store_true",
+                        help="合并模式：把 --inputs 列出的批次证据按 ID 合并为完整 subset 文件")
+    result.add_argument("--inputs", type=Path, nargs="+", metavar="BATCH_EVIDENCE",
+                        help="合并模式下的批次证据文件列表（可多个）")
     return result
 
 
@@ -575,6 +606,158 @@ def run_prepare(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+def run_merge(args: argparse.Namespace) -> int:
+    """把各批次证据按 ID 合并成完整 subset 文件，并产出对应的 run_meta。
+
+    对应协议第十一节：「全部完成后按ID合并为完整subset文件」「正式结果汇总必须再次检查
+    全subset覆盖率」。合并前对**每一行**做与续跑同一套的完整校验，并强制 run_id/
+    配置哈希/索引与编码器 revision/manifest 哈希全部一致——否则拒绝合并。
+    """
+    started_at = utc_now()
+    started_clock = time.perf_counter()
+    if not args.inputs:
+        raise StructuralError("--merge-batches 需要 --inputs 指定至少一个批次证据文件")
+
+    manifest, manifest_hash = load_manifest(args.manifest)
+    package_ids = manifest_id_union(manifest)
+    subset, queries = load_questions(args.questions, manifest_hash, package_ids)
+    if args.subset and args.subset != subset:
+        raise StructuralError(f"--subset={args.subset} 与 questions 声明的 {subset!r} 不一致")
+    # 合并必须覆盖整个 subset，因此这里不传 --batch-ids
+    expected, _ = select_expected(manifest, subset, None)
+    expected_set = set(expected)
+
+    config = load_config(args.config)
+    if args.index_path is not None:
+        config = {**config, "index_cache_dir": str(args.index_path.resolve())}
+    parsed = RetrievalConfig.from_dict(config)
+    config_hash = config_sha256(config)
+    run_id = f"retrieval-{subset}-{config_hash[:12]}-{manifest_hash[:8]}"
+
+    compatible = {
+        "subset": subset,
+        "dataset_manifest_sha256": manifest_hash,
+        "retrieval_config_sha256": config_hash,
+        "index_revision": parsed.index_revision,
+        "encoder_revision": parsed.encoder_revision,
+        "run_id": run_id,
+    }
+
+    rows: dict[str, dict[str, Any]] = {}
+    input_hashes: dict[str, str] = {
+        str(args.manifest.resolve()): manifest_hash,
+        str(args.questions.resolve()): file_sha256(args.questions),
+    }
+    repeated_identical = 0
+    for path in args.inputs:
+        if not path.is_file():
+            raise StructuralError(f"批次证据文件不存在: {path}")
+        input_hashes[str(path.resolve())] = file_sha256(path)
+        for row in read_jsonl(path):
+            ident = row.get("interaction_id")
+            problems = [f"{field} 与本次 run 不一致" for field, value in compatible.items()
+                        if row.get(field) != value]
+            if not isinstance(ident, str) or ident not in expected_set:
+                problems.append("ID 不属于本 subset")
+            if not row_is_sound(row, queries):
+                problems.append("未通过记录完整性校验")
+            if problems:
+                raise StructuralError(
+                    f"{path} 中的 {ident!r} 不可合并: {'; '.join(problems)}"
+                )
+            if ident in rows:
+                # 批间不应重复；若重复且内容完全一致则安全去重，内容不同则拒绝
+                if canonical_json(rows[ident]) != canonical_json(row):
+                    raise StructuralError(f"ID {ident} 在不同批次中内容冲突，拒绝合并")
+                repeated_identical += 1
+                continue
+            rows[ident] = row
+
+    ordered = [rows[i] for i in expected if i in rows]
+    missing = [i for i in expected if i not in rows]
+    write_jsonl_atomic(args.output, ordered)
+
+    counts = {"ok": 0, "empty": 0, "error": 0}
+    latencies: list[float] = []
+    for row in ordered:
+        counts[row["retrieval_status"]] += 1
+        if _is_number(row.get("latency_ms")):
+            latencies.append(float(row["latency_ms"]))
+    n_success = counts["ok"] + counts["empty"]
+    # 缺失 ID 计入失败，与 A 的检查器口径一致（N_expected = N_success + N_failed）
+    n_failed = len(expected) - n_success
+
+    run_meta_path = args.run_meta or default_run_meta_path(args.output)
+    run_meta: dict[str, Any] = {
+        "run_id": run_id,
+        "stage": "retrieval",
+        "subset": subset,
+        "schema_version": SCHEMA_VERSION,
+        "code_commit": git_commit(),
+        "code_files_sha256": {
+            "scripts/retrieve.py": file_sha256(Path(__file__).resolve()),
+            "src/retrieval/text_retrieval.py":
+                file_sha256(ROOT / "src" / "retrieval" / "text_retrieval.py"),
+            "src/contracts/m3.py": file_sha256(ROOT / "src" / "contracts" / "m3.py"),
+        },
+        "input_files_sha256": input_hashes,
+        "output_files_sha256": {str(args.output.resolve()): file_sha256(args.output)},
+        "config": config,
+        "config_sha256": config_hash,
+        "started_at": started_at,
+        "finished_at": utc_now(),
+        "hardware": hardware_facts(),
+        "N_expected": len(expected),
+        "N_success": n_success,
+        "N_failed": n_failed,
+        "retries": 0,  # 合并本身不做检索，重试发生在各批次运行中
+        "peak_memory_mb": peak_memory_mb(),
+        "index_path": config.get("index_cache_dir"),
+        "index_collection": parsed.collection_name,
+        "index_space_observed": None,  # 合并阶段不打开索引，不臆造观测值
+        "device_resolved": None,
+        "initialization_error": None,
+        "top_k": parsed.top_k,
+        "counts_by_status": counts,
+        "latency_ms_mean": round(sum(latencies) / len(latencies), 3) if latencies else None,
+        "latency_ms_max": round(max(latencies), 3) if latencies else None,
+        "wall_seconds": round(time.perf_counter() - started_clock, 3),
+        "merged_from": [str(p.resolve()) for p in args.inputs],
+        "merged_file_count": len(args.inputs),
+        "repeated_identical_rows_deduped": repeated_identical,
+        "missing_ids": missing,
+        "notes": (
+            "合并模式：按 ID 合并各批次证据并去重；合并前逐行校验 run_id/配置哈希/"
+            "索引与编码器 revision/manifest 哈希及记录完整性；"
+            "缺失 ID 计入 N_failed，与检查器口径一致；latency 来自各批次原始记录，未重算"
+        ),
+    }
+    run_meta_path.parent.mkdir(parents=True, exist_ok=True)
+    run_meta_path.write_text(
+        json.dumps(run_meta, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+
+    print(f"[merge] run_id={run_id}")
+    print(f"[merge] 批次文件 {len(args.inputs)} 个，合并 {len(ordered)}/{len(expected)} 条"
+          + (f"（重复去重 {repeated_identical} 条）" if repeated_identical else ""))
+    print(f"[merge] status={counts}")
+    if missing:
+        print(f"[merge] ⚠️ 缺失 {len(missing)} 个 ID（未覆盖完整 subset）:", file=sys.stderr)
+        for ident in missing[:20]:
+            print(f"          {ident}", file=sys.stderr)
+        if len(missing) > 20:
+            print(f"          … 另有 {len(missing) - 20} 个", file=sys.stderr)
+    print(f"[merge] evidence -> {args.output}")
+    print(f"[merge] run_meta -> {run_meta_path}")
+
+    if missing or counts["error"]:
+        print(f"警告: 合并后仍有 {len(missing)} 个缺失 ID / {counts['error']} 条 error 状态行",
+              file=sys.stderr)
+        return EXIT_TECHNICAL
+    return EXIT_OK
+
+
 def main(argv: list[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
@@ -586,6 +769,17 @@ def main(argv: list[str] | None = None) -> int:
             parser().error("--prepare-working-copy 需要 --config")
         try:
             return run_prepare(args)
+        except (StructuralError, ConfigError, RetrievalError, ContractError, OSError) as exc:
+            print(f"错误: {type(exc).__name__}: {exc}", file=sys.stderr)
+            return EXIT_STRUCTURAL
+
+    if args.merge_batches:
+        merge_missing = [name for name in ("questions", "manifest", "config", "output")
+                         if getattr(args, name) is None]
+        if merge_missing or not args.inputs:
+            parser().error("--merge-batches 需要 --questions --manifest --config --output --inputs")
+        try:
+            return run_merge(args)
         except (StructuralError, ConfigError, RetrievalError, ContractError, OSError) as exc:
             print(f"错误: {type(exc).__name__}: {exc}", file=sys.stderr)
             return EXIT_STRUCTURAL
@@ -757,7 +951,7 @@ def main(argv: list[str] | None = None) -> int:
         n_success = counts["ok"] + counts["empty"]
         n_failed = counts["error"]
 
-        run_meta_path = args.run_meta or args.output.with_name("run_meta_retrieval.json")
+        run_meta_path = args.run_meta or default_run_meta_path(args.output)
         run_meta: dict[str, Any] = {
             "run_id": run_id,
             "stage": "retrieval",
@@ -784,6 +978,8 @@ def main(argv: list[str] | None = None) -> int:
             "N_success": n_success,
             "N_failed": n_failed,
             "retries": retries,
+            "retrieval_performed": bool(todo),
+            "resumed_rows_reused": len(resumed_rows),
             "peak_memory_mb": peak_memory_mb(),
             "index_path": config.get("index_cache_dir"),
             "index_collection": parsed.collection_name,
@@ -805,11 +1001,28 @@ def main(argv: list[str] | None = None) -> int:
         }
         if batch_ids is not None:
             run_meta["batch_ids"] = sorted(batch_ids)
-        run_meta_path.parent.mkdir(parents=True, exist_ok=True)
-        run_meta_path.write_text(
-            json.dumps(run_meta, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
-            encoding="utf-8",
-        )
+        # 纯续跑（本次一条都没实际检索）时不要覆盖已有 run_meta：否则原始运行的耗时、
+        # 峰值内存、冷启动会被"什么都没做"的这次调用覆盖，而 A 正是靠这些字段判断资源需求。
+        keep_existing = False
+        if not todo and run_meta_path.is_file():
+            try:
+                existing = load_json(run_meta_path)
+            except ContractError:
+                existing = None
+            if (
+                isinstance(existing, dict)
+                and existing.get("run_id") == run_id
+                and str(args.output.resolve()) in (existing.get("output_files_sha256") or {})
+            ):
+                keep_existing = True
+        if keep_existing:
+            print(f"[run] 本次未执行检索，保留原始 run_meta 不被覆盖: {run_meta_path}")
+        else:
+            run_meta_path.parent.mkdir(parents=True, exist_ok=True)
+            run_meta_path.write_text(
+                json.dumps(run_meta, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+                encoding="utf-8",
+            )
 
         print(f"\n[summary] N_expected={len(expected)} N_success={n_success} "
               f"N_failed={n_failed} retries={retries}")

@@ -1,17 +1,9 @@
 {
   "schema_version": "m3.v1",
-  "checked_at_utc": "2026-10-10T11:21:41.296006+00:00",
+  "checked_at_utc": "2026-10-10T12:47:51.930960+00:00",
   "valid": true,
   "errors": [],
   "warnings": [
-    {
-      "code": "unverified",
-      "message": "Cross-subset metadata grouping incomplete: only 50/270 IDs supplied"
-    },
-    {
-      "code": "unverified",
-      "message": "Cross-subset questions grouping incomplete: only 50/270 IDs supplied"
-    },
     {
       "code": "unverified",
       "message": "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation."
@@ -40,7 +32,7 @@
       "missing_ids": [],
       "unexpected_ids": []
     },
-    "results\\m3\\dev\\evidence.jsonl": {
+    "results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl": {
       "expected": 50,
       "rows": 50,
       "missing_ids": [],
@@ -52,8 +44,6 @@
   },
   "paired_comparison": null,
   "unverified_checks": [
-    "Cross-subset metadata grouping incomplete: only 50/270 IDs supplied",
-    "Cross-subset questions grouping incomplete: only 50/270 IDs supplied",
     "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
     "Official dataset/index/provider authenticity requires source records and manual review."
   ],
@@ -63,16 +53,61 @@
     "data\\processed\\m3\\dev\\questions.jsonl": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
     "data\\processed\\m3\\dev\\answers.jsonl": "48b1befcba4d6bff43f85f56cb7701e0f7386de2ab7e361e5f0cc5b30394a0b0",
     "data\\processed\\m3\\dev\\metadata.jsonl": "8076b17a3dccb6f0b8eaaffda348312a3595cf3664cc69e90071fd9f1456c650",
-    "experiments\\m3\\retrieval.json": "92a6d5ab8b83fae38d0425c29022065c159ab316ad057a8de9557dc4f55a6fde",
-    "results\\m3\\dev\\evidence.jsonl": "07db457d84c42b417184e791779e1e9cee3d2106d2d120a9837171c3bc2689b7",
-    "results\\m3\\dev\\run_meta_retrieval.json": "ba47f3c11b8175dbb257f92e526109a0cd27e6de65d7e4b077bf7e6d00b0188f"
+    "results\\m3\\dev_topk_sweep_run1\\top_k_3\\retrieval.json": "4aedcb8cb580e80b3e454123ce910b77e73f0670035525fea7aba0bd59a1fb59",
+    "results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl": "c956ab66a946945b5daa122c0c6a7c8f76808a8195fb995638ecb98787247dd3",
+    "data\\processed\\m3\\smoke\\metadata.jsonl": "7cb8d9bbb48da1cb29253dc6841fb518248f526afe3971b15689bef0726c5082",
+    "data\\processed\\m3\\eval\\metadata.jsonl": "935fcd27d6ff92c6008be26063cbcd22b2e7dd5eede9705410fc16847ff60237",
+    "data\\processed\\m3\\smoke\\questions.jsonl": "d9b51bff89fd34432c9607df5bdd10fe1cf5df97b42f80646fbe41b7f038c36c",
+    "data\\processed\\m3\\eval\\questions.jsonl": "b228e2347d3f2588629d6fa9b50f46c1163649c4bbdc0fbc66ae97bafed29c0c",
+    "results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json": "06c550c7e3dbf17f5284f701d189b6049434913851404f8e50fa727ee79bfc0a",
+    "D:\\CH02-01\\data\\processed\\m3\\manifest.json": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
+    "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl": "c956ab66a946945b5daa122c0c6a7c8f76808a8195fb995638ecb98787247dd3"
   },
   "provenance": {
     "config_hashes": {
       "retrieval": [
-        "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98"
+        "178d00391d583f2b63a90274f1091c22cdf43e0c6097f33832eae2f9e438da75"
       ]
-    }
+    },
+    "path_mappings": [
+      {
+        "old": "D:\\CH02-01",
+        "new": "D:\\CH02-01"
+      }
+    ],
+    "resolved_files": [
+      {
+        "run_meta": "results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json",
+        "hash_field": "input_files_sha256",
+        "original_path": "D:\\CH02-01\\data\\processed\\m3\\manifest.json",
+        "expected_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+        "actual_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+        "resolved_path": "D:\\CH02-01\\data\\processed\\m3\\manifest.json",
+        "mapped_from": "D:\\CH02-01",
+        "status": "verified"
+      },
+      {
+        "run_meta": "results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json",
+        "hash_field": "input_files_sha256",
+        "original_path": "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl",
+        "expected_sha256": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
+        "actual_sha256": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
+        "resolved_path": "D:\\CH02-01\\data\\processed\\m3\\dev\\questions.jsonl",
+        "mapped_from": "D:\\CH02-01",
+        "status": "verified"
+      },
+      {
+        "run_meta": "results\\m3\\dev_topk_sweep_run1\\top_k_3\\run_meta_retrieval.json",
+        "hash_field": "output_files_sha256",
+        "original_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl",
+        "expected_sha256": "c956ab66a946945b5daa122c0c6a7c8f76808a8195fb995638ecb98787247dd3",
+        "actual_sha256": "c956ab66a946945b5daa122c0c6a7c8f76808a8195fb995638ecb98787247dd3",
+        "resolved_path": "D:\\CH02-01\\results\\m3\\dev_topk_sweep_run1\\top_k_3\\evidence.jsonl",
+        "mapped_from": "D:\\CH02-01",
+        "status": "verified"
+      }
+    ]
   },
   "data_classification": "declared_official_unverified",
   "subset": "dev",
