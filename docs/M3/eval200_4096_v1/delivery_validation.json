@@ -1,0 +1,33 @@
+{
+  "valid": true,
+  "payload_files_checked": 47,
+  "required_files_checked": 30,
+  "score_rows": 400,
+  "statistics": {
+    "b0": {
+      "CORRECT": 2,
+      "WRONG": 0,
+      "MISSING": 198
+    },
+    "b1": {
+      "CORRECT": 26,
+      "WRONG": 66,
+      "MISSING": 108
+    }
+  },
+  "common_scored": 200,
+  "B1_win_tie_loss": [
+    25,
+    108,
+    67
+  ],
+  "paid_requests_in_saved_log": 93,
+  "saved_total_tokens": 221106,
+  "api_requests": 0,
+  "errors": [],
+  "delta_only_missing_dependency_rejected": true,
+  "offline_cli_reproduction_passed": true,
+  "combined_old_package_plus_delta_plus_BCD_inputs": true,
+  "all_commands_read_only_or_offline": true,
+  "scope": "Old v2 plus delta payload and latest BCD input composition; delta hash seal verified separately"
+}

@@ -730,6 +730,34 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(0, report["N_human_completed"])
         self.assertIsNone(report["agreement"])
 
+    def test_eval_paired_transitions_and_failures(self):
+        from src.evaluation.review import paired_details
+        first = []
+        second = []
+        for index, (left, right) in enumerate((("MISSING", "CORRECT"), ("CORRECT", "WRONG"),
+                                               ("WRONG", "WRONG"), ("MISSING", None))):
+            common = {"interaction_id": str(index), "subset": "eval", "dataset_manifest_sha256": "same",
+                      "evaluation_config_sha256": "same"}
+            for target, verdict in ((first, left), (second, right)):
+                target.append({**common, "judge_status": "ok" if verdict else "error", "verdict": verdict,
+                               "score": {"CORRECT": 1, "WRONG": -1, "MISSING": 0, None: None}[verdict]})
+        report = paired_details(first, list(reversed(second)))
+        self.assertEqual((1, 1, 1), (report["second_wins"], report["ties"], report["second_losses"]))
+        self.assertEqual(3, report["n_common_scored"])
+        self.assertEqual(1, report["transition_matrix"]["MISSING"]["CORRECT"])
+        self.assertEqual(["3"], report["second_failed_ids"])
+        self.assertIsNone(report["per_question"][-1]["score_delta"])
+
+    def test_eval_comparison_registration_and_method_guard(self):
+        from src.evaluation.review import EVAL_GROUPS, EVAL_COMPARISONS, INPUT_GROUPS, paired_details
+        self.assertEqual(6, len(INPUT_GROUPS))
+        self.assertEqual([("eval_B0", "eval_B1_k1")], EVAL_COMPARISONS)
+        self.assertEqual({"eval"}, {g["subset"] for g in EVAL_GROUPS})
+        row = {"interaction_id": "a", "subset": "eval", "dataset_manifest_sha256": "same",
+               "evaluation_config_sha256": "one", "judge_status": "ok", "verdict": "MISSING", "score": 0}
+        with self.assertRaises(ContractError):
+            paired_details([row], [{**row, "evaluation_config_sha256": "two"}])
+
     def test_submission_source_has_no_machine_paths(self):
         import re
         files = [ROOT / "scripts/evaluate.py", ROOT / "scripts/review_evaluation.py", ROOT / "scripts/evaluation_records.py"] + list((ROOT / "src/evaluation").glob("*.py"))

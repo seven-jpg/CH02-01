@@ -1,0 +1,30 @@
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R001", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R002", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "预测讲述 One Fast Move，参考为 Piece by Piece，电影身份和内容均不符。", "ai_verdict": "WRONG", "blind_id": "R003", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R004", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "Eastern Australia 与参考的澳大利亚东部具体分布相容，但回答明显更宽泛；若要求具体范围可有分歧。", "ai_verdict": "CORRECT", "blind_id": "R005", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "干旱及半干旱气候与参考热带湿热／海洋性气候不符。", "ai_verdict": "WRONG", "blind_id": "R006", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "120–150磅与参考55磅不符。", "ai_verdict": "WRONG", "blind_id": "R007", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "预测讨论精油扩香数周，参考鲜玫瑰5–7天，物品和时长均不符。", "ai_verdict": "WRONG", "blind_id": "R008", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "回答否，与Kirkland早于Simple Truth成立一致。", "ai_verdict": "CORRECT", "blind_id": "R009", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "参考狗190种、猫42种，回答狗正确。", "ai_verdict": "CORRECT", "blind_id": "R010", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "含标准拒答，依现有外层规则归为拒答。", "ai_verdict": "MISSING", "blind_id": "R011", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "预测汽油与参考汽油一致；regular unleaded 是更具体的燃料描述。", "ai_verdict": "CORRECT", "blind_id": "R012", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "448229与参考32172不符。", "ai_verdict": "WRONG", "blind_id": "R013", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R014", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "未说明饭团用于便携／保鲜与寿司保存鱼的起源区别，转而讨论发酵米和现代寿司。", "ai_verdict": "WRONG", "blind_id": "R015", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R016", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "XV20不是参考要求的第十一代Honda Accord，未给出正确的代际比较。", "ai_verdict": "WRONG", "blind_id": "R017", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "预测为水槽排水组件，参考为耙子，比较对象不符。", "ai_verdict": "WRONG", "blind_id": "R018", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R019", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R020", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "Begonia与参考白松的俗名不符。", "ai_verdict": "WRONG", "blind_id": "R021", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "标准拒答。", "ai_verdict": "MISSING", "blind_id": "R022", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "Mustang自1965年持续生产，比参考列出的Pontiac GTO生产历程更长，回答是与参考一致。", "ai_verdict": "CORRECT", "blind_id": "R023", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "回答否与参考明确的父子／父女关系相反。", "ai_verdict": "WRONG", "blind_id": "R024", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "预测2人与参考3人不符，作者身份也不符。", "ai_verdict": "WRONG", "blind_id": "R025", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "Begonia与木薯cassava／manioc／yuca不符。", "ai_verdict": "WRONG", "blind_id": "R026", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "含标准拒答，依外层规则归为拒答；后文谈犀牛不能替代参考寿命。", "ai_verdict": "MISSING", "blind_id": "R027", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "Panchaloham对应参考panchaloha五金合金，材料核心一致；Bronze的附加称呼应复核。", "ai_verdict": "CORRECT", "blind_id": "R028", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "问题要求历任设计者，预测未给出参考中的设计者姓名和顺序。", "ai_verdict": "WRONG", "blind_id": "R029", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}
+{"ai_reason": "Douglas fir为树木名称，与参考褐渔鸮不符。", "ai_verdict": "WRONG", "blind_id": "R030", "is_independent_human_review": false, "judge_labels_consulted_before_judgment": false, "review_type": "AI辅助复核"}

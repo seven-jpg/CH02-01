@@ -1,0 +1,29 @@
+{
+  "E_tests_passed": 49,
+  "actual_config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+  "n_common_scored": 200,
+  "paid_requests": 93,
+  "public_acceptance_exit_code": 0,
+  "public_acceptance_valid": true,
+  "row_recomputation": [
+    {
+      "all_match": true,
+      "baseline": "B0",
+      "rows_recomputed": 200
+    },
+    {
+      "all_match": true,
+      "baseline": "B1",
+      "rows_recomputed": 200
+    }
+  ],
+  "scope": "400 eval prediction records; no new API requests",
+  "test_result": "49 tests passed, mocked API with network blocked",
+  "historical_six_group_regression": {
+    "rows": 240,
+    "groups": 6,
+    "paired_comparisons": 5,
+    "all_full_coverage": true,
+    "new_api_requests": 0
+  }
+}

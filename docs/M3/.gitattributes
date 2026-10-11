@@ -1,0 +1,2 @@
+# Keep the delivered E evaluation chapter byte-identical to the handoff archive.
+E_evaluation.md -text !eol -whitespace

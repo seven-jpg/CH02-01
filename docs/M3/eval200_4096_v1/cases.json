@@ -1,0 +1,102 @@
+[
+  {
+    "case_id": "C01",
+    "interaction_id": "34fc07c2-3e27-4f09-a154-26e23b83d0ed",
+    "title": "电影对象错配",
+    "analysis_type": "AI辅助分析",
+    "analysis": "检索标题及内容为One Fast Move，预测沿用该电影；参考对象为Piece by Piece。可见对象错配，不能单凭这一例断定缺图是唯一原因。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "WRONG",
+    "prompt_sha256": "565bdd05eff2befb23ef21c5d4df2c9e99afad0d511deb0f76e280aae7c9fd6f"
+  },
+  {
+    "case_id": "C02",
+    "interaction_id": "5a3a5ec1-f231-4c4f-a833-c42af35ec177",
+    "title": "数字正确摘录但对象错误",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据讨论烘干机120–150磅，预测复述该区间；参考问的是55磅的露台取暖器。摘录真实数字不保证答对所问物品。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "WRONG",
+    "prompt_sha256": "9099dcafc9dd8e00e6acbbb15a8ca70c743b28f9c7a6d188fd9ab04970acddac"
+  },
+  {
+    "case_id": "C03",
+    "interaction_id": "cbd67f91-c5ef-4ce1-a45e-458ee3ed2b14",
+    "title": "检索后比较方向正确",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据标题指出猫品种少于狗，预测回答Dogs，与参考比较方向一致。无需复述全部品种数量也能回答所问方向。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "CORRECT",
+    "prompt_sha256": "b81c2986f7c8fb6d5905c1d7f832b408fcc800812477b74e9a984daa586ab7ca"
+  },
+  {
+    "case_id": "C04",
+    "interaction_id": "cd0cc4cd-34e9-4daa-a189-25e4840f0fe2",
+    "title": "答案正确但证据对象不同",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据标题指向Volvo V70，参考对象为Toyota FJ Cruiser；预测汽油与参考相符。标签正确不能证明证据准确匹配，也不能确认模型依赖了该证据。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "CORRECT",
+    "prompt_sha256": "ca5e3acd1cd4f1365dedbd239862a5bb1c282fc0e2ba409df0427b5fad48fbb7"
+  },
+  {
+    "case_id": "C05",
+    "interaction_id": "d61f9487-e538-44a8-87ef-9950267d5128",
+    "title": "人口数字不符",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据指向Santa Barbara County，而预测448229与参考32172不符。证据记录不能单独确认参考县名，不据此猜测具体目标县。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "WRONG",
+    "prompt_sha256": "96d117b95de2bc90b5c327dafc14f997a7825b2148e28a75452d8e99b6af1a1c"
+  },
+  {
+    "case_id": "C06",
+    "interaction_id": "c43db3c4-83af-4b79-96a9-cdb8901c6b92",
+    "title": "比较问题只回答一侧背景",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据及预测集中在寿司起源，未表达参考所要求的饭团便携／保鲜与寿司保存鱼的对比。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "WRONG",
+    "prompt_sha256": "249a6b2e00e6e58f396326774c6e0fdcac87948529478cab5264a8d72b2d3142"
+  },
+  {
+    "case_id": "C07",
+    "interaction_id": "360824f1-6cfb-46f1-a3ad-0cc88f583242",
+    "title": "材料比较的对象错配",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据标题为水槽排水组件的金属／塑料比较，参考为耙子；预测回答排水组件的优点。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "WRONG",
+    "prompt_sha256": "2c4ae11b7b302743036282baec40b7ea5952fbf50732039d9b1108b7a39eff25"
+  },
+  {
+    "case_id": "C08",
+    "interaction_id": "0a1f3aaa-7a4f-489a-954b-312393fcae79",
+    "title": "所有权关系错配",
+    "analysis_type": "AI辅助分析",
+    "analysis": "证据为Jimmy Dean公司收购历史，参考为Wölffer葡萄园原主与现主的亲属关系；预测No与参考Yes相反。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "WRONG",
+    "prompt_sha256": "1c4f5e725f3870204235614eb2331cd49953d5561e6d9a616ec9a539dd1002a7"
+  },
+  {
+    "case_id": "C09",
+    "interaction_id": "d9f20acb-a904-4c52-8d62-b0a5d08aca3c",
+    "title": "B0宽泛回答获正确、B1拒答",
+    "analysis_type": "AI辅助分析",
+    "analysis": "B0只说眼睛存在天然保护机制，未明确参考的浓密睫毛，但本次裁判接受为CORRECT；B1拒答。这体现裁判对概括答案的宽松程度，值得真人重点复核。保留原始标签，不另行调用裁判或改分。",
+    "b0_verdict": "CORRECT",
+    "b1_verdict": "MISSING",
+    "prompt_sha256": "8bfe6ab007bc02f38022d36729bcd7c261ca1c0ff6ec2407279b7993034107a6"
+  },
+  {
+    "case_id": "C10",
+    "interaction_id": "f6fa0a84-2952-4a82-9783-cbd284ea4ac5",
+    "title": "拒答伴随错误对象解释",
+    "analysis_type": "AI辅助分析",
+    "analysis": "B1以标准拒答开头，后文讨论犀牛寿命；依既定外层规则仍为MISSING。参考为12–17年。后文对象不符不能把规则拒答改为技术失败，也不在eval临时修改规则。",
+    "b0_verdict": "MISSING",
+    "b1_verdict": "MISSING",
+    "prompt_sha256": "51f2994f99ffc5bb530673fa6afdb4f1bce878c5e18668831e9ce681d000ce82"
+  }
+]

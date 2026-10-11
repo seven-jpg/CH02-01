@@ -1,0 +1,2 @@
+# Preserve exact bytes for archived evaluation records and CSV hash checks.
+** -text !eol -whitespace

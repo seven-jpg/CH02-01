@@ -13,10 +13,12 @@ sys.path.insert(0, str(ROOT))
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
-    suite = sub.add_parser("prepare", help="Validate all six existing groups, deduplicate, sample a blinded review")
+    suite = sub.add_parser("prepare", help="Offline preflight, deduplication and blinded review for a selected suite")
     suite.add_argument("--output-dir", required=True)
     suite.add_argument("--run-prefix", required=True)
     suite.add_argument("--resume", action="store_true")
+    suite.add_argument("--suite", choices=("smoke-dev", "eval"), default="smoke-dev")
+    suite.add_argument("--config", default="experiments/m3/evaluation.json")
     human = sub.add_parser("human-summary", help="Read manually filled CSV; never treats AI suggestions as human")
     human.add_argument("--human-csv", required=True)
     human.add_argument("--mapping", required=True)
@@ -33,7 +35,8 @@ def main(argv=None):
         if args.command == "prepare":
             if Path(args.run_prefix).name != args.run_prefix or args.run_prefix in ("", ".", ".."):
                 raise ContractError("run-prefix must be one directory name")
-            result = prepare_suite(resolve(args.output_dir), args.run_prefix, resume=args.resume)
+            result = prepare_suite(resolve(args.output_dir), args.run_prefix, resume=args.resume,
+                                   suite=args.suite, config_path=args.config)
         elif args.command == "human-summary":
             result = human_summary(resolve(args.human_csv), resolve(args.mapping), [resolve(p) for p in args.judge_scores])
             save_once(resolve(args.output), result)

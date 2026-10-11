@@ -21,6 +21,13 @@ INPUT_GROUPS = [
 ]
 COMPARISONS = [("smoke_B0", "smoke_B1_k5"), ("dev_B0", "dev_B1_k5"),
                ("dev_B1_k1", "dev_B1_k3"), ("dev_B1_k1", "dev_B1_k5"), ("dev_B1_k3", "dev_B1_k5")]
+EVAL_GROUPS = [
+    {"name": "eval_B0", "subset": "eval", "baseline": "B0", "top_k": None,
+     "predictions": "results/m3/selected_k1_run1/eval/predictions_b0.jsonl"},
+    {"name": "eval_B1_k1", "subset": "eval", "baseline": "B1", "top_k": 1,
+     "predictions": "results/m3/selected_k1_run1/eval/predictions_b1.jsonl"},
+]
+EVAL_COMPARISONS = [("eval_B0", "eval_B1_k1")]
 
 
 def save_once(path: Path, value: Any, *, jsonl: bool = False) -> None:
@@ -42,14 +49,21 @@ def save_text(path: Path, content: str) -> None:
             stream.write(content)
 
 
-def prepare_suite(output: Path, run_prefix: str, *, resume: bool = False) -> dict[str, Any]:
+def prepare_suite(output: Path, run_prefix: str, *, resume: bool = False,
+                  suite: str = "smoke-dev", config_path: str = "experiments/m3/evaluation.json") -> dict[str, Any]:
     from scripts.evaluate import main as evaluate_main
+    if suite not in ("smoke-dev", "eval"):
+        raise ContractError("Unknown evaluation suite")
+    config = load_json(ROOT / config_path)
+    validate_config(config)
+    groups = EVAL_GROUPS if suite == "eval" else INPUT_GROUPS
+    comparisons = EVAL_COMPARISONS if suite == "eval" else COMPARISONS
     all_prepared, pending, group_counts, outputs = [], [], [], []
-    for group in INPUT_GROUPS:
+    for group in groups:
         subset = group["subset"]
         directory = (ROOT / group["predictions"]).parent / run_prefix / group["baseline"].lower()
         args = ["--manifest", "data/processed/m3/manifest.json", "--predictions", group["predictions"],
-                "--config", "experiments/m3/evaluation.json", "--output-dir", str(directory),
+                "--config", config_path, "--output-dir", str(directory),
                 "--run-id", run_prefix + "-" + group["name"], "--dry-run"]
         for name in ("questions", "answers", "metadata"):
             args += ["--" + name, f"data/processed/m3/{subset}/{name}.jsonl"]
@@ -84,11 +98,11 @@ def prepare_suite(output: Path, run_prefix: str, *, resume: bool = False) -> dic
              "N_within_suite_reusable_responses": len(pending) - len(deduplicated),
              "reuse_reason": "Same manifest/ID/question/reference/scored text and evaluation method; scores keep individual generation provenance.",
              "prompt_characters": {"min": min(lengths) if lengths else None, "max": max(lengths) if lengths else None,
-                                   "total_unique": sum(lengths)}, "max_output_tokens_per_request": 1024,
+             "total_unique": sum(lengths)}, "max_output_tokens_per_request": config["max_tokens"],
              "provider_billing_tokens": None, "estimated_currency_cost": None,
              "cache_policy": "Share one journal explicitly to realize cross-group savings; starts persisted before send; no retries; unknown/failed requests require review.",
              "groups": group_counts, "outputs": outputs,
-             "pending_comparisons": [{"first": a, "second": b, "status": "awaiting_real_judge_results"} for a, b in COMPARISONS]}
+             "pending_comparisons": [{"first": a, "second": b, "status": "awaiting_real_judge_results"} for a, b in comparisons]}
     save_once(output / "suite_summary.json", suite)
     save_text(output / "suite_summary.csv", csv_text(group_counts))
     save_once(output / "unique_judge_requests.jsonl", list(deduplicated.values()), jsonl=True)
@@ -234,8 +248,30 @@ def _validate_comparison_run(path: Path, data: Any, rows: list[dict[str, Any]]) 
             raise ContractError("Comparison score uses an inapplicable deterministic rule")
 
 
+def paired_details(first: list[dict[str, Any]], second: list[dict[str, Any]]) -> dict[str, Any]:
+    """Descriptive paired transitions; technical failures remain outside scored counts."""
+    result = paired(first, second)
+    a, b = ({r["interaction_id"]: r for r in rows} for rows in (first, second))
+    labels = ("CORRECT", "WRONG", "MISSING")
+    transitions = {left: {right: 0 for right in labels} for left in labels}
+    counts = {"second_wins": 0, "ties": 0, "second_losses": 0}
+    per_question = []
+    for ident in sorted(a):
+        left, right = a[ident], b[ident]
+        common = left["judge_status"] == right["judge_status"] == "ok"
+        delta = right["score"] - left["score"] if common else None
+        if common:
+            transitions[left["verdict"]][right["verdict"]] += 1
+            counts["second_wins" if delta > 0 else "second_losses" if delta < 0 else "ties"] += 1
+        per_question.append({"interaction_id": ident, "first_status": left["judge_status"],
+                             "second_status": right["judge_status"], "first_verdict": left["verdict"],
+                             "second_verdict": right["verdict"], "first_score": left["score"],
+                             "second_score": right["score"], "score_delta": delta})
+    return {**result, "transition_matrix": transitions, **counts, "per_question": per_question}
+
+
 def compare_groups(score_paths: dict[str, Path], output: Path) -> dict[str, Any]:
-    groups = {g["name"]: g for g in INPUT_GROUPS}
+    groups = {g["name"]: g for g in INPUT_GROUPS + EVAL_GROUPS}
     scores, summaries = {}, []
     for name, path in score_paths.items():
         if name not in groups:
@@ -257,7 +293,8 @@ def compare_groups(score_paths: dict[str, Path], output: Path) -> dict[str, Any]
         scores[name] = rows
         summaries.append({"group": name, **summary(rows, pred, subset=g["subset"], baseline=g["baseline"],
                                                     manifest=pred[0]["dataset_manifest_sha256"])})
-    comparisons = [{"first_group": a, "second_group": b, **paired(scores[a], scores[b])} for a, b in COMPARISONS if a in scores and b in scores]
+    comparisons = [{"first_group": a, "second_group": b, **paired_details(scores[a], scores[b])}
+                   for a, b in COMPARISONS + EVAL_COMPARISONS if a in scores and b in scores]
     result = {"groups": summaries, "paired": comparisons}
     save_once(output / "completed_comparisons.json", result)
     save_text(output / "completed_summary.csv", csv_text(summaries))
