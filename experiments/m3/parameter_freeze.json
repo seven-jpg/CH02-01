@@ -1,0 +1,170 @@
+{
+  "record_type": "m3_operational_parameter_freeze",
+  "schema_version": "m3.v1",
+  "status": "frozen_for_eval",
+  "is_frozen": true,
+  "frozen_at_utc": "2026-10-11T04:42:23.500076+00:00",
+  "owner": "A",
+  "authorized_by": "Group leader requested autonomous parameter selection and local C retrieval",
+  "reviewed_upstream_commit": "db044e2",
+  "selected_top_k": 1,
+  "candidate_top_k": [
+    1,
+    3,
+    5
+  ],
+  "selection_subset": "dev",
+  "N_selection_questions": 50,
+  "selection_rule": [
+    "maximize dev Truthfulness = (C-W)/N_scored",
+    "if tied, prefer lower dev wrong-answer rate",
+    "if still tied, prefer smaller top_k"
+  ],
+  "selection_rule_is_preregistered": false,
+  "selection_rule_note": "Rule is disclosed at this engineering decision. Eval was not used for selection and will not be used to revise parameters.",
+  "dev_results": [
+    {
+      "C_correct": 10,
+      "M_missing": 23,
+      "N_fixed": 50,
+      "N_generated": 50,
+      "N_scored": 50,
+      "W_wrong": 17,
+      "accuracy": 0.2,
+      "baseline": "B1",
+      "batch_ids_sha256": null,
+      "generation_coverage": 1.0,
+      "group": "dev_B1_k1",
+      "hallucination_rate": 0.34,
+      "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+      "missing_rate": 0.46,
+      "scope": "full",
+      "scoring_coverage": 1.0,
+      "subset": "dev",
+      "truthfulness": -0.14
+    },
+    {
+      "C_correct": 11,
+      "M_missing": 19,
+      "N_fixed": 50,
+      "N_generated": 50,
+      "N_scored": 50,
+      "W_wrong": 20,
+      "accuracy": 0.22,
+      "baseline": "B1",
+      "batch_ids_sha256": null,
+      "generation_coverage": 1.0,
+      "group": "dev_B1_k3",
+      "hallucination_rate": 0.4,
+      "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+      "missing_rate": 0.38,
+      "scope": "full",
+      "scoring_coverage": 1.0,
+      "subset": "dev",
+      "truthfulness": -0.18
+    },
+    {
+      "C_correct": 9,
+      "M_missing": 17,
+      "N_fixed": 50,
+      "N_generated": 50,
+      "N_scored": 50,
+      "W_wrong": 24,
+      "accuracy": 0.18,
+      "baseline": "B1",
+      "batch_ids_sha256": null,
+      "generation_coverage": 1.0,
+      "group": "dev_B1_k5",
+      "hallucination_rate": 0.48,
+      "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+      "missing_rate": 0.34,
+      "scope": "full",
+      "scoring_coverage": 1.0,
+      "subset": "dev",
+      "truthfulness": -0.3
+    }
+  ],
+  "decision": "k3 adds one correct and three wrong answers versus k1. k5 has fewer correct and more wrong answers. Select k1 for the required B1 text-RAG baseline; retain B0 as an abstention-heavy control.",
+  "quality_optimum_proven": false,
+  "statistical_significance_claimed": false,
+  "configs": {
+    "retrieval": {
+      "path": "experiments/m3/retrieval_selected.json",
+      "sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
+      "file_sha256": "d16e62cc9ce49646aa9789cf61e98e963c09ecc367095473b2f4c32951948b0b"
+    },
+    "generation": {
+      "path": "experiments/m3/generation.json",
+      "sha256": "dee0e5ea47324393e87687794da30c00b91e5f7f3f31203e18b7bdea79342502",
+      "file_sha256": "7abfeed46cfd0ed1090f32b3b21e873e7eeba2f262c0249d813dc464b36d553e"
+    },
+    "evaluation": {
+      "path": "experiments/m3/evaluation_4096.json",
+      "sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+      "file_sha256": "20c181345276095bc2c39b05db01f4443f89349c627acd3aff5247db62275bc0"
+    }
+  },
+  "dataset_manifest": {
+    "path": "data/processed/m3/manifest.json",
+    "sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0"
+  },
+  "generation": {
+    "provider": "nvidia",
+    "model": "meta/llama-3.2-11b-vision-instruct",
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 100,
+    "seed": 42,
+    "evidence_token_budget": 1500,
+    "evidence_budget_method": "character-based estimate (4 chars/token), matching the reviewed D runs"
+  },
+  "evaluation": {
+    "provider": "autodl",
+    "model": "DeepSeek-V4.1-Flash",
+    "temperature": 0,
+    "max_tokens": 4096,
+    "response_max_tokens": 75,
+    "tokenizer_sha256": "79e3e522635f3171300913bb421464a87de6222182a0570b9b2ccba2a964b2b4",
+    "manual_calibration_completed": false,
+    "independent_human_review_rows": 0,
+    "leaderboard_equivalence_claimed": false
+  },
+  "retrieval": {
+    "fetch_k": null,
+    "fetch_k_implemented": false,
+    "rerank": false,
+    "live_web_fetch": false,
+    "input": "original query only; no image, caption, OCR, full_query, history or reference answer"
+  },
+  "human_review_sensitivity": {
+    "R001": "AI-assisted review disputes one k1 CORRECT. Keep original machine scores. If changed to WRONG after human review, k1 Truthfulness becomes -0.18, tied with k3; k1 still wins the disclosed lower-wrong-rate/smaller-k tie policy.",
+    "human_labels_not_invented": true
+  },
+  "scope": "Operational configs are frozen for eval; final M3 results and full reproducibility acceptance are not complete.",
+  "eval_policy": "Run selected k1 once on fixed eval200. Report B0/B1 accuracy, wrong/refusal rates and Truthfulness. Do not tune thresholds, prompts, evidence budgets, k or judge using eval labels.",
+  "further_dev_sweep_required": false,
+  "original_k5_config_and_results_overwritten": false,
+  "api_calls_by_A_parameter_selection": 0,
+  "remaining": [
+    "D: generate eval B0/B1 using frozen configs and selected evidence",
+    "E: score eval B0/B1 with the same 4096 method, retain failures and request audit",
+    "A/team: independent human review of blinded calibration and final M3 report"
+  ],
+  "retrieval_handoff": {
+    "status": "completed_strict_acceptance_passed",
+    "smoke": {
+      "directory": "results/m3/selected_k1_run1/smoke",
+      "N_expected": 20,
+      "N_success": 20
+    },
+    "eval": {
+      "directory": "results/m3/selected_k1_run1/eval",
+      "N_expected": 200,
+      "N_success": 200
+    },
+    "eval_retrieval_started_after_freeze": true,
+    "answer_quality_on_eval_available": false
+  },
+  "handoff_document": "docs/M3/parameter_decision_and_handoff.md",
+  "independent_review": "docs/M3/retrieval_review/parameter_selection_review.json"
+}

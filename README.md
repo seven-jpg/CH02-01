@@ -2,9 +2,9 @@
 
 本项目以 KDD Cup 2025 Meta CRAG-MM 的公开数据、检索工具和评价代码为实验平台。当前目标是完成课程 M2 数据分析和 M3 纯文本单轮 RAG 基线，M4 再研究多模态、多轮上下文和图像扰动。
 
-截至2026-10-10，B 已提交 M2 EDA、固定 manifest 和 smoke20/dev50/eval200 数据；C 已完成 dev50 上 top_k=1/3/5 的真实检索；D 已提交生成入口、smoke/dev 的 B0/B1 回答及 dev 的 k=1/3 B1 回答。三组 dev 检索与生成的严格验收通过，E 的正式评分入口和逐题结果尚未找到，完整实验仍未冻结。验收通过不代表答案正确。
+截至2026-10-11，B 已提交 M2 EDA、固定 manifest 和 smoke20/dev50/eval200 数据；C/D/E 已完成 smoke/dev 的检索、生成和评分，共240条预测完成评价。A 已独立复算同一 dev50 的 k=1/3/5 比较并严格验收，固定 `top_k=1`；组长电脑已完成选定配置的 smoke20 和 eval200 检索，220条全部成功。D/E 下一步完成 eval200 的 B0/B1 生成、评分，A 合并中期报告。
 
-当前固定基线仍为 `top_k=5`，不添加 `fetch_k`，尚未证明参数最优。最新结果检查见 [C/D 交付审查](docs/M3/retrieval_review/cd_generation_review.json)；组长电脑已准备官方 Web 索引/BGE，并在 RTX 4060 Laptop / 16 GB RAM 上完成真实 smoke20 和严格验收，见 [本地检索说明](docs/M3/local_retrieval_setup.md) 与 [本机验证记录](docs/M3/retrieval_review/local_environment_verification.json)。
+最终检索配置为 `experiments/m3/retrieval_selected.json`，不添加 `fetch_k`，原 k5 配置和历史结果保留。dev50 的 k1/k3/k5 正确率分别为20%/22%/18%，错误率为34%/40%/48%，Truthfulness为−0.14/−0.18/−0.30；按 Truthfulness 优先选 k1，不能声称全局最优。参数和后续可复制命令见 [参数决定与 D/E 交接](docs/M3/parameter_decision_and_handoff.md)、[操作参数冻结记录](experiments/m3/parameter_freeze.json) 和 [独立审计](docs/M3/retrieval_review/parameter_selection_review.json)。本机 RTX 4060 Laptop / 16 GB RAM 能完成 C 的检索，见 [本地检索说明](docs/M3/local_retrieval_setup.md)。
 
 ## 研究问题与阶段范围
 
@@ -108,13 +108,13 @@ B 下载 Single/Multi **QA数据**；C 在 M3 只准备 Web索引/BGE，做仅�
 ```text
 python preprocessing/prepare_data.py --config experiments/m3/data.json --output-dir data/processed/m3
 python preprocessing/eda.py --config experiments/m3/data.json --output-dir results/eda
-python scripts/retrieve.py --questions QUESTIONS --manifest MANIFEST --config experiments/m3/retrieval.json --output EVIDENCE
+python scripts/retrieve.py --questions QUESTIONS --manifest MANIFEST --config experiments/m3/retrieval_selected.json --output EVIDENCE
 python scripts/generate.py --questions QUESTIONS --manifest MANIFEST --baseline B0 --config experiments/m3/generation.json --output PREDICTIONS
 python scripts/generate.py --questions QUESTIONS --manifest MANIFEST --baseline B1 --evidence EVIDENCE --config experiments/m3/generation.json --output PREDICTIONS
-python scripts/evaluate.py --questions QUESTIONS --answers ANSWERS --metadata METADATA --manifest MANIFEST --predictions PREDICTIONS --config experiments/m3/evaluation.json --output-dir OUTPUT
+python scripts/evaluate.py --questions QUESTIONS --answers ANSWERS --metadata METADATA --manifest MANIFEST --predictions PREDICTIONS --config experiments/m3/evaluation_4096.json --output-dir OUTPUT --run-id RUN_ID --dry-run
 ```
 
-C/D 已实现入口的 `--help` 不需密钥、不下载模型或索引。C/D 支持同一批次规则，E 也应遵循该约定；批次沿用同一 manifest、阶段配置和对应 run ID，最后按去重逐题记录重算，不能平均批次百分比。完整 B1 运行说明见 [D 生成说明](docs/M3/generation_run.md)。
+C/D 已实现入口的 `--help` 不需密钥、不下载模型或索引。C/D/E 支持同一批次规则；批次沿用同一 manifest、阶段配置和对应 run ID，最后按去重逐题记录重算，不能平均批次百分比。以上 E 命令只离线预检，正式付费调用需明确 `--allow-paid-api --max-api-requests`。完整 eval200 命令见 [最终交接](docs/M3/parameter_decision_and_handoff.md)，生成接口见 [D 生成说明](docs/M3/generation_run.md)。
 
 ## 数据、配置与结果
 
@@ -131,9 +131,9 @@ fixtures/synthetic/                 开发样例，不混入正式数据/结果
 
 目标20/50/200、seed42是方案建议。B按session、可识别共享图像和重复问题分组，A确认实际数量与编号。尽早确定三个集合完整ID清单并写manifest，先交smoke，后续dev/eval沿用同一manifest。manifest原字节SHA256写入所有逐题行；变更时发布一致新包并重新验收，不能只改旧结果哈希。
 
-D 已提交使用 NVIDIA `meta/llama-3.2-11b-vision-instruct` 的真实生成结果和请求记录，B0/B1 使用相同模型与公共参数，仅发送文本。当前审查核实了请求和文件哈希，未独立验证提供商账号及课程在线推理许可。E 的裁判、官方 tokenizer 和正式评分仍待提交，详见 [冻结记录](experiments/m3/freeze_record.json)。
+D 已提交使用 NVIDIA `meta/llama-3.2-11b-vision-instruct` 的真实生成结果和请求记录，B0/B1 使用相同模型与公共参数，仅发送文本。E 已用 AutoDL `DeepSeek-V4.1-Flash`、固定4096输出预算和已核验官方75-token截断完成240条评分。裁判替换为第三方模型，不能直接声称与官方排行榜同口径；独立人工复核尚为0条。操作参数固定、最终eval仍待D/E完成；提供商账号预算、模型不可变版本、上游来源等完整验收事项见 [冻结跟踪记录](experiments/m3/freeze_record.json)。
 
-使用相应提供商时，变量名为 `NVIDIA_API_KEY` 或 `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`；E可能还需tokenizer访问凭证。A检查不读取这些变量。实际调用者在本机配置，密钥不写JSON、Git、日志或报告。
+使用相应提供商时，变量名为 `NVIDIA_API_KEY` 或 `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`；E 使用本机 `JUDGE_*` 和 `RESPONSE_TOKENIZER_PATH` 等设置，见 [E 运行说明](docs/M3/evaluation_paid_4096_v1/run.md)。A 的验收不读取密钥值。实际调用者在本机配置，密钥不写JSON、Git、日志或报告。
 
 当前仓库已跟踪 manifest、处理后的问题/答案/metadata 及审查过的检索结果。`.gitignore` 忽略 `search_indices/`、`checkpoints/`、虚拟环境及密钥文件；大型索引和模型不进 Git。传输和提交后仍须核对数据包版本与原始字节哈希。
 

@@ -1,14 +1,14 @@
 {
   "record_type": "configuration_freeze_tracking",
-  "record_version": 1,
+  "record_version": 2,
   "schema_version": "m3.v1",
-  "updated_date": "2026-10-10",
+  "updated_date": "2026-10-11",
   "timezone": "Asia/Shanghai",
-  "status": "pending_confirmation",
+  "status": "operational_parameters_frozen_final_eval_pending",
   "is_frozen": false,
   "frozen_at": null,
   "frozen_by": null,
-  "notice": "B data and C dev50 top-k retrieval are structurally verified. D real smoke/dev B0 and B1 k1/k3/k5 predictions and requests pass handoff checks. E scoring/tokenizer calibration remains pending; k5 is a fixed baseline, not a proven optimum, and the whole experiment is not frozen.",
+  "notice": "D/E smoke/dev scoring is complete and independently audited. Choose top_k=1 from dev50 by Truthfulness, wrong rate and smaller-k tie policy. Operational configs were frozen before eval retrieval; selected smoke20/eval200 retrieval passed strict acceptance. D/E final eval predictions/scores, independent human calibration and full reproducibility acceptance remain pending.",
   "verified_items": {
     "interface_source": "docs/M2_M3_execution/01统一接口与验收.txt",
     "schema_source": "docs/M2_M3_execution/接口字段.schema.json",
@@ -44,8 +44,10 @@
       "validator": "scripts/check_artifacts.py",
       "shared_helpers": "src/contracts/m3.py",
       "validation_record": "docs/M3/A_validation_record.md",
-      "tests_passed": 98,
-      "real_experiment_verified": false
+      "tests_passed": 192,
+      "real_experiment_verified": true,
+      "verification_scope": "Structural/provenance acceptance, independent dev statistics and offline regression; semantic human reliability not established",
+      "latest_review": "docs/M3/retrieval_review/parameter_selection_review.json"
     },
     "retrieval_review": {
       "source_commit": "7b79e64050420026d2d2feed8fe34ff37b709a39",
@@ -53,7 +55,7 @@
       "source_content_review": "docs/M3/retrieval_review/source_content_review.json",
       "parameter_decision": "experiments/m3/retrieval_decision.json",
       "fresh_local_index_run": true,
-      "answer_quality_verified": false,
+      "answer_quality_verified": true,
       "structural_acceptance": {
         "smoke": "docs/M3/retrieval_review/smoke_acceptance.json",
         "dev": "docs/M3/retrieval_review/dev_acceptance.json",
@@ -64,7 +66,14 @@
         "original_run_meta_unmodified": true,
         "index_not_rerun": true
       },
-      "local_reproduction_review": "docs/M3/retrieval_review/local_environment_verification.json"
+      "local_reproduction_review": "docs/M3/retrieval_review/local_environment_verification.json",
+      "latest_source_commit": "db044e2b8b43de49beb70fa5fb7393870db0890b",
+      "answer_quality_scope": "Same-dev50 machine evaluation with third-party judge, not independent human validation",
+      "selected_retrieval_acceptance": [
+        "results/m3/selected_k1_run1/smoke/acceptance_retrieval.json",
+        "results/m3/selected_k1_run1/eval/acceptance_retrieval.json"
+      ],
+      "latest_parameter_review": "docs/M3/retrieval_review/parameter_selection_review.json"
     },
     "generation_review": {
       "source_commit": "fd89064443595e801b397ad0907f7cd098f0154f",
@@ -72,9 +81,30 @@
       "formal_prediction_rows": 240,
       "strict_dev_acceptance_passed": true,
       "prompt_input_review": "240 logged requests contain two text messages; prediction, request and actual-message hashes agree",
-      "answer_quality_verified": false,
+      "answer_quality_verified": true,
       "boundary_regression_tests_passed": 11,
-      "full_tests_passed": 145
+      "full_tests_passed": 192,
+      "answer_quality_scope": "240 smoke/dev predictions scored with the fixed third-party 4096 judge; no eval predictions yet"
+    },
+    "evaluation_review": {
+      "source_commit": "db044e2b8b43de49beb70fa5fb7393870db0890b",
+      "complete_report": "docs/M3/evaluation_paid_4096_v1/complete_v1/README.md",
+      "formal_score_rows": 240,
+      "distinct_question_ids": 70,
+      "final_technical_failures": 0,
+      "judge_requests_started": 91,
+      "judge_requests_completed": 90,
+      "judge_requests_failed_preserved": 1,
+      "deterministic_score_rows": 136,
+      "semantic_score_rows": 104,
+      "unique_successful_semantic_inputs": 90,
+      "offline_row_recomputation_matches": 240,
+      "E_tests_passed": 47,
+      "all_tests_passed": 192,
+      "official_75_token_test_real_predictions": 240,
+      "official_75_token_test_boundary_cases": 7,
+      "independent_human_review_rows": 0,
+      "leaderboard_equivalence_claimed": false
     }
   },
   "planned_scope": {
@@ -126,27 +156,30 @@
       "grouping_check_report": "docs/M3/retrieval_review/dev_acceptance.json"
     },
     "retrieval": {
-      "status": "fixed_baseline_selected_waiting_full_experiment_freeze",
+      "status": "dev_selected_operationally_frozen_eval_retrieval_completed",
       "package_version": "0.5.1",
       "web_index_id": "crag-mm-2025/web-search-index-public-test",
       "web_index_revision": "bd32162ffb21626994ad86ab147793561ba8fad2",
       "encoder_id": "BAAI/bge-large-en-v1.5",
       "encoder_revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
-      "top_k_proposal": 5,
-      "top_k_frozen": null,
-      "config_path": "experiments/m3/retrieval.json",
-      "config_sha256": "47d54550ef627166812458df23d43fbec926a4100ee3de1568b6129bf69e9e98",
+      "top_k_proposal": 1,
+      "top_k_frozen": 1,
+      "config_path": "experiments/m3/retrieval_selected.json",
+      "config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
       "text_only_input_verified": true,
       "sixteen_gb_ram_smoke_report": "results/m3/smoke/run_meta_retrieval.json (C-reported original hardware measurements; not a local rerun)",
-      "top_k_confirmed": 5,
+      "top_k_confirmed": 1,
       "fetch_k_implemented": false,
       "top_k_optimum_proven": false,
       "parameter_decision_path": "experiments/m3/retrieval_decision.json",
       "dev_top_k_execution": "results/m3/dev_topk_sweep_run1/execution.json",
-      "local_sixteen_gb_ram_smoke_report": "docs/M3/retrieval_review/local_environment_verification.json"
+      "local_sixteen_gb_ram_smoke_report": "docs/M3/retrieval_review/local_environment_verification.json",
+      "previous_k5_config_path": "experiments/m3/retrieval.json",
+      "selected_local_retrieval_report": "docs/M3/retrieval_review/parameter_selection_review.json",
+      "selected_eval_run_meta": "results/m3/selected_k1_run1/eval/run_meta_retrieval.json"
     },
     "generation": {
-      "status": "real_predictions_and_request_contracts_verified_provider_declared",
+      "status": "smoke_dev_complete_operational_parameters_frozen_eval_pending",
       "model_family_proposal": "Llama-3.2-11B-Vision-Instruct",
       "provider": "nvidia",
       "model_id": "meta/llama-3.2-11b-vision-instruct",
@@ -158,27 +191,39 @@
       "concurrency_proposal": 1,
       "seed_supported": null,
       "evidence_token_budget_proposal": 1500,
-      "parameters_frozen": null,
+      "parameters_frozen": true,
       "config_path": "experiments/m3/generation.json",
       "config_sha256": "dee0e5ea47324393e87687794da30c00b91e5f7f3f31203e18b7bdea79342502",
       "public_prompt_sha256": null,
       "b0_b1_same_model_and_parameters_verified": true,
       "input_leakage_review": "docs/M3/retrieval_review/cd_generation_review.json",
-      "d_reported_real_api_runs": true
+      "d_reported_real_api_runs": true,
+      "freeze_record": "experiments/m3/parameter_freeze.json",
+      "api_access_observed_in_D_artifacts": true,
+      "A_live_credentials_checked": false
     },
     "evaluation": {
-      "status": "pending",
-      "judge_provider": null,
-      "judge_model": null,
+      "status": "smoke_dev_complete_operational_parameters_frozen_eval_and_human_review_pending",
+      "judge_provider": "autodl",
+      "judge_model": "DeepSeek-V4.1-Flash",
       "judge_revision": null,
-      "config_path": null,
-      "config_sha256": null,
+      "config_path": "experiments/m3/evaluation_4096.json",
+      "config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
       "response_tokenizer_proposal": "meta-llama/Llama-3.2-1B-Instruct",
       "response_max_tokens_proposal": 75,
-      "tokenizer_revision": null,
-      "tokenizer_access_verified": false,
-      "rule_differences_from_official": null,
-      "manual_calibration_report": null
+      "tokenizer_revision": "9213176726f574b556790deb65791e0c5aa438b6",
+      "tokenizer_access_verified": true,
+      "rule_differences_from_official": "Official prompt/tokenizer/binary rules retained; GPT-4o replaced by AutoDL DeepSeek judge; explicit errors and strict result parsing. Not leaderboard-equivalent.",
+      "manual_calibration_report": null,
+      "parameters_frozen": true,
+      "response_max_tokens_confirmed": 75,
+      "tokenizer_sha256": "79e3e522635f3171300913bb421464a87de6222182a0570b9b2ccba2a964b2b4",
+      "tokenizer_public_mirror": "onnx-community/Llama-3.2-1B-Instruct-ONNX",
+      "tokenizer_public_mirror_revision": "f91ba3ec08fde6b664d0b1a02cf4305b53a41141",
+      "AI_assisted_review_report": "docs/M3/evaluation_paid_4096_v1/complete_v1/README.md",
+      "independent_human_review_rows": 0,
+      "provider_revision_immutable": false,
+      "account_budget_confirmed": false
     }
   },
   "evidence_status": {
@@ -191,11 +236,23 @@
       "results/m3/dev_topk_sweep_run1/top_k_3/predictions_b1.jsonl",
       "results/m3/dev/predictions_b1.jsonl"
     ],
-    "formal_score_files": [],
-    "formal_result_summary": null,
+    "formal_score_files": [
+      "results/m3/smoke/e_paid_4096_v1/b0/scores_b0.jsonl",
+      "results/m3/smoke/e_paid_4096_v1/b1/scores_b1.jsonl",
+      "results/m3/dev/e_paid_4096_v1/b0/scores_b0.jsonl",
+      "results/m3/dev_topk_sweep_run1/top_k_1/e_paid_4096_v1/b1/scores_b1.jsonl",
+      "results/m3/dev_topk_sweep_run1/top_k_3/e_paid_4096_v1/b1/scores_b1.jsonl",
+      "results/m3/dev/e_paid_4096_complete_v1/b1/scores_b1.jsonl"
+    ],
+    "formal_result_summary": "docs/M3/evaluation_paid_4096_v1/complete_v1/completed_summary.csv",
     "independent_reproduction_record": "docs/M3/retrieval_review/local_environment_verification.json",
     "retrieval_artifact_review": "docs/M3/retrieval_review/",
-    "generation_artifact_review": "docs/M3/retrieval_review/cd_generation_review.json"
+    "generation_artifact_review": "docs/M3/retrieval_review/cd_generation_review.json",
+    "parameter_review": "docs/M3/retrieval_review/parameter_selection_review.json",
+    "selected_eval_retrieval_complete": true,
+    "selected_eval_predictions_complete": false,
+    "selected_eval_scores_complete": false,
+    "final_handoff_document": "docs/M3/parameter_decision_and_handoff.md"
   },
   "freeze_acceptance": {
     "owner": "A",
@@ -209,5 +266,7 @@
       "Source provenance and evaluator differences documented"
     ],
     "change_policy": "Changed manifest/settings require a consistent new package or run and revalidation; never rewrite old artifact hashes to conceal version changes."
-  }
+  },
+  "operational_parameters_frozen": true,
+  "operational_freeze_path": "experiments/m3/parameter_freeze.json"
 }

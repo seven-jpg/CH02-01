@@ -1,0 +1,721 @@
+{
+  "schema_version": "m3.parameter_selection_review.v1",
+  "review_date": "2026-10-11",
+  "upstream_commit": "db044e2b8b43de49beb70fa5fb7393870db0890b",
+  "audit_scope": "Offline artifact review and parameter selection; no judge API, model generation or Chroma calls by this audit agent.",
+  "source_sha256_policy": "SHA256 of exact source file bytes in the working tree at audit time; any byte or line-ending change requires checksum revalidation.",
+  "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+  "selection": {
+    "top_k": 1,
+    "candidate_top_k": [
+      1,
+      3,
+      5
+    ],
+    "development_set": "dev",
+    "N_distinct_selection_questions": 50,
+    "decision_order": [
+      "higher truthfulness (C-W)/N_scored",
+      "lower wrong-answer rate",
+      "smaller k as an engineering tie-break"
+    ],
+    "pre_registered": false,
+    "decision_timing": "Chosen after inspecting dev50 results and before eval200 answer generation/scoring.",
+    "global_optimality_claim": false,
+    "statistical_significance_claim": false,
+    "rationale": "k3 adds one correct and three wrong compared with k1; k5 has fewer correct and more wrong. k1 leads B1 candidates on truthfulness and wrong-answer rate.",
+    "accuracy_only_winner": 3,
+    "baseline_caveat": "B0 has higher truthfulness (-0.02) mainly because 49/50 answers are MISSING. Every B1 candidate increases accuracy and also wrong answers; RAG is not better on every metric.",
+    "selected_config": "experiments/m3/retrieval_selected.json",
+    "selected_config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6"
+  },
+  "dev50": {
+    "groups": [
+      {
+        "group": "B0",
+        "N_fixed": 50,
+        "N_generated": 50,
+        "N_scored": 50,
+        "C_correct": 0,
+        "W_wrong": 1,
+        "M_missing": 49,
+        "accuracy": 0.0,
+        "hallucination_rate": 0.02,
+        "truthfulness": -0.02,
+        "technical_failures": 0,
+        "scores": "results/m3/dev/e_paid_4096_v1/b0/scores_b0.jsonl",
+        "evaluation_run_meta": "results/m3/dev/e_paid_4096_v1/b0/run_meta_eval_b0.json",
+        "predictions": "results/m3/dev/predictions_b0.jsonl",
+        "source_generation_run_id": "nvidia-dev-b0",
+        "evaluation_config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+        "input_output_hashes_verified": {
+          "manifest_rows_match": true,
+          "source_generation_matches": true,
+          "prediction_IDs_match": true,
+          "eval_hash_same": true,
+          "N_failed": 0,
+          "is_simulated": false,
+          "inputs_verified": 8,
+          "outputs_verified": 4,
+          "missing": [],
+          "mismatch": []
+        },
+        "strict_acceptance": {
+          "source": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B0_strict_local.json",
+          "availability": "local_ignored",
+          "valid": true,
+          "exit_code": 0,
+          "errors": [],
+          "paired_N_with_B0": null,
+          "unverified_checks": [
+            "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+            "Official dataset/index/provider authenticity requires source records and manual review."
+          ]
+        }
+      },
+      {
+        "group": "B1_k1",
+        "N_fixed": 50,
+        "N_generated": 50,
+        "N_scored": 50,
+        "C_correct": 10,
+        "W_wrong": 17,
+        "M_missing": 23,
+        "accuracy": 0.2,
+        "hallucination_rate": 0.34,
+        "truthfulness": -0.14,
+        "technical_failures": 0,
+        "scores": "results/m3/dev_topk_sweep_run1/top_k_1/e_paid_4096_v1/b1/scores_b1.jsonl",
+        "evaluation_run_meta": "results/m3/dev_topk_sweep_run1/top_k_1/e_paid_4096_v1/b1/run_meta_eval_b1.json",
+        "predictions": "results/m3/dev_topk_sweep_run1/top_k_1/predictions_b1.jsonl",
+        "source_generation_run_id": "nvidia-dev-b1-topk1",
+        "evaluation_config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+        "input_output_hashes_verified": {
+          "manifest_rows_match": true,
+          "source_generation_matches": true,
+          "prediction_IDs_match": true,
+          "eval_hash_same": true,
+          "N_failed": 0,
+          "is_simulated": false,
+          "inputs_verified": 9,
+          "outputs_verified": 4,
+          "missing": [],
+          "mismatch": []
+        },
+        "strict_acceptance": {
+          "source": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B1_k1_strict_local.json",
+          "availability": "local_ignored",
+          "valid": true,
+          "exit_code": 0,
+          "errors": [],
+          "paired_N_with_B0": 50,
+          "unverified_checks": [
+            "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+            "Official dataset/index/provider authenticity requires source records and manual review."
+          ]
+        }
+      },
+      {
+        "group": "B1_k3",
+        "N_fixed": 50,
+        "N_generated": 50,
+        "N_scored": 50,
+        "C_correct": 11,
+        "W_wrong": 20,
+        "M_missing": 19,
+        "accuracy": 0.22,
+        "hallucination_rate": 0.4,
+        "truthfulness": -0.18,
+        "technical_failures": 0,
+        "scores": "results/m3/dev_topk_sweep_run1/top_k_3/e_paid_4096_v1/b1/scores_b1.jsonl",
+        "evaluation_run_meta": "results/m3/dev_topk_sweep_run1/top_k_3/e_paid_4096_v1/b1/run_meta_eval_b1.json",
+        "predictions": "results/m3/dev_topk_sweep_run1/top_k_3/predictions_b1.jsonl",
+        "source_generation_run_id": "nvidia-dev-b1-topk3",
+        "evaluation_config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+        "input_output_hashes_verified": {
+          "manifest_rows_match": true,
+          "source_generation_matches": true,
+          "prediction_IDs_match": true,
+          "eval_hash_same": true,
+          "N_failed": 0,
+          "is_simulated": false,
+          "inputs_verified": 9,
+          "outputs_verified": 4,
+          "missing": [],
+          "mismatch": []
+        },
+        "strict_acceptance": {
+          "source": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B1_k3_strict_local.json",
+          "availability": "local_ignored",
+          "valid": true,
+          "exit_code": 0,
+          "errors": [],
+          "paired_N_with_B0": 50,
+          "unverified_checks": [
+            "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+            "Official dataset/index/provider authenticity requires source records and manual review."
+          ]
+        }
+      },
+      {
+        "group": "B1_k5",
+        "N_fixed": 50,
+        "N_generated": 50,
+        "N_scored": 50,
+        "C_correct": 9,
+        "W_wrong": 24,
+        "M_missing": 17,
+        "accuracy": 0.18,
+        "hallucination_rate": 0.48,
+        "truthfulness": -0.3,
+        "technical_failures": 0,
+        "scores": "results/m3/dev/e_paid_4096_complete_v1/b1/scores_b1.jsonl",
+        "evaluation_run_meta": "results/m3/dev/e_paid_4096_complete_v1/b1/run_meta_eval_b1.json",
+        "predictions": "results/m3/dev/predictions_b1.jsonl",
+        "source_generation_run_id": "nvidia-dev-b1",
+        "evaluation_config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+        "input_output_hashes_verified": {
+          "manifest_rows_match": true,
+          "source_generation_matches": true,
+          "prediction_IDs_match": true,
+          "eval_hash_same": true,
+          "N_failed": 0,
+          "is_simulated": false,
+          "inputs_verified": 17,
+          "outputs_verified": 5,
+          "missing": [],
+          "mismatch": []
+        },
+        "strict_acceptance": {
+          "source": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B1_k5_strict_local.json",
+          "availability": "local_ignored",
+          "valid": true,
+          "exit_code": 0,
+          "errors": [],
+          "paired_N_with_B0": 50,
+          "unverified_checks": [
+            "Judge semantic correctness and 75-token truncation need E's tokenizer/manual validation.",
+            "Official dataset/index/provider authenticity requires source records and manual review."
+          ]
+        }
+      }
+    ],
+    "paired_differences": [
+      {
+        "first": "B0",
+        "second": "B1_k1",
+        "N": 50,
+        "accuracy_delta": 0.2,
+        "truthfulness_delta": -0.12,
+        "score_improved": 10,
+        "score_worsened": 16,
+        "score_tied": 24,
+        "transitions": {
+          "MISSING -> MISSING": 23,
+          "MISSING -> WRONG": 16,
+          "MISSING -> CORRECT": 10,
+          "WRONG -> WRONG": 1
+        }
+      },
+      {
+        "first": "B0",
+        "second": "B1_k3",
+        "N": 50,
+        "accuracy_delta": 0.22,
+        "truthfulness_delta": -0.16,
+        "score_improved": 11,
+        "score_worsened": 19,
+        "score_tied": 20,
+        "transitions": {
+          "MISSING -> MISSING": 19,
+          "MISSING -> WRONG": 19,
+          "MISSING -> CORRECT": 11,
+          "WRONG -> WRONG": 1
+        }
+      },
+      {
+        "first": "B0",
+        "second": "B1_k5",
+        "N": 50,
+        "accuracy_delta": 0.18,
+        "truthfulness_delta": -0.28,
+        "score_improved": 9,
+        "score_worsened": 23,
+        "score_tied": 18,
+        "transitions": {
+          "MISSING -> MISSING": 17,
+          "MISSING -> WRONG": 23,
+          "MISSING -> CORRECT": 9,
+          "WRONG -> WRONG": 1
+        }
+      },
+      {
+        "first": "B1_k1",
+        "second": "B1_k3",
+        "N": 50,
+        "accuracy_delta": 0.01999999999999999,
+        "truthfulness_delta": -0.04,
+        "score_improved": 6,
+        "score_worsened": 6,
+        "score_tied": 38,
+        "transitions": {
+          "MISSING -> MISSING": 16,
+          "WRONG -> WRONG": 14,
+          "CORRECT -> CORRECT": 8,
+          "MISSING -> WRONG": 4,
+          "WRONG -> MISSING": 3,
+          "CORRECT -> WRONG": 2,
+          "MISSING -> CORRECT": 3
+        }
+      },
+      {
+        "first": "B1_k1",
+        "second": "B1_k5",
+        "N": 50,
+        "accuracy_delta": -0.020000000000000018,
+        "truthfulness_delta": -0.16,
+        "score_improved": 3,
+        "score_worsened": 9,
+        "score_tied": 38,
+        "transitions": {
+          "MISSING -> MISSING": 16,
+          "WRONG -> WRONG": 15,
+          "CORRECT -> WRONG": 3,
+          "MISSING -> WRONG": 6,
+          "WRONG -> MISSING": 1,
+          "CORRECT -> CORRECT": 7,
+          "MISSING -> CORRECT": 1,
+          "WRONG -> CORRECT": 1
+        }
+      },
+      {
+        "first": "B1_k3",
+        "second": "B1_k5",
+        "N": 50,
+        "accuracy_delta": -0.04000000000000001,
+        "truthfulness_delta": -0.12,
+        "score_improved": 2,
+        "score_worsened": 6,
+        "score_tied": 42,
+        "transitions": {
+          "MISSING -> MISSING": 16,
+          "WRONG -> WRONG": 18,
+          "CORRECT -> WRONG": 3,
+          "MISSING -> WRONG": 3,
+          "CORRECT -> CORRECT": 8,
+          "WRONG -> MISSING": 1,
+          "WRONG -> CORRECT": 1
+        }
+      }
+    ],
+    "generation_configs_identical": true,
+    "same_evaluation_config_sha256": "a4fc0fca0d099bd3800b7122a952216b8c82a51a7633cbb4fe983b9ab6e4a47f",
+    "source_prediction_manifest_and_hash_checks": "All four groups have exactly the same 50 manifest IDs, matching source generation run IDs, and no missing/mismatched metadata input/output hashes."
+  },
+  "score_history": {
+    "final_k5_scores": "results/m3/dev/e_paid_4096_complete_v1/b1/scores_b1.jsonl",
+    "early_k5_scores": "results/m3/dev/e_paid_4096_v1/b1/scores_b1.jsonl",
+    "early_k5_statuses": {
+      "ok": 28,
+      "error_or_unrequested_null": 22
+    },
+    "final_k5_statuses": {
+      "ok": 50,
+      "error": 0
+    },
+    "final_k5_operation": "offline_merge of saved real paid evaluations, not simulated/offline placeholder scoring",
+    "R001": {
+      "group": "dev_B1_k1",
+      "interaction_id": "ff51f469-b9e8-493e-9b9b-46a8ac239fbd",
+      "original_machine_verdict": "CORRECT",
+      "ai_review_verdict": "WRONG",
+      "machine_score_retained": true,
+      "scores_changed_by_this_audit": false
+    },
+    "human_reviewed": 0,
+    "ai_agreement": {
+      "N_paired": 30,
+      "N_agree": 29,
+      "N_semantic_paired": 20,
+      "N_semantic_agree": 19,
+      "independent_blind_validation": false
+    }
+  },
+  "selected_k1_local_retrieval": {
+    "N_total": 220,
+    "runs": [
+      {
+        "subset": "smoke",
+        "N_expected": 20,
+        "N_ok": 20,
+        "N_empty": 0,
+        "N_error": 0,
+        "hit_count": 20,
+        "full_manifest_coverage": true,
+        "config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
+        "evidence": "results/m3/selected_k1_run1/smoke/evidence.jsonl",
+        "run_meta": "results/m3/selected_k1_run1/smoke/run_meta_retrieval.json",
+        "acceptance": "results/m3/selected_k1_run1/smoke/acceptance_retrieval.json",
+        "acceptance_exit_code": 0,
+        "resumed_rows": 0,
+        "retries": 0,
+        "device": "cuda",
+        "python": "3.12.9",
+        "peak_memory_mb": 7236.0,
+        "wall_seconds": 50.711,
+        "warmup_attempt_seconds": 16.94,
+        "latency_ms_mean": 46.53,
+        "latency_ms_max": 362.99,
+        "code_commit": "db044e2b8b43de49beb70fa5fb7393870db0890b:dirty",
+        "scope": "retrieval_only",
+        "answer_quality_evaluated": false
+      },
+      {
+        "subset": "eval",
+        "N_expected": 200,
+        "N_ok": 200,
+        "N_empty": 0,
+        "N_error": 0,
+        "hit_count": 200,
+        "full_manifest_coverage": true,
+        "config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
+        "evidence": "results/m3/selected_k1_run1/eval/evidence.jsonl",
+        "run_meta": "results/m3/selected_k1_run1/eval/run_meta_retrieval.json",
+        "acceptance": "results/m3/selected_k1_run1/eval/acceptance_retrieval.json",
+        "acceptance_exit_code": 0,
+        "resumed_rows": 0,
+        "retries": 0,
+        "device": "cuda",
+        "python": "3.12.9",
+        "peak_memory_mb": 8793.7,
+        "wall_seconds": 27.548,
+        "warmup_attempt_seconds": 10.631,
+        "latency_ms_mean": 16.549,
+        "latency_ms_max": 204.867,
+        "code_commit": "db044e2b8b43de49beb70fa5fb7393870db0890b:dirty",
+        "scope": "retrieval_only",
+        "answer_quality_evaluated": false
+      }
+    ],
+    "interpretation": "These are full-scope retrieval handoff artifacts. Retrieval success is not a generated answer or an eval200 quality result."
+  },
+  "root_observed_tests": {
+    "evidence_origin": "Direct report by the root agent from its tool process outputs; no persistent full test log was supplied, no test-file SHA is invented, and this audit subagent did not rerun these suites.",
+    "isolated_dependency_directory": "tmp/e-audit-deps",
+    "suites": [
+      {
+        "command_description": "E unittest suite using the isolated E audit dependencies",
+        "exact_argv_supplied_to_subagent": false,
+        "N_tests": 47,
+        "status": "passed",
+        "wall_seconds": 17.014
+      },
+      {
+        "command_description": "Full project unittest suite using the isolated E audit dependencies",
+        "exact_argv_supplied_to_subagent": true,
+        "N_tests": 192,
+        "status": "passed",
+        "wall_seconds": 60.728,
+        "argv": [
+          ".venv-retrieval/Scripts/python.exe",
+          "-B",
+          "-X",
+          "utf8",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "environment_note": "Root observed execution with isolated tmp/e-audit-deps and a mock-key test environment; no environment values are recorded."
+      }
+    ],
+    "tokenization_audit": {
+      "N_saved_answers": 240,
+      "N_additional_controls": 7,
+      "response_max_tokens": 75,
+      "status": "root reported checked"
+    }
+  },
+  "limits": [
+    "Decision criterion was not preregistered; dev50 comparison does not prove global optimality or a statistically significant difference.",
+    "Third-party DeepSeek judge has no immutable judge revision; its labels are not official leaderboard judge equivalence.",
+    "Independent human calibration count is zero; AI review agreement is not an independent human reliability estimate.",
+    "Selected eval200 artifacts here contain retrieval only; D generation and E final scoring remain subsequent work.",
+    "Local run metadata records a dirty working tree and preserves source hashes; cold-start/warmup and memory depend on the machine.",
+    "Strict acceptance verifies contracts, linked requests/configs and file hashes; it does not by itself prove semantic judge correctness or dataset/provider authenticity.",
+    "Sources marked local_ignored are retained audit observations and are not assumed available in a fresh Git clone."
+  ],
+  "source_files": [
+    {
+      "path": "data/processed/m3/dev/questions.jsonl",
+      "sha256": "858f0ae7192825210d091fb5dd40f34f96c27ae16972233333fee5b094712760",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "data/processed/m3/eval/questions.jsonl",
+      "sha256": "b228e2347d3f2588629d6fa9b50f46c1163649c4bbdc0fbc66ae97bafed29c0c",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "data/processed/m3/manifest.json",
+      "sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "data/processed/m3/smoke/questions.jsonl",
+      "sha256": "d9b51bff89fd34432c9607df5bdd10fe1cf5df97b42f80646fbe41b7f038c36c",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B0_strict_local.json",
+      "sha256": "bc0e90334403955b2ebbd980413f2ec3cb9b6e4656af0d63f36c6078f57d15bf",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B1_k1_strict_local.json",
+      "sha256": "8bc0384b0323679552fd1d7fa4b798e0af9c35fe6e88787e2a9597a8959e608c",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B1_k3_strict_local.json",
+      "sha256": "41e74a208224e8a5d1b416064a86e8adfa4e143e2f45345969ca48a94306d4e6",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "docs/M2_M3_review/A_parameter_review_20261011/acceptance_B1_k5_strict_local.json",
+      "sha256": "7f79850c0cd4def826422854b29b0c6c0943106cfa2c931bc75f7b75ef709429",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "docs/M2_M3_review/A_parameter_review_20261011/independent_dev50_statistics.json",
+      "sha256": "afa85ae88df444388e7f2828f85ecd124dd91a725a5c00449a46496c325a17ed",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "docs/M2_M3_review/A_parameter_review_20261011/strict_acceptance_summary.json",
+      "sha256": "448725ca3b216ff6dd32b760579a9ae19519d65fd63483cf2e193f7394d40a2a",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "docs/M3/evaluation_paid_4096_v1/complete_v1/ai_judge_comparison.json",
+      "sha256": "d8f0b9d312119579945774f359d02b25a9d2393517b22b0a6f9a5ab191fc53f0",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "docs/M3/evaluation_paid_4096_v1/complete_v1/completed_comparisons.json",
+      "sha256": "e6c7380e1f7c2b2abf5e1aa11e9b8175e02ea53dea4f844b98cbcb770e885186",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "docs/M3/evaluation_paid_4096_v1/complete_v1/completed_summary.csv",
+      "sha256": "8fec06d86b581fdd54ebc09a5773ee29ba93b3aa3b6e52c9d03543d807b674b0",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "experiments/m3/evaluation_4096.json",
+      "sha256": "20c181345276095bc2c39b05db01f4443f89349c627acd3aff5247db62275bc0",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "experiments/m3/generation.json",
+      "sha256": "7abfeed46cfd0ed1090f32b3b21e873e7eeba2f262c0249d813dc464b36d553e",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "experiments/m3/retrieval_selected.json",
+      "sha256": "d16e62cc9ce49646aa9789cf61e98e963c09ecc367095473b2f4c32951948b0b",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/e_paid_4096_complete_v1/b1/run_meta_eval_b1.json",
+      "sha256": "219fbec31d495da696f229cb59fb1e71a1de4f6e2816cae9fcf4c67f95d66077",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/e_paid_4096_complete_v1/b1/scores_b1.jsonl",
+      "sha256": "520c0b5e148da4e9f1db5783bb18170eee43dd379797ce9b8cc24bb4ecfbde58",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/e_paid_4096_v1/b0/run_meta_eval_b0.json",
+      "sha256": "9a4348d023b1eb6d3ae8abacd25aa0218d405ecc767371327adec45cbc880579",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/e_paid_4096_v1/b0/scores_b0.jsonl",
+      "sha256": "4accd285fef94a7f16b868cfd7422d8b7a258355494ed1f13c6daf1827a1638a",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/predictions_b0.jsonl",
+      "sha256": "a7c3ace74a5805350cbbce5674945e74abca68680d501d1ddecba8315c8281ab",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/predictions_b1.jsonl",
+      "sha256": "8d34fe59ed1903e711d41f458f9a0fc757d977ef551b66d3bee10a67ef21abc7",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/run_meta_b0.json",
+      "sha256": "3c4ba63e5dcc207fc4882b2e28345c489c85a09544ab6d858310f92b81ccfbf1",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev/run_meta_b1.json",
+      "sha256": "dc736ea99a762dde977e6f77babc3d3e3bae4143f56a507c64e2768de6a90396",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_1/e_paid_4096_v1/b1/run_meta_eval_b1.json",
+      "sha256": "3a5c1314f6cf91565a0b24781867a63b2548ae5fadaaaa53d1e232ea0825a1d5",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_1/e_paid_4096_v1/b1/scores_b1.jsonl",
+      "sha256": "9a7ffb77e1b711310b59ddee25c91a72c4eca3df77bdde931126eacaaa70c88e",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_1/predictions_b1.jsonl",
+      "sha256": "5dafd100fb0e673c56b101266d19e27589f7826f32a67200d06fef47d6e7bbb1",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_1/run_meta_b1.json",
+      "sha256": "98464df82bcd780057c6167d7e6bd7fcaf9acdae8ec54d7de13ccfbd2c9ffe69",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_3/e_paid_4096_v1/b1/run_meta_eval_b1.json",
+      "sha256": "1591f8b98f886ad86090704a4fc3e740e8271f95d395c735f9694a6cdb0ce24c",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_3/e_paid_4096_v1/b1/scores_b1.jsonl",
+      "sha256": "a0773349f48f356d6492a87dd2d9d6c66802ba2ccd991ed3fb829542ac99af59",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_3/predictions_b1.jsonl",
+      "sha256": "ce5ff0fddd7cdb838ea70fe6405c61b7a4b2dfe192831e5411307902b10336a4",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/dev_topk_sweep_run1/top_k_3/run_meta_b1.json",
+      "sha256": "fe76129f718666b1f740680fa16f4259261a17828002c61f875a1effd98730b2",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/local_parameter_review_run1/comparison/completed_comparisons.json",
+      "sha256": "240eef1f4e90198df25ec0d1b3a10741e4771349c4e37b2803f0cd9723a8bad7",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "results/m3/local_parameter_review_run1/comparison/completed_summary.csv",
+      "sha256": "d364d8ab0a4281ed5a050cba736e0cc1448bc6c3eee7f9cab11bcf0462fa1a45",
+      "availability": "local_ignored"
+    },
+    {
+      "path": "results/m3/selected_k1_run1/eval/acceptance_retrieval.json",
+      "sha256": "3dc8a2bdbb251ef8a7325458db900cb5d26c049daca3975ab30ae76244b2ed22",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/selected_k1_run1/eval/evidence.jsonl",
+      "sha256": "4156463fc789ca4fe0dd5a82ea47edd94a61efbcc9554cbd24054df893a1089d",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/selected_k1_run1/eval/run_meta_retrieval.json",
+      "sha256": "91aedd3bc3f2117bc6fb7586d5bdf6c8b02220919937ca081fa995afe04008df",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/selected_k1_run1/smoke/acceptance_retrieval.json",
+      "sha256": "be4ebf5661c13d757d13e2100ba585797f0701ee6b1a1e22074c0242da2fd161",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/selected_k1_run1/smoke/evidence.jsonl",
+      "sha256": "4749ef94b9464ac434e30de46e9899da6ef4d79b8a120a1c63425fd5afe89ce1",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/selected_k1_run1/smoke/run_meta_retrieval.json",
+      "sha256": "7c6949cc6812ee24e216e3d73d657604ff8af76b69adca08e81967c4f05efc65",
+      "availability": "repository_delivery"
+    },
+    {
+      "path": "results/m3/local_eval_request_preflight_run1/audit.json",
+      "sha256": "2da10119c70e3f00f5efe39a316eebb54ab04113838c4fb67debf41be5f10fec",
+      "availability": "local_ignored"
+    }
+  ],
+  "eval200_generation_request_preflight": {
+    "source": "results/m3/local_eval_request_preflight_run1/audit.json",
+    "source_sha256": "2da10119c70e3f00f5efe39a316eebb54ab04113838c4fb67debf41be5f10fec",
+    "source_scope": "local_ignored",
+    "kind": "offline_eval_generation_request_preflight",
+    "audit_exit_code": 0,
+    "exit_code_evidence": "Root agent reported audit process exit 0; saved audit checks are all true.",
+    "N_expected_per_baseline": 200,
+    "N_requests_total": 400,
+    "N_invalid_requests": 0,
+    "real_api_calls": 0,
+    "dotenv_read": false,
+    "raw_answer_or_metadata_read": false,
+    "per_group": {
+      "B0": {
+        "application_exit_code": 2,
+        "requests": 200,
+        "dry_run_predictions": 200,
+        "successful_generation": 0,
+        "requests_sha256": "b309bffbcc8bbd7514e94e795c829d3efec59586df0afa1ac06b6727f90654c9",
+        "predictions_sha256": "be60cf4d6ec8ba9ab2100bb34f0ea912efb074772ad600ef92849c3780994ffa",
+        "max_evidence_chars": 0,
+        "max_evidence_estimated_tokens": 0,
+        "meta_counts_match": true,
+        "input_output_hashes_verified": true
+      },
+      "B1": {
+        "application_exit_code": 2,
+        "requests": 200,
+        "dry_run_predictions": 200,
+        "successful_generation": 0,
+        "requests_sha256": "5dd0b063d1a7495b8bc1e70b4d866e0852b421d1db232f1f388983ade996f8dd",
+        "predictions_sha256": "7bed232dc18d421d8338553cd5848ec23e674a514f9e77462d87cf85dec05232",
+        "max_evidence_chars": 2571,
+        "max_evidence_estimated_tokens": 643,
+        "meta_counts_match": true,
+        "input_output_hashes_verified": true
+      }
+    },
+    "checks": {
+      "unique_complete_eval_ids": true,
+      "original_query_preserved": true,
+      "text_only_exact_prompt_envelope": true,
+      "b0_no_evidence": true,
+      "b1_corresponding_top1_only": true,
+      "no_answer_image_ocr_history_fields_or_inputs": true,
+      "same_generation_config": true
+    },
+    "cli_exit_2_interpretation": "Intentional dry_run_no_api_call for all 400 rows; no successful answers generated, not formal prediction artifacts.",
+    "formal_predictions": false,
+    "scored_answer_quality": false,
+    "evidence_budget": {
+      "configured_estimated_tokens": 1500,
+      "B1_max_estimated_tokens": 643,
+      "within_budget": true,
+      "counting_method": "documented len(text)/4 estimate, not provider tokenizer count"
+    },
+    "manifest_sha256": "e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0",
+    "questions_sha256": "b228e2347d3f2588629d6fa9b50f46c1163649c4bbdc0fbc66ae97bafed29c0c",
+    "generation_config_sha256": "dee0e5ea47324393e87687794da30c00b91e5f7f3f31203e18b7bdea79342502",
+    "retrieval_config_sha256": "526f7ed6fae8685acfa0e20d3b3ce73f90eecac3bdfe1c1b73ddb0dc25c333b6",
+    "evidence_sha256": "4156463fc789ca4fe0dd5a82ea47edd94a61efbcc9554cbd24054df893a1089d",
+    "limitation": "Input construction audit only: no answers generated, no quality score; evidence budget is documented len(text)/4 estimate, not provider-token count."
+  }
+}
