@@ -1,0 +1,6 @@
+tokenizers==0.23.3
+python-dotenv==1.2.4
+openai==2.54.0
+jsonschema==4.26.0
+pandas==2.3.3
+numpy==2.4.6

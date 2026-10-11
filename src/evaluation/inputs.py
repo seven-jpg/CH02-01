@@ -39,6 +39,9 @@ class Inputs:
             raise ContractError("Manifest subsets overlap")
         rows = {kind: self.index(read_rows(paths[kind]), kind) for kind in
                 ("questions", "answers", "metadata", "predictions")}
+        # Generation metadata and requests describe the physical prediction file,
+        # even when E selects only a batch from that file for scoring.
+        self.input_predictions = dict(rows["predictions"])
         subsets = {row["subset"] for row in rows["questions"].values()}
         if len(subsets) != 1:
             raise ContractError("Questions must identify one nonempty subset")
@@ -53,8 +56,8 @@ class Inputs:
             if any(row["subset"] != self.subset for row in mapping.values()) or not set(mapping).issubset(full):
                 raise ContractError(f"{kind}: unknown ID or wrong subset")
             selected = {i: row for i, row in mapping.items() if i in expected}
-            if kind == "predictions" and set(mapping) != expected:
-                raise ContractError("Predictions must cover precisely the selected batch/subset")
+            if kind == "predictions" and not (set(mapping) == expected or (batch is not None and set(mapping) == full)):
+                raise ContractError("Predictions must cover the selected batch/subset or the complete selected subset")
             if set(selected) != expected:
                 raise ContractError(f"{kind}: missing selected IDs")
             rows[kind] = selected
@@ -101,7 +104,7 @@ class Inputs:
         return result
 
     def single(self, key: str) -> Any:
-        values = {row[key] for row in self.rows["predictions"].values()}
+        values = {row[key] for row in self.input_predictions.values()}
         if len(values) != 1:
             raise ContractError(f"Mixed prediction {key}")
         return values.pop()
@@ -125,14 +128,18 @@ class Inputs:
                 or config_sha256(meta.get("config", {})) != self.single("generation_config_sha256")
                 or meta.get("config_sha256") != self.single("generation_config_sha256")):
             raise ContractError("Generation metadata identity/config mismatch")
-        # Older sidecars may omit measured counts; when present they must agree.
-        for field, count in (("N_expected", len(self.ids)),
-                ("N_success", sum(p["generation_status"] == "ok" for p in self.rows["predictions"].values())),
-                ("N_failed", sum(p["generation_status"] != "ok" for p in self.rows["predictions"].values()))):
+        # All counts have one scope: the hash-verified generation input file.
+        # Older sidecars may omit counts; never combine full and E-batch counts.
+        total = len(self.input_predictions)
+        successful = sum(p["generation_status"] == "ok" for p in self.input_predictions.values())
+        for field, count in (("N_expected", total), ("N_success", successful), ("N_failed", total - successful)):
             if field in meta and (type(meta[field]) is not int or meta[field] != count):
                 raise ContractError("Generation metadata count mismatch")
-        if self.batch_hash and meta.get("batch_ids") is not None and set(meta["batch_ids"]) != set(self.ids):
-            raise ContractError("Generation metadata batch mismatch")
+        if meta.get("batch_ids") is not None:
+            batch_ids = meta["batch_ids"]
+            if (not isinstance(batch_ids, list) or any(not isinstance(i, str) for i in batch_ids)
+                    or len(batch_ids) != len(set(batch_ids)) or set(batch_ids) != set(self.input_predictions)):
+                raise ContractError("Generation metadata batch mismatch")
         for key in ("provider", "model"):
             if meta["config"].get(key) != self.single(key):
                 raise ContractError("Generation metadata provider/model mismatch")
@@ -154,7 +161,7 @@ class Inputs:
             if any(file_sha256(known[k]) not in meta[field].values() for k in required):
                 raise ContractError("Generation provenance required input/output hash missing")
         requests = self.index(read_rows(requests_path), "requests")
-        predictions = self.rows["predictions"]
+        predictions = self.input_predictions
         expected_requests = {i for i, p in predictions.items() if p["prompt_sha256"] is not None}
         if set(requests) != expected_requests:
             raise ContractError("Generation requests coverage mismatch")
@@ -169,4 +176,5 @@ class Inputs:
             self.paths[name] = path
             self.hashes[name] = file_sha256(path)
         return {"generation_run_id": self.generation_run_id, "resolved_files": resolution,
+                "N_generation_input_records": total, "N_evaluation_selected": len(self.ids),
                 "source_authenticity": "D-reported provider runs; file identity verified locally; no API contacted"}

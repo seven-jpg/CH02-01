@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-11",
+  "kind": "comparison_integrity_fix_validation",
+  "real_api_requests": 0,
+  "network_blocked": true,
+  "credentials_and_tokenizer_loading_blocked": true,
+  "N_groups": 6,
+  "N_rows": 240,
+  "comparison_matches_original": true,
+  "modified_real_score_copy_rejected": true,
+  "no_comparison_output_created_on_rejection": true,
+  "original_experiment_files_unchanged": true,
+  "N_original_files_hash_checked": 359,
+  "source_files_sha256": {
+    "src/evaluation/review.py": "4a735c1fad852f1e02bfac503143fcff2f74040ae926214275ac5370e3c8fbe5",
+    "tests/test_evaluation.py": "f16a7a9d7378ce1f99f7ff155d1cb9e94f8f37e8f630c34586729b5105285e16"
+  },
+  "e_tests": {
+    "total": 47,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

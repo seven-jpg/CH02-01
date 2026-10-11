@@ -1,0 +1,2 @@
+scope,batch_ids_sha256,subset,baseline,manifest_sha256,N_fixed,N_generated,N_scored,C_correct,W_wrong,M_missing,generation_coverage,scoring_coverage,accuracy,hallucination_rate,missing_rate,truthfulness
+batch,e97aec5bcc78b02f3112f6052afd455ad26de8607a22a7ad9352ccbacdbf7840,dev,B1,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,21,21,21,5,16,0,1.0,1.0,0.23809523809523808,0.7619047619047619,0.0,-0.5238095238095238

@@ -3,3 +3,9 @@
 *.jsonl text eol=lf
 *.md text eol=lf
 *.txt text eol=lf
+
+# E evaluation artifacts contain raw-byte SHA256 references.
+docs/M3/evaluation_paid_4096_v1/** -text !eol
+results/m3/**/e_paid_4096_v1/** -text !eol
+results/m3/**/e_paid_4096_complete_v1/** -text !eol
+results/m3/**/e_calibration_4096_v1/** -text !eol

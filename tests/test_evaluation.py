@@ -26,9 +26,10 @@ from fixtures.synthetic.integration.build_fixture import build
 from scripts import evaluate
 from src.contracts.m3 import ContractError, canonical_json, config_sha256, file_sha256, load_json
 from src.evaluation.inputs import Inputs
+from src.evaluation.records import audit_requests, merge_evaluations
 from src.evaluation.score import (Judge, TOKENIZER_SHA256, append_event, cache_key, deterministic,
     load_tokenizer, local_settings, make_config, messages, official_check, paired, parse_result,
-    read_rows, score_row, summary, truncate)
+    read_rows, score_row, summary, truncate, validate_config)
 
 
 def dump(path, value):
@@ -172,6 +173,197 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(2, len(data.ids))
         with self.assertRaises(ContractError):
             Inputs(dict(self.paths))
+
+    def test_full_generation_file_can_supply_evaluation_batch(self):
+        predictions = read_rows(self.paths["predictions"])
+        meta_path = self.directory / "run_meta_b0.json"
+        meta = load_json(meta_path)
+        meta.update(N_expected=3, N_success=3, N_failed=0,
+                    batch_ids=[p["interaction_id"] for p in predictions])
+        dump(meta_path, meta)
+        data = Inputs(dict(self.paths), self.directory / "batch_ids.json")
+        provenance = data.provenance()
+        self.assertEqual(2, len(data.ids))
+        self.assertEqual(3, provenance["N_generation_input_records"])
+        self.assertEqual(2, provenance["N_evaluation_selected"])
+
+    def test_physical_batch_generation_counts_and_requests(self):
+        selected = load_json(self.directory / "batch_ids.json")
+        for name in ("predictions_b0.jsonl", "requests_b0.jsonl"):
+            path = self.directory / name
+            rows_write(path, [r for r in read_rows(path) if r["interaction_id"] in selected])
+        self.attach_meta()
+        meta_path = self.directory / "run_meta_b0.json"
+        meta = load_json(meta_path)
+        meta.update(N_expected=2, N_success=2, N_failed=0, batch_ids=selected)
+        dump(meta_path, meta)
+        data = Inputs(dict(self.paths), self.directory / "batch_ids.json")
+        self.assertEqual(2, data.provenance()["N_generation_input_records"])
+
+    def test_generation_metadata_cannot_mix_full_and_evaluation_batch_counts(self):
+        meta_path = self.directory / "run_meta_b0.json"
+        original = load_json(meta_path)
+        for counts in ({"N_expected":2,"N_success":3,"N_failed":0},
+                       {"N_expected":3,"N_success":2,"N_failed":0},
+                       {"N_expected":2,"N_success":2,"N_failed":0},
+                       {"N_expected":True}, {"N_expected":2}):
+            with self.subTest(counts=counts):
+                dump(meta_path, {**original, **counts})
+                with self.assertRaisesRegex(ContractError, "count mismatch"):
+                    Inputs(dict(self.paths), self.directory / "batch_ids.json").provenance()
+
+    def test_full_generation_requests_outside_evaluation_batch_are_checked(self):
+        selected = load_json(self.directory / "batch_ids.json")
+        request_path = self.directory / "requests_b0.jsonl"
+        original = read_rows(request_path)
+        missing = [r for r in original if r["interaction_id"] in selected]
+        changed = [{**r, "run_id":"unrelated-generation"} if r["interaction_id"] not in selected else r for r in original]
+        for variant in (missing, changed, original + [original[0]]):
+            with self.subTest(size=len(variant)):
+                rows_write(request_path, variant)
+                self.attach_meta()
+                with self.assertRaises(ContractError):
+                    Inputs(dict(self.paths), self.directory / "batch_ids.json").provenance()
+
+    def test_generation_source_batch_ids_are_not_evaluation_batch_ids(self):
+        meta_path = self.directory / "run_meta_b0.json"
+        original = load_json(meta_path)
+        selected = load_json(self.directory / "batch_ids.json")
+        for batch_ids in (selected, selected + selected, "invalid"):
+            dump(meta_path, {**original,"batch_ids":batch_ids})
+            with self.assertRaisesRegex(ContractError, "batch mismatch"):
+                Inputs(dict(self.paths), self.directory / "batch_ids.json").provenance()
+
+    def test_reviewed_4096_config_keeps_historical_method_intact(self):
+        original = load_json(ROOT / "experiments/m3/evaluation.json")
+        self.assertEqual(original, make_config())
+        extended = make_config(max_tokens=4096)
+        self.assertEqual({**original, "max_tokens":4096}, extended)
+        self.assertNotEqual(config_sha256(original), config_sha256(extended))
+        validate_config(original)
+        validate_config(extended)
+        for config in ({**extended,"max_tokens":2048}, {**extended,"max_tokens":True},
+                       {**extended,"temperature":1}, {**extended,"judge_model":"other"}):
+            with self.assertRaises(ContractError):
+                validate_config(config)
+
+    def test_cli_4096_reaches_sdk_without_changing_other_parameters(self):
+        config = make_config(max_tokens=4096)
+        dump(self.directory / "e_config.json", config)
+        output = self.cli("--allow-paid-api", "--max-api-requests", "3")
+        actual = self.fake_client.chat.completions.create.call_args.kwargs
+        self.assertEqual(4096, actual["max_tokens"])
+        self.assertEqual(0, actual["temperature"])
+        self.assertEqual(config["judge_model"], actual["model"])
+        self.assertEqual(0, self.factory_args.kwargs["max_retries"])
+        self.assertEqual(config_sha256(config), load_json(output / "run_identity.json")["config_sha256"])
+
+    def test_4096_has_distinct_cache_key_and_preserves_failed_1024_attempt(self):
+        old_key = cache_key("m", "i", "q", "a", "p", self.config)
+        config = make_config(max_tokens=4096)
+        new_key = cache_key("m", "i", "q", "a", "p", config)
+        self.assertNotEqual(old_key, new_key)
+        journal = self.directory / "cache.jsonl"
+        append_event(journal, {"event":"failed", "key":old_key,"run_id":"old-run"})
+        judge = Judge(config, self.settings, journal, "new-run", allow_paid=True,
+                      max_requests=1, client=self.fake_client)
+        self.assertEqual("judge_previous_attempt_requires_review", judge.cached(old_key)["error_code"])
+        self.assertEqual("completed", judge.evaluate(new_key, []) ["event"])
+        self.assertEqual(4096, self.fake_client.chat.completions.create.call_args.kwargs["max_tokens"])
+        self.assertEqual("failed", read_rows(journal)[0]["event"])
+
+    def test_request_audit_counts_failures_repeats_and_unknown_usage(self):
+        first = self.directory / "first_journal.jsonl"
+        second = self.directory / "second_journal.jsonl"
+        start = {"event":"started","run_id":"first","key":"same-input",
+                 "started_at":"2026-10-11T00:00:00+00:00","evaluation_config_sha256":config_sha256(self.config)}
+        failed = {**start,"event":"failed","error_code":"judge_incomplete_response",
+                  "finish_reason":"length","usage":{"total_tokens":123}}
+        later = {**start,"run_id":"second","started_at":"2026-10-11T00:01:00+00:00"}
+        rows_write(first,[start,failed])
+        rows_write(second,[later])
+        report = audit_requests([first,second],root=self.directory)
+        self.assertEqual(2,report["N_started"])
+        self.assertEqual({"failed":1,"incomplete":1},report["by_outcome"])
+        self.assertEqual(123,report["known_total_tokens"])
+        self.assertIsNone(report["provider_reported_total_tokens"])
+        self.assertTrue(report["repeated_inputs"][0]["sent_again_after_failure_or_incomplete"])
+        self.assertFalse(report["authorization_verified"])
+
+    def test_request_audit_does_not_double_count_copied_events(self):
+        self.judge(allow_paid=True,max_requests=1).evaluate("input",[])
+        first = self.directory / "cache.jsonl"
+        second = self.directory / "copied_journal.jsonl"
+        rows_write(second,read_rows(first))
+        report = audit_requests([first,second],root=self.directory)
+        self.assertEqual(1,report["N_started"])
+        self.assertEqual(2,report["N_identical_copied_events"])
+        bad = read_rows(second)
+        bad[-1]["verdict"] = "WRONG"
+        rows_write(second,bad)
+        with self.assertRaises(ContractError):
+            audit_requests([first,second],root=self.directory)
+
+    def test_merge_preserves_success_over_failure_and_counts_only_own_calls(self):
+        first = self.cli("--allow-paid-api","--max-api-requests","1",expected=2,output="first",run="first")
+        second = self.cli("--allow-paid-api","--max-api-requests","3",output="second",run="second")
+        output = self.directory / "merged"
+        journals = [first/"judge_journal.jsonl",second/"judge_journal.jsonl"]
+        before = {p:file_sha256(p) for d in (first,second) for p in d.iterdir() if p.is_file()}
+        stats = merge_evaluations(dict(self.paths),self.directory/"e_config.json",[first,second],
+                                 journals,output,"merged",root=self.directory)
+        self.assertEqual(3,stats["N_scored"])
+        self.assertEqual(0,load_json(output/"run_meta_eval_b0.json")["api_requests_total_for_run"])
+        self.assertEqual(4,load_json(output/"request_audit.json")["N_started"])
+        selection = load_json(output/"merge_record.json")["selected_source_by_interaction_id"]
+        source_ids = [r["source_run_id"] for r in selection.values()]
+        self.assertEqual(1,source_ids.count("first"))
+        self.assertEqual(2,source_ids.count("second"))
+        self.assertTrue(all(file_sha256(p)==h for p,h in before.items()))
+        command = [sys.executable,"-X","utf8",str(ROOT/"scripts/check_artifacts.py")]
+        for name,path in self.paths.items():
+            command += ["--"+name,str(path)]
+        command += ["--scores",str(output/"scores_b0.jsonl"),"--config","evaluation="+str(self.directory/"e_config.json"),
+                    "--run-meta","evaluation="+str(output/"run_meta_eval_b0.json")]
+        checked = subprocess.run(command,capture_output=True,encoding="utf-8",timeout=30)
+        self.assertEqual(0,checked.returncode,checked.stdout+checked.stderr)
+        with self.assertRaisesRegex(ContractError,"already exists"):
+            merge_evaluations(dict(self.paths),self.directory/"e_config.json",[first,second],
+                              journals,output,"merged",root=self.directory)
+
+    def test_merge_rejects_mixed_config_conflicting_verdict_and_missing_ids(self):
+        first = self.cli("--allow-paid-api","--max-api-requests","3",output="first",run="first")
+        self.fake_client.chat.completions.create.return_value = completion("Different judgment.\nResult: WRONG")
+        second = self.cli("--allow-paid-api","--max-api-requests","3",output="second",run="second")
+        journals = [first/"judge_journal.jsonl",second/"judge_journal.jsonl"]
+        with self.assertRaisesRegex(ContractError,"Conflicting successful"):
+            merge_evaluations(dict(self.paths),self.directory/"e_config.json",[first,second],journals,
+                              self.directory/"conflict","conflict",root=self.directory)
+        dump(self.directory/"new_config.json",make_config(max_tokens=4096))
+        with self.assertRaisesRegex(ContractError,"method or identity"):
+            merge_evaluations(dict(self.paths),self.directory/"new_config.json",[first],journals,
+                              self.directory/"mixed","mixed",root=self.directory)
+        batch = self.cli("--allow-paid-api","--max-api-requests","3","--batch-ids",str(self.directory/"batch_ids.json"),
+                         output="batch",run="batch")
+        with self.assertRaisesRegex(ContractError,"full subset"):
+            merge_evaluations(dict(self.paths),self.directory/"e_config.json",[batch],
+                              [batch/"judge_journal.jsonl"],self.directory/"missing","missing",root=self.directory)
+
+    def test_merge_rejects_tampered_output_and_missing_saved_response(self):
+        source = self.cli("--allow-paid-api","--max-api-requests","3")
+        journal = source/"judge_journal.jsonl"
+        empty = self.directory/"empty_journal.jsonl"
+        rows_write(empty,[])
+        with self.assertRaisesRegex(ContractError,"matching saved judge response"):
+            merge_evaluations(dict(self.paths),self.directory/"e_config.json",[source],[empty],
+                              self.directory/"no_response","no-response",root=self.directory)
+        scores = source/"scores_b0.jsonl"
+        rows = read_rows(scores)
+        rows[0]["verdict"], rows[0]["score"] = "WRONG",-1
+        rows_write(scores,rows)
+        with self.assertRaisesRegex(ContractError,"hash mismatch"):
+            merge_evaluations(dict(self.paths),self.directory/"e_config.json",[source],[journal],
+                              self.directory/"tampered","tampered",root=self.directory)
 
     def test_result_parser_rejects_conflict_empty_and_truncated(self):
         self.assertEqual("CORRECT", parse_result("Because grounded.\nResult: CORRECT"))
@@ -368,6 +560,165 @@ class EvaluationTests(unittest.TestCase):
         with evaluate.exclusive(lock):
             pass
 
+    def comparison_fixture(self):
+        root = self.directory / 'comparison-project'
+        data = root / 'data/processed/m3/smoke'
+        data.mkdir(parents=True)
+        for name in ('questions.jsonl', 'answers.jsonl', 'metadata.jsonl'):
+            (data / name).write_bytes((self.directory / name).read_bytes())
+        (data.parent / 'manifest.json').write_bytes(self.paths['manifest'].read_bytes())
+        results = root / 'results/m3/smoke'
+        results.mkdir(parents=True)
+        scores = {}
+        truth = {r['interaction_id']: r['ground_truth'] for r in read_rows(self.paths['answers'])}
+        for baseline, group in (('b0', 'smoke_B0'), ('b1', 'smoke_B1_k5')):
+            target = results / ('predictions_' + baseline + '.jsonl')
+            predictions = read_rows(self.directory / target.name)
+            if baseline == 'b0':
+                predictions[0]['agent_response'] = "I don't know."
+            rows_write(target, predictions)
+            rows = [score_row(p, p['agent_response'], truth[p['interaction_id']], self.config, 'comparison-' + baseline,
+                              {'verdict': 'CORRECT', 'content': 'Result: CORRECT'}) for p in predictions]
+            scores[group] = results / ('scores_' + baseline + '.jsonl')
+            rows_write(scores[group], rows)
+            inputs = [data.parent / 'manifest.json', target] + [data / (name + '.jsonl')
+                      for name in ('questions', 'answers', 'metadata')]
+            dump(results / ('run_meta_eval_' + baseline + '.json'), {
+                'run_id': 'comparison-' + baseline, 'stage': 'evaluation', 'schema_version': 'm3.v1',
+                'subset': 'smoke', 'baseline': baseline.upper(), 'source_generation_run_id': predictions[0]['run_id'],
+                'config': self.config, 'config_sha256': config_sha256(self.config),
+                'N_expected': len(rows), 'N_success': len(rows), 'N_failed': 0, 'batch_ids': None,
+                'input_files_sha256': {os.path.relpath(p, results).replace(os.sep, '/'): file_sha256(p) for p in inputs},
+                'output_files_sha256': {scores[group].name: file_sha256(scores[group])}})
+        return root, scores
+
+    def test_comparison_retains_group_names_alongside_metrics(self):
+        from src.evaluation import review
+        root, scores = self.comparison_fixture()
+        with patch.object(review, 'ROOT', root):
+            result = review.compare_groups(scores, root / 'comparison')
+        comparison = result['paired'][0]
+        self.assertEqual('smoke_B0', comparison['first_group'])
+        self.assertEqual('smoke_B1_k5', comparison['second_group'])
+        self.assertIsInstance(comparison['first']['accuracy'], float)
+        self.assertIsInstance(comparison['second']['truthfulness'], float)
+
+    def test_comparison_rejects_modified_scores_before_writing_output(self):
+        from src.evaluation import review
+        from scripts.review_evaluation import main as review_main
+        root, scores = self.comparison_fixture()
+        path = scores['smoke_B0']
+        rows = read_rows(path)
+        rows[0].update(verdict='CORRECT', score=1, scoring_method='exact_match')
+        rows_write(path, rows)
+        output = root / 'rejected-comparison'
+        with patch.object(review, 'ROOT', root), \
+             patch.object(socket.socket, 'connect', side_effect=AssertionError('Network forbidden')), \
+             patch('src.evaluation.score.load_tokenizer', side_effect=AssertionError('Tokenizer forbidden')):
+            with self.assertRaisesRegex(ContractError, 'artifact hash mismatch'):
+                review.compare_groups(scores, output)
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(1, review_main(['compare', '--scores', 'smoke_B0=' + str(path),
+                                               '--output-dir', str(output)]))
+        self.assertFalse(output.exists())
+
+    def test_comparison_requires_sidecar_and_hash_coverage(self):
+        from src.evaluation import review
+        root, scores = self.comparison_fixture()
+        path = scores['smoke_B0']
+        copy = root / 'copy'
+        copy.mkdir()
+        copied_scores = copy / path.name
+        copied_scores.write_bytes(path.read_bytes())
+        with patch.object(review, 'ROOT', root):
+            with self.assertRaisesRegex(ContractError, 'adjacent evaluation run metadata'):
+                review.compare_groups({'smoke_B0': copied_scores}, root / 'missing-meta')
+        meta_path = path.parent / 'run_meta_eval_b0.json'
+        original = load_json(meta_path)
+        variants = [
+            {**original, 'output_files_sha256': {'run_meta_eval_b1.json': file_sha256(path.parent / 'run_meta_eval_b1.json')}},
+            {**original, 'input_files_sha256': {k: v for k, v in original['input_files_sha256'].items()
+                                               if not k.endswith('answers.jsonl')}}]
+        for meta in variants:
+            with self.subTest(mapping=meta):
+                dump(meta_path, meta)
+                with patch.object(review, 'ROOT', root), self.assertRaisesRegex(ContractError, 'not covered'):
+                    review.compare_groups(scores, root / 'uncovered')
+        self.assertFalse((root / 'uncovered').exists())
+
+    def test_comparison_rejects_wrong_run_config_scope_counts_and_input_hash(self):
+        from src.evaluation import review
+        root, scores = self.comparison_fixture()
+        path = scores['smoke_B0']
+        meta_path = path.parent / 'run_meta_eval_b0.json'
+        original = load_json(meta_path)
+        variants = [{'stage': 'generation'}, {'run_id': 'another-evaluation'},
+                    {'source_generation_run_id': 'another-generation'}, {'baseline': 'B1'},
+                    {'subset': 'dev'}, {'config_sha256': '0' * 64},
+                    {'config': {**self.config, 'temperature': 1}},
+                    {'N_expected': 99}, {'N_success': True}, {'N_failed': 1},
+                    {'batch_ids': ['synthetic-001']}]
+        for changes in variants:
+            with self.subTest(changes=changes):
+                dump(meta_path, {**original, **changes})
+                with patch.object(review, 'ROOT', root), self.assertRaises(ContractError):
+                    review.compare_groups(scores, root / 'invalid-meta')
+        dump(meta_path, original)
+        answers = root / 'data/processed/m3/smoke/answers.jsonl'
+        answers.write_bytes(b' ' + answers.read_bytes())
+        with patch.object(review, 'ROOT', root), self.assertRaisesRegex(ContractError, 'artifact hash mismatch'):
+            review.compare_groups(scores, root / 'changed-input')
+        self.assertFalse((root / 'invalid-meta').exists())
+        self.assertFalse((root / 'changed-input').exists())
+
+    def test_comparison_rejects_rule_conflict_even_with_updated_output_hash(self):
+        from src.evaluation import review
+        root, scores = self.comparison_fixture()
+        path = scores['smoke_B0']
+        rows = read_rows(path)
+        rows[0].update(verdict='CORRECT', score=1, scoring_method='exact_match')
+        rows_write(path, rows)
+        meta_path = path.parent / 'run_meta_eval_b0.json'
+        meta = load_json(meta_path)
+        meta['output_files_sha256'][path.name] = file_sha256(path)
+        dump(meta_path, meta)
+        with patch.object(review, 'ROOT', root), self.assertRaisesRegex(ContractError, 'deterministic scoring rules'):
+            review.compare_groups(scores, root / 'rule-conflict')
+        self.assertFalse((root / 'rule-conflict').exists())
+
+    def test_comparison_preserves_valid_generation_and_judge_failures(self):
+        from src.evaluation import review
+        root, scores = self.comparison_fixture()
+        path = scores['smoke_B0']
+        prediction_path = path.parent / 'predictions_b0.jsonl'
+        meta_path = path.parent / 'run_meta_eval_b0.json'
+        original_predictions, original_rows = read_rows(prediction_path), read_rows(path)
+        original_meta = load_json(meta_path)
+        truth = read_rows(root / 'data/processed/m3/smoke/answers.jsonl')[1]['ground_truth']
+        for failure in ('generation', 'judge'):
+            with self.subTest(failure=failure):
+                predictions, rows = [dict(p) for p in original_predictions], [dict(r) for r in original_rows]
+                if failure == 'generation':
+                    predictions[1].update(generation_status='error', agent_response=None, error_code='synthetic-failure')
+                    rows[1] = score_row(predictions[1], None, truth, self.config, original_meta['run_id'])
+                else:
+                    rows[1] = score_row(predictions[1], predictions[1]['agent_response'], truth, self.config,
+                                        original_meta['run_id'], {'error_code': 'synthetic-judge-failure'})
+                rows_write(prediction_path, predictions)
+                rows_write(path, rows)
+                meta = json.loads(canonical_json(original_meta))
+                meta.update(N_success=2, N_failed=1)
+                meta['input_files_sha256'][prediction_path.name] = file_sha256(prediction_path)
+                meta['output_files_sha256'][path.name] = file_sha256(path)
+                dump(meta_path, meta)
+                with patch.object(review, 'ROOT', root), \
+                     patch('src.evaluation.score.load_tokenizer', side_effect=AssertionError('Tokenizer forbidden')), \
+                     patch.object(socket.socket, 'connect', side_effect=AssertionError('Network forbidden')):
+                    result = review.compare_groups(scores, root / ('valid-' + failure))
+                self.assertEqual(2, result['groups'][0]['N_scored'])
+                self.assertEqual(2, result['paired'][0]['n_common_scored'])
+                self.assertEqual(['synthetic-002'], result['paired'][0]['first_failed_ids'])
+
     def test_human_summary_leaves_blank_reviews_pending(self):
         from src.evaluation.review import human_summary, blind_review
         pool = [{"group": "g", "interaction_id": str(i), "query": "q", "ground_truth": "a", "agent_response": "p",
@@ -381,7 +732,7 @@ class EvaluationTests(unittest.TestCase):
 
     def test_submission_source_has_no_machine_paths(self):
         import re
-        files = [ROOT / "scripts/evaluate.py", ROOT / "scripts/review_evaluation.py"] + list((ROOT / "src/evaluation").glob("*.py"))
+        files = [ROOT / "scripts/evaluate.py", ROOT / "scripts/review_evaluation.py", ROOT / "scripts/evaluation_records.py"] + list((ROOT / "src/evaluation").glob("*.py"))
         prohibited_directory = "codex" + "_proc"
         for path in files:
             text = path.read_text(encoding="utf-8")

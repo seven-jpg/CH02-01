@@ -1,0 +1,7 @@
+group,scope,batch_ids_sha256,subset,baseline,manifest_sha256,N_fixed,N_generated,N_scored,C_correct,W_wrong,M_missing,generation_coverage,scoring_coverage,accuracy,hallucination_rate,missing_rate,truthfulness
+smoke_B0,full,,smoke,B0,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,20,20,20,0,0,20,1.0,1.0,0.0,0.0,1.0,0.0
+smoke_B1_k5,full,,smoke,B1,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,20,20,20,3,9,8,1.0,1.0,0.15,0.45,0.4,-0.3
+dev_B0,full,,dev,B0,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,50,50,50,0,1,49,1.0,1.0,0.0,0.02,0.98,-0.02
+dev_B1_k1,full,,dev,B1,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,50,50,50,10,17,23,1.0,1.0,0.2,0.34,0.46,-0.14
+dev_B1_k3,full,,dev,B1,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,50,50,50,11,20,19,1.0,1.0,0.22,0.4,0.38,-0.18
+dev_B1_k5,full,,dev,B1,e4dc72b4bcfff5b1e5cc3dc4ff62a2ac923e66dcefb733f9d23243d9f2f34fd0,50,50,50,9,24,17,1.0,1.0,0.18,0.48,0.34,-0.3

@@ -40,11 +40,13 @@ def reference_hashes() -> dict[str, str]:
                          ("evaluator", "llm_judge", "evaluation_prompt", "evaluation_utils", "config", "dataset_utils"))}
 
 
-def make_config() -> dict[str, Any]:
+def make_config(*, max_tokens: int = 1024) -> dict[str, Any]:
+    if type(max_tokens) is not int or max_tokens not in (1024, 4096):
+        raise ContractError("Reviewed output budgets are 1024 (historical) and 4096")
     prompt = pure_reference("evaluation_prompt").CRAGMultiModalPrompts()
     return {"schema_version": "m3.v1", "judge_provider": "autodl",
             "judge_base_url": "https://www.autodl.art/api/v1", "judge_model": "DeepSeek-V4.1-Flash",
-            "judge_revision": None, "temperature": 0, "max_tokens": 1024, "timeout_s": 120,
+            "judge_revision": None, "temperature": 0, "max_tokens": max_tokens, "timeout_s": 120,
             "max_retries": 0, "response_tokenizer": RESPONSE_TOKENIZER, "response_max_tokens": 75,
             "tokenizer_sha256": TOKENIZER_SHA256, "rules_version": RULES_VERSION,
             "reference_sources_sha256": reference_hashes(),
@@ -55,7 +57,7 @@ def make_config() -> dict[str, Any]:
 
 def validate_config(config: dict[str, Any]) -> None:
     # The complete effective method is committed and hashed, including literal prompts.
-    if config != make_config():
+    if config != make_config(max_tokens=config.get("max_tokens")):
         raise ContractError("Evaluation config differs from the reviewed method/reference files; create and review a new method version")
 
 

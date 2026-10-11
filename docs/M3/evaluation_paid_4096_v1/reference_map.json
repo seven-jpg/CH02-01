@@ -1,0 +1,41 @@
+{
+  "schema_version": "e-document-references.v1",
+  "path_base": "project_root",
+  "historical_relocations": {
+    "docs/M3/E_tokenizer_provenance.json": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/review/tokenizer_provenance.json",
+      "sha256": "da8572fe2de951af5861fa923907a50745f9ff659e50c6197414e4f01d6a0736"
+    },
+    "docs/M3/E_comparison_validation_v1.json": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/validation/comparison_v1.json",
+      "sha256": "f8d3c6192d8aa640c63371cb4d445896a6a8864e2281c4420b7c2ed0800e9380"
+    },
+    "docs/M3/e_offline_repair_v1/verification.json": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/validation/offline_repair_v1.json",
+      "sha256": "c9a8ffce3326ae5b77ca5d69279c51e2e50706b36a58a6724db62e4f701a6fcd"
+    },
+    "docs/M3/evaluation_ai_review_v1/ai_reviews.jsonl": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/review/ai_reviews.jsonl",
+      "sha256": "c6222f744a74d7cc849836fde71614af6b64ba7ee1695438f7c5c41a519a8cfa"
+    },
+    "docs/M3/evaluation_offline_v2/blind_review.jsonl": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/review/blind_review.jsonl",
+      "sha256": "3e66fcd583b43f85b3d4d4762e9406ffa253cb6252a9f9c304439d4a80a76b77"
+    },
+    "docs/M3/evaluation_offline_v2/blind_mapping_private.jsonl": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/review/blind_mapping_private.jsonl",
+      "sha256": "f419713d4d0d37ae03966283c84bf49d35ac7082c2b8ff1082785bc930453c6c"
+    },
+    "docs/M3/evaluation_offline_v2/review_sampling.json": {
+      "current_path": "docs/M3/evaluation_paid_4096_v1/review/review_sampling.json",
+      "sha256": "dd866290eaeb443ad5afeac2cea853ad88fc86a066b900b0c85a3ee8d642a6be"
+    }
+  },
+  "merged_documents": {
+    "docs/M3/E_delivery.md": "docs/M3/E_evaluation.md",
+    "docs/M3/E_evaluation_report_draft.md": "docs/M3/E_evaluation.md",
+    "docs/M3/E_evaluation_run.md": "docs/M3/evaluation_paid_4096_v1/run.md",
+    "docs/M3/E_local_setup.md": "docs/M3/evaluation_paid_4096_v1/run.md"
+  },
+  "note": "Historical references are resolved using this index; original scoring snapshots remain unchanged. This index does not change runtime path resolution."
+}

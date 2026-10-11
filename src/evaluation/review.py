@@ -7,8 +7,9 @@ from pathlib import Path
 import random
 from typing import Any
 
-from src.contracts.m3 import ContractError, file_sha256, load_json
-from src.evaluation.score import ROOT, csv_text, paired, read_rows, summary, write_new
+from src.contracts.m3 import ContractError, config_sha256, file_sha256, load_json
+from src.evaluation.score import (ROOT, csv_text, deterministic, paired, read_rows,
+                                  summary, validate_config, write_new)
 
 INPUT_GROUPS = [
     {"name": "smoke_B0", "subset": "smoke", "baseline": "B0", "top_k": None, "predictions": "results/m3/smoke/predictions_b0.jsonl"},
@@ -170,6 +171,69 @@ def human_summary(csv_path: Path, mapping_path: Path, judge_paths: list[Path]) -
             "disagreements": disagreements, "ai_suggestions_counted_as_human": False}
 
 
+def _validate_comparison_run(path: Path, data: Any, rows: list[dict[str, Any]]) -> None:
+    """Bind scores to their evaluation sidecar and current inputs, without a tokenizer/API."""
+    meta_path = path.parent / ("run_meta_eval_" + data.baseline.lower() + ".json")
+    if not meta_path.is_file():
+        raise ContractError("Comparison requires the adjacent evaluation run metadata")
+    meta = load_json(meta_path)
+    if not isinstance(meta, dict) or any(meta.get(k) != v for k, v in (
+            ("stage", "evaluation"), ("schema_version", "m3.v1"), ("subset", data.subset),
+            ("baseline", data.baseline), ("source_generation_run_id", data.generation_run_id))):
+        raise ContractError("Comparison evaluation metadata identity mismatch")
+    config = meta.get("config")
+    if not isinstance(config, dict):
+        raise ContractError("Comparison evaluation config is missing")
+    validate_config(config)
+    config_hash = config_sha256(config)
+    if meta.get("config_sha256") != config_hash or any(
+            r["run_id"] != meta.get("run_id") or r["evaluation_config_sha256"] != config_hash for r in rows):
+        raise ContractError("Comparison evaluation run/config mismatch")
+    mappings = {}
+    for field in ("input_files_sha256", "output_files_sha256"):
+        mapping = meta.get(field)
+        if not isinstance(mapping, dict) or not mapping:
+            raise ContractError("Comparison evaluation input/output hashes are missing")
+        resolved = {}
+        for name, digest in mapping.items():
+            if not isinstance(name, str) or not name or not isinstance(digest, str):
+                raise ContractError("Comparison evaluation hash mapping is invalid")
+            target = (meta_path.parent / name).resolve()
+            if not target.is_file() or file_sha256(target) != digest:
+                raise ContractError("Comparison evaluation artifact hash mismatch")
+            resolved[target] = digest
+        mappings[field] = resolved
+    if path.resolve() not in mappings["output_files_sha256"] or any(
+            p.resolve() not in mappings["input_files_sha256"] for p in data.paths.values()):
+        raise ContractError("Comparison scores/current inputs are not covered by evaluation hashes")
+    batch_ids = meta.get("batch_ids")
+    if batch_ids is not None and (not isinstance(batch_ids, list)
+            or any(not isinstance(i, str) for i in batch_ids)
+            or len(set(batch_ids)) != len(batch_ids) or set(batch_ids) != set(data.ids)):
+        raise ContractError("Comparison evaluation scope mismatch")
+    successful = sum(r["judge_status"] == "ok" for r in rows)
+    for field, count in (("N_expected", len(rows)), ("N_success", successful),
+                         ("N_failed", len(rows) - successful)):
+        if type(meta.get(field)) is not int or meta[field] != count:
+            raise ContractError("Comparison evaluation counts mismatch")
+    for row in rows:
+        i = row["interaction_id"]
+        if i not in data.rows["predictions"]:
+            raise ContractError("Comparison contains an unexpected score ID")
+        prediction, text = data.rows["predictions"][i], row["agent_response_scored"]
+        if prediction["generation_status"] != "ok":
+            if (row["judge_status"], row["scoring_method"], text) != ("unscored", "unscored", None):
+                raise ContractError("Comparison scores a failed generation")
+            continue
+        if not isinstance(text, str) or not text.strip() or row["judge_status"] == "unscored":
+            raise ContractError("Comparison generated response has an invalid scoring state")
+        rule = deterministic(text, data.rows["answers"][i]["ground_truth"])
+        if rule and (row["judge_status"], row["verdict"], row["scoring_method"]) != ("ok", *rule):
+            raise ContractError("Comparison score contradicts deterministic scoring rules")
+        if not rule and row["scoring_method"] in ("idk", "exact_match"):
+            raise ContractError("Comparison score uses an inapplicable deterministic rule")
+
+
 def compare_groups(score_paths: dict[str, Path], output: Path) -> dict[str, Any]:
     groups = {g["name"]: g for g in INPUT_GROUPS}
     scores, summaries = {}, []
@@ -189,10 +253,11 @@ def compare_groups(score_paths: dict[str, Path], output: Path) -> dict[str, Any]
             raise ContractError("Comparison contains mixed evaluation configs")
         if any(r["baseline"] != g["baseline"] or r["source_generation_run_id"] != pred[0]["run_id"] for r in rows):
             raise ContractError("Comparison score provenance mismatch")
+        _validate_comparison_run(path, data, rows)
         scores[name] = rows
         summaries.append({"group": name, **summary(rows, pred, subset=g["subset"], baseline=g["baseline"],
                                                     manifest=pred[0]["dataset_manifest_sha256"])})
-    comparisons = [{"first": a, "second": b, **paired(scores[a], scores[b])} for a, b in COMPARISONS if a in scores and b in scores]
+    comparisons = [{"first_group": a, "second_group": b, **paired(scores[a], scores[b])} for a, b in COMPARISONS if a in scores and b in scores]
     result = {"groups": summaries, "paired": comparisons}
     save_once(output / "completed_comparisons.json", result)
     save_text(output / "completed_summary.csv", csv_text(summaries))
